@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "748000694321",
+    "project_id": "corremundos-9203a",
+    "storage_bucket": "corremundos-9203a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748000694321:android:987c85bceaffe2e3954510",
+        "android_client_info": {
+          "package_name": "com.lumebits.corremundos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "748000694321-9kq3c8vo8ssfgt21lulp76f23a8iispb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4H4T3HlMsPabXSegIjpWZu_M7oxGEQBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "748000694321-9kq3c8vo8ssfgt21lulp76f23a8iispb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
