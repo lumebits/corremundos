@@ -45,6 +45,7 @@ class AppView extends StatelessWidget {
       listener: (context, state) {
         if (state.status == AppStatus.authenticated) {
           // TODO
+          //context.read<AddedCardsCubit>().loadAddedCards();
         }
       },
       child: MaterialApp(

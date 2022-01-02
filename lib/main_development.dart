@@ -2,19 +2,15 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:auth_repository/auth_repository.dart';
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:corremundos/app/app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-Future<void> main() async {
-  BlocOverrides.runZoned(
-    () {},
-    blocObserver: AppBlocObserver(),
-  );
+import 'bootstrap.dart';
 
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseFirestore.instance.settings = const Settings(
@@ -31,8 +27,5 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  runZonedGuarded(
-    () => runApp(App(authRepository: authRepository)),
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
-  );
+  await bootstrap(() => App(authRepository: authRepository));
 }
