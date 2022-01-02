@@ -51,7 +51,7 @@ class LoginForm extends StatelessWidget {
               children: [
                 const Text(
                   'Corremundos',
-                  style: TextStyle(fontSize: 32),
+                  style: TextStyle(fontSize: 32, color: Colors.white),
                 ),
                 const SizedBox(height: 24),
                 _EmailInput(),
@@ -84,18 +84,23 @@ class _EmailInput extends StatelessWidget {
           key: const Key('loginForm_emailInput_textField'),
           style: const TextStyle(
             fontSize: 20,
+            color: Colors.white,
           ),
+          cursorColor: Colors.white,
+          enableInteractiveSelection: false,
           onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             labelStyle: TextStyle(
-              color: focusNode.hasFocus
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
+              color: focusNode.hasFocus ? Colors.white : Colors.white60,
             ),
             labelText: 'Email',
             prefix: const Padding(
               padding: EdgeInsets.only(top: 2.5, right: 2.5),
+            ),
+            prefixIcon: const Icon(
+              Icons.email_rounded,
+              color: Colors.white,
             ),
           ),
         );
@@ -116,7 +121,10 @@ class _PasswordInput extends StatelessWidget {
           key: const Key('loginForm_passwordInput_textField'),
           style: const TextStyle(
             fontSize: 20,
+            color: Colors.white,
           ),
+          cursorColor: Colors.white,
+          enableInteractiveSelection: false,
           onChanged: (password) =>
               context.read<LoginCubit>().passwordChanged(password),
           keyboardType: TextInputType.text,
@@ -125,13 +133,15 @@ class _PasswordInput extends StatelessWidget {
           autocorrect: false,
           decoration: InputDecoration(
             labelStyle: TextStyle(
-              color: focusNode.hasFocus
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
+              color: focusNode.hasFocus ? Colors.white : Colors.white60,
             ),
             labelText: 'Password',
             prefix: const Padding(
               padding: EdgeInsets.only(top: 2.5, right: 2.5),
+            ),
+            prefixIcon: const Icon(
+              Icons.vpn_key_rounded,
+              color: Colors.white,
             ),
           ),
         );
@@ -146,7 +156,7 @@ class _LoginButton extends StatelessWidget {
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return state.status.isSubmissionInProgress
+        return state.status.isSubmissionInProgress || !state.status.isValidated
             ? SizedBox(
                 width: 210,
                 height: 50,
@@ -170,11 +180,15 @@ class _LoginButton extends StatelessWidget {
                   onPressed: state.status.isValidated
                       ? () => context.read<LoginCubit>().logInFormSubmitted()
                       : null,
-                  style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    primary: Colors.white,
+                  ),
                   child: const Text(
-                    'Log in',
+                    'Sign in',
                     style: TextStyle(
                       fontSize: 17,
+                      color: Color.fromRGBO(90, 23, 238, 1),
                     ),
                   ),
                 ),
@@ -190,7 +204,7 @@ class _GoogleLoginButton extends StatelessWidget {
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return state.status.isSubmissionInProgress
+        return state.status.isSubmissionInProgress || !state.status.isValidated
             ? SizedBox(
                 width: 210,
                 height: 50,
@@ -223,11 +237,15 @@ class _GoogleLoginButton extends StatelessWidget {
                       ? () =>
                           context.read<LoginCubit>().googleLogInFormSubmitted()
                       : null,
-                  style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    primary: Colors.white,
+                  ),
                   label: const Text(
                     'Log in with Google',
                     style: TextStyle(
                       fontSize: 17,
+                      color: Color.fromRGBO(90, 23, 238, 1),
                     ),
                   ),
                 ),
@@ -265,11 +283,15 @@ class _SignUpButton extends StatelessWidget {
                 child: ElevatedButton(
                   key: const Key('loginForm_signUp_raisedButton'),
                   onPressed: () => print('go to sign up'),
-                  style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    primary: Colors.white,
+                  ),
                   child: const Text(
                     'Sign Up',
                     style: TextStyle(
                       fontSize: 17,
+                      color: Color.fromRGBO(90, 23, 238, 1),
                     ),
                   ),
                 ),

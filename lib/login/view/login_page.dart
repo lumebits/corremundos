@@ -12,12 +12,23 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: BlocProvider(
-          create: (_) => LoginCubit(context.read<AuthRepository>()),
-          child: const LoginForm(),
+    return Container(
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+            Color.fromRGBO(90, 23, 238, 1), // purple
+            Color.fromRGBO(0, 177, 219, .8) // blue
+          ],),),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BlocProvider(
+            create: (_) => LoginCubit(context.read<AuthRepository>()),
+            child: const LoginForm(),
+          ),
         ),
       ),
     );
