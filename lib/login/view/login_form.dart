@@ -1,4 +1,5 @@
 import 'package:corremundos/login/cubit/login_cubit.dart';
+import 'package:corremundos/trips/view/trips_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,13 +25,13 @@ class LoginForm extends StatelessWidget {
             ),
           );
         } else if (state.status.isSubmissionSuccess) {
-          /*Navigator.of(context).push(
-            MaterialPageRoute(
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
               builder: (context) {
-                return const CounterPage();
+                return const TripsPage();
               },
             ),
-          );*/
+          );
           showTopSnackBar(
             context,
             const CustomSnackBar.info(
@@ -201,7 +202,7 @@ class _LoginButton extends StatelessWidget {
                   onPressed: null,
                   style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
                   child: const Text(
-                    'Log in',
+                    'Sign In',
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.white70,
@@ -241,9 +242,9 @@ class _GoogleLoginButton extends StatelessWidget {
     return BlocBuilder<LoginCubit, LoginState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return state.status.isSubmissionInProgress || !state.status.isValidated
+        return state.status.isSubmissionInProgress
             ? SizedBox(
-                width: 210,
+                width: 250,
                 height: 50,
                 child: ElevatedButton.icon(
                   icon: const Icon(
@@ -264,7 +265,7 @@ class _GoogleLoginButton extends StatelessWidget {
                 ),
               )
             : SizedBox(
-                width: 210,
+                width: 250,
                 height: 50,
                 child: ElevatedButton.icon(
                   icon: const Icon(
@@ -273,16 +274,14 @@ class _GoogleLoginButton extends StatelessWidget {
                     color: Color.fromRGBO(90, 23, 238, 1),
                   ),
                   key: const Key('loginForm_googleLogin_raisedButton'),
-                  onPressed: state.status.isValidated
-                      ? () =>
-                          context.read<LoginCubit>().googleLogInFormSubmitted()
-                      : null,
+                  onPressed: () =>
+                      context.read<LoginCubit>().googleLogInFormSubmitted(),
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     primary: Colors.white,
                   ),
                   label: const Text(
-                    'Log in with Google',
+                    'Sign in with Google',
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.grey,
