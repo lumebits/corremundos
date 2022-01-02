@@ -19,11 +19,12 @@ final theme = ThemeData(
   fontFamily: GoogleFonts.montserrat().fontFamily,
   inputDecorationTheme: const InputDecorationTheme(border: InputBorder.none),
   elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
     ),
-  )),
+  ),
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: MaterialColor(0xFF5A17EE, corremundosColor),
     accentColor: corremundosColor[900],

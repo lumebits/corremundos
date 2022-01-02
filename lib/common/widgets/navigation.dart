@@ -1,5 +1,4 @@
 import 'package:corremundos/app/app.dart';
-import 'package:corremundos/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,7 +11,6 @@ class Navigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       notchMargin: 7,
@@ -36,7 +34,7 @@ class Navigation extends StatelessWidget {
                       : Colors.grey,
                 ),
                 //Text(l10n.navBarCards),
-                Text('My Trips'),
+                const Text('My Trips'),
               ],
             ),
             Column(
@@ -53,7 +51,7 @@ class Navigation extends StatelessWidget {
                         .add(const NavigationRequested(AppTab.calendar));
                   },
                 ),
-                Text('Calendar'),
+                const Text('Calendar'),
               ],
             )
           ],

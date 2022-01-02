@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:corremundos/login/cubit/login_cubit.dart';
 import 'package:corremundos/trips/view/trips_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,14 +34,6 @@ class LoginForm extends StatelessWidget {
               },
             ),
           );
-          showTopSnackBar(
-            context,
-            const CustomSnackBar.info(
-              message: 'OK',
-              icon: Icon(null),
-              backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-            ),
-          );
         }
       },
       child: Padding(
@@ -47,7 +41,6 @@ class LoginForm extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              flex: 2,
               child: Align(
                 alignment: FractionalOffset.center,
                 child: Column(
@@ -55,7 +48,10 @@ class LoginForm extends StatelessWidget {
                     SizedBox(height: 24),
                     Text(
                       'Corremundos',
-                      style: TextStyle(fontSize: 32, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 32,
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(height: 24),
                   ],
@@ -63,21 +59,36 @@ class LoginForm extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Container(
                 //color: Colors.redAccent,
                 decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    )),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                ),
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 12),
+                            child: Text(
+                              'Welcome',
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
                         _EmailInput(),
                         const SizedBox(height: 8),
                         _PasswordInput(),
@@ -256,7 +267,7 @@ class _GoogleLoginButton extends StatelessWidget {
                   onPressed: null,
                   style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
                   label: const Text(
-                    'Sign in with Google',
+                    'Sign In with Google',
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.white70,
@@ -281,7 +292,7 @@ class _GoogleLoginButton extends StatelessWidget {
                     primary: Colors.white,
                   ),
                   label: const Text(
-                    'Sign in with Google',
+                    'Sign In with Google',
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.grey,
@@ -307,19 +318,20 @@ class _SignUpButton extends StatelessWidget {
           ),
         ),
         Flexible(
-            child: TextButton(
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.only(left: 5),
-            minimumSize: const Size(50, 30),
-            alignment: Alignment.center,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          child: TextButton(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(left: 5),
+              minimumSize: const Size(50, 30),
+              alignment: Alignment.center,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed: () => log('sign up'),
+            child: const Text(
+              'Sign Up',
+              textScaleFactor: 0.85,
+            ),
           ),
-          onPressed: () => print('sign up'),
-          child: const Text(
-            'Sign Up',
-            textScaleFactor: 0.85,
-          ),
-        ))
+        )
       ],
     );
   }

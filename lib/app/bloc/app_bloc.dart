@@ -20,13 +20,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         ) {
     _userSubscription = _authRepository.user.listen(_onUserChanged);
     on<AppUserChanged>(
-        (event, emit) => emit(_mapUserChangedToState(event, state)),);
+      (event, emit) => emit(_mapUserChangedToState(event, state)),
+    );
     on<AppLogoutRequested>(
-          (event, emit) => unawaited(_authRepository.logOut()),);
+      (event, emit) => unawaited(_authRepository.logOut()),
+    );
     on<NavigationRequested>(
-          (event, emit) => emit(_mapNavigationToState(event, state)),);
+      (event, emit) => emit(_mapNavigationToState(event, state)),
+    );
     on<AppDeleteUserRequested>(
-          (event, emit) => unawaited(_authRepository.deleteUser()),);
+      (event, emit) => unawaited(_authRepository.deleteUser()),
+    );
   }
 
   final AuthRepository _authRepository;

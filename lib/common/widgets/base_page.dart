@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +24,7 @@ abstract class BasePage extends StatelessWidget {
             builder: (context) => const ShareCardPage(),
           ),
         );*/
-        print('add new trip'); // TODO
+        log('add new trip');
       },
       elevation: 2,
       child: const Icon(Icons.add_rounded),
