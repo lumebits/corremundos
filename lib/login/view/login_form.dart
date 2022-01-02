@@ -1,4 +1,3 @@
-import 'package:corremundos/counter/counter.dart';
 import 'package:corremundos/login/cubit/login_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,29 +42,66 @@ class LoginForm extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Align(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Corremundos',
-                  style: TextStyle(fontSize: 32, color: Colors.white),
+        padding: const EdgeInsets.only(top: 40),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Align(
+                alignment: FractionalOffset.center,
+                child: Column(
+                  children: const [
+                    SizedBox(height: 24),
+                    Text(
+                      'Corremundos',
+                      style: TextStyle(fontSize: 32, color: Colors.white),
+                    ),
+                    SizedBox(height: 24),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                _EmailInput(),
-                const SizedBox(height: 8),
-                _PasswordInput(),
-                const SizedBox(height: 24),
-                _LoginButton(),
-                const SizedBox(height: 24),
-                _GoogleLoginButton(),
-                const SizedBox(height: 24),
-                _SignUpButton(),
-              ],
+              ),
             ),
-          ),
+            Expanded(
+              flex: 3,
+              child: Container(
+                //color: Colors.redAccent,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    )),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _EmailInput(),
+                        const SizedBox(height: 8),
+                        _PasswordInput(),
+                        const SizedBox(height: 24),
+                        _LoginButton(),
+                        const SizedBox(height: 12),
+                        const Divider(
+                          color: Colors.grey,
+                          height: 20,
+                          thickness: 0.2,
+                          indent: 15,
+                          endIndent: 15,
+                        ),
+                        const SizedBox(height: 12),
+                        _GoogleLoginButton(),
+                        const SizedBox(height: 24),
+                        _SignUpButton(),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -84,15 +120,15 @@ class _EmailInput extends StatelessWidget {
           key: const Key('loginForm_emailInput_textField'),
           style: const TextStyle(
             fontSize: 20,
-            color: Colors.white,
+            color: Color.fromRGBO(90, 23, 238, 1),
           ),
-          cursorColor: Colors.white,
-          enableInteractiveSelection: false,
           onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             labelStyle: TextStyle(
-              color: focusNode.hasFocus ? Colors.white : Colors.white60,
+              color: focusNode.hasFocus
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.grey,
             ),
             labelText: 'Email',
             prefix: const Padding(
@@ -100,7 +136,7 @@ class _EmailInput extends StatelessWidget {
             ),
             prefixIcon: const Icon(
               Icons.email_rounded,
-              color: Colors.white,
+              color: Color.fromRGBO(90, 23, 238, 1),
             ),
           ),
         );
@@ -121,10 +157,8 @@ class _PasswordInput extends StatelessWidget {
           key: const Key('loginForm_passwordInput_textField'),
           style: const TextStyle(
             fontSize: 20,
-            color: Colors.white,
+            color: Color.fromRGBO(90, 23, 238, 1),
           ),
-          cursorColor: Colors.white,
-          enableInteractiveSelection: false,
           onChanged: (password) =>
               context.read<LoginCubit>().passwordChanged(password),
           keyboardType: TextInputType.text,
@@ -133,7 +167,9 @@ class _PasswordInput extends StatelessWidget {
           autocorrect: false,
           decoration: InputDecoration(
             labelStyle: TextStyle(
-              color: focusNode.hasFocus ? Colors.white : Colors.white60,
+              color: focusNode.hasFocus
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.grey,
             ),
             labelText: 'Password',
             prefix: const Padding(
@@ -141,7 +177,7 @@ class _PasswordInput extends StatelessWidget {
             ),
             prefixIcon: const Icon(
               Icons.vpn_key_rounded,
-              color: Colors.white,
+              color: Color.fromRGBO(90, 23, 238, 1),
             ),
           ),
         );
@@ -168,6 +204,7 @@ class _LoginButton extends StatelessWidget {
                     'Log in',
                     style: TextStyle(
                       fontSize: 17,
+                      color: Colors.white70,
                     ),
                   ),
                 ),
@@ -182,13 +219,13 @@ class _LoginButton extends StatelessWidget {
                       : null,
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
-                    primary: Colors.white,
+                    primary: const Color.fromRGBO(90, 23, 238, 1),
                   ),
                   child: const Text(
-                    'Sign in',
+                    'Sign In',
                     style: TextStyle(
                       fontSize: 17,
-                      color: Color.fromRGBO(90, 23, 238, 1),
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -212,14 +249,16 @@ class _GoogleLoginButton extends StatelessWidget {
                   icon: const Icon(
                     FontAwesomeIcons.google,
                     size: 17,
+                    color: Colors.white70,
                   ),
                   key: const Key('loginForm_googleLogin_raisedButton'),
                   onPressed: null,
                   style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
                   label: const Text(
-                    'Log in with Google',
+                    'Sign in with Google',
                     style: TextStyle(
                       fontSize: 17,
+                      color: Colors.white70,
                     ),
                   ),
                 ),
@@ -231,6 +270,7 @@ class _GoogleLoginButton extends StatelessWidget {
                   icon: const Icon(
                     FontAwesomeIcons.google,
                     size: 17,
+                    color: Color.fromRGBO(90, 23, 238, 1),
                   ),
                   key: const Key('loginForm_googleLogin_raisedButton'),
                   onPressed: state.status.isValidated
@@ -245,7 +285,7 @@ class _GoogleLoginButton extends StatelessWidget {
                     'Log in with Google',
                     style: TextStyle(
                       fontSize: 17,
-                      color: Color.fromRGBO(90, 23, 238, 1),
+                      color: Colors.grey,
                     ),
                   ),
                 ),
@@ -258,45 +298,30 @@ class _GoogleLoginButton extends StatelessWidget {
 class _SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
-      builder: (context, state) {
-        return state.status.isSubmissionInProgress
-            ? SizedBox(
-                width: 150,
-                height: 50,
-                child: ElevatedButton(
-                  key: const Key('loginForm_signUp_raisedButton'),
-                  onPressed: null,
-                  style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontSize: 17,
-                    ),
-                  ),
-                ),
-              )
-            : SizedBox(
-                width: 150,
-                height: 50,
-                child: ElevatedButton(
-                  key: const Key('loginForm_signUp_raisedButton'),
-                  onPressed: () => print('go to sign up'),
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    primary: Colors.white,
-                  ),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Color.fromRGBO(90, 23, 238, 1),
-                    ),
-                  ),
-                ),
-              );
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Flexible(
+          child: Text(
+            'Already have an account?',
+            textScaleFactor: 0.85,
+          ),
+        ),
+        Flexible(
+            child: TextButton(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.only(left: 5),
+            minimumSize: const Size(50, 30),
+            alignment: Alignment.center,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          onPressed: () => print('sign up'),
+          child: const Text(
+            'Sign Up',
+            textScaleFactor: 0.85,
+          ),
+        ))
+      ],
     );
   }
 }

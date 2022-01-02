@@ -23,13 +23,10 @@ class LoginPage extends StatelessWidget {
           ],),),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: BlocProvider(
+        body: BlocProvider(
             create: (_) => LoginCubit(context.read<AuthRepository>()),
             child: const LoginForm(),
           ),
-        ),
       ),
     );
   }
