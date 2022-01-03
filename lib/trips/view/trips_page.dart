@@ -1,29 +1,22 @@
-// Copyright (c) 2021, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
-import 'package:corremundos/counter/counter.dart';
 import 'package:corremundos/l10n/l10n.dart';
+import 'package:corremundos/trips/trips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CounterPage extends StatelessWidget {
-  const CounterPage({Key? key}) : super(key: key);
+class TripsPage extends StatelessWidget {
+  const TripsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => CounterCubit(),
-      child: const CounterView(),
+      create: (_) => TripsCubit(),
+      child: const TripsView(),
     );
   }
 }
 
-class CounterView extends StatelessWidget {
-  const CounterView({Key? key}) : super(key: key);
+class TripsView extends StatelessWidget {
+  const TripsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +29,12 @@ class CounterView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: () => context.read<CounterCubit>().increment(),
+            onPressed: () => context.read<TripsCubit>().increment(),
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
-            onPressed: () => context.read<CounterCubit>().decrement(),
+            onPressed: () => context.read<TripsCubit>().decrement(),
             child: const Icon(Icons.remove),
           ),
         ],
@@ -56,7 +49,7 @@ class CounterText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final count = context.select((CounterCubit cubit) => cubit.state);
+    final count = context.select((TripsCubit cubit) => cubit.state);
     return Text('$count', style: theme.textTheme.headline1);
   }
 }

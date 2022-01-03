@@ -1,13 +1,13 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:corremundos/login/cubit/login_cubit.dart';
-import 'package:corremundos/login/view/login_form.dart';
+import 'package:corremundos/login/registration/registration_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class RegistrationPage extends StatelessWidget {
+  const RegistrationPage({Key? key}) : super(key: key);
 
-  static Page page() => const MaterialPage<void>(child: LoginPage());
+  static Page page() => const MaterialPage<void>(child: RegistrationPage());
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class LoginPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         body: BlocProvider(
           create: (_) => LoginCubit(context.read<AuthRepository>()),
-          child: const LoginForm(),
+          child: const RegistrationForm(),
         ),
       ),
     );
