@@ -23,7 +23,7 @@ class Navigation extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.table_rows),
+                  icon: const Icon(Icons.airplanemode_active_rounded),
                   onPressed: () {
                     context
                         .read<AppBloc>()
@@ -41,7 +41,24 @@ class Navigation extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.person),
+                  icon: const Icon(Icons.map_rounded),
+                  color: activeTab == AppTab.current
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey,
+                  onPressed: () {
+                    context
+                        .read<AppBloc>()
+                        .add(const NavigationRequested(AppTab.current));
+                  },
+                ),
+                const Text('Current Trip'),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.calendar_today_rounded),
                   color: activeTab == AppTab.calendar
                       ? Theme.of(context).colorScheme.primary
                       : Colors.grey,
@@ -52,6 +69,23 @@ class Navigation extends StatelessWidget {
                   },
                 ),
                 const Text('Calendar'),
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.settings_rounded),
+                  color: activeTab == AppTab.settings
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey,
+                  onPressed: () {
+                    context
+                        .read<AppBloc>()
+                        .add(const NavigationRequested(AppTab.settings));
+                  },
+                ),
+                const Text('Settings'),
               ],
             )
           ],
