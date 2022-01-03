@@ -21,7 +21,7 @@ abstract class BasePage extends StatelessWidget {
       onPressed: () {
         /*Navigator.of(context).push<Route>(
           MaterialPageRoute(
-            builder: (context) => const ShareCardPage(),
+            builder: (context) => const AddTripPage(),
           ),
         );*/
         log('add new trip');
@@ -39,8 +39,8 @@ abstract class BasePage extends StatelessWidget {
     return AppBar(
       title: Text(title(context)),
       actions: actions(context),
-      backgroundColor: const Color(0x00202020),
-      shadowColor: const Color(0x00202020),
+      backgroundColor: Colors.white,
+      shadowColor: Colors.white,
     );
   }
 

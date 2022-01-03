@@ -35,7 +35,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   final AuthRepository _authRepository;
   late final StreamSubscription<User> _userSubscription;
-  late final StreamSubscription<String?> _deepLinkSubscription;
 
   void _onUserChanged(User user) => add(AppUserChanged(user));
 
@@ -52,7 +51,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   @override
   Future<void> close() {
     _userSubscription.cancel();
-    _deepLinkSubscription.cancel();
     return super.close();
   }
 }
