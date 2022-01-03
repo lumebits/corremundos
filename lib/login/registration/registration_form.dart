@@ -1,16 +1,15 @@
 import 'package:corremundos/login/cubit/login_cubit.dart';
-import 'package:corremundos/login/login.dart';
+import 'package:corremundos/login/view/login_page.dart';
 import 'package:corremundos/trips/view/trips_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({Key? key}) : super(key: key);
+class RegistrationForm extends StatelessWidget {
+  const RegistrationForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class LoginForm extends StatelessWidget {
           showTopSnackBar(
             context,
             const CustomSnackBar.info(
-              message: 'Authentication failed',
+              message: 'Registration failed',
               icon: Icon(null),
               backgroundColor: Color.fromRGBO(90, 23, 238, 1),
             ),
@@ -79,7 +78,7 @@ class LoginForm extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.only(left: 12),
                             child: Text(
-                              'Welcome',
+                              'Create an account',
                               style: TextStyle(
                                 fontSize: 24,
                                 color: Colors.black87,
@@ -92,19 +91,9 @@ class LoginForm extends StatelessWidget {
                         const SizedBox(height: 8),
                         _PasswordInput(),
                         const SizedBox(height: 24),
-                        _LoginButton(),
-                        const SizedBox(height: 12),
-                        const Divider(
-                          color: Colors.grey,
-                          height: 20,
-                          thickness: 0.2,
-                          indent: 15,
-                          endIndent: 15,
-                        ),
-                        const SizedBox(height: 12),
-                        _GoogleLoginButton(),
-                        const SizedBox(height: 24),
                         _SignUpButton(),
+                        const SizedBox(height: 24),
+                        _LogInButton(),
                       ],
                     ),
                   ),
@@ -127,7 +116,7 @@ class _EmailInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           focusNode: focusNode,
-          key: const Key('loginForm_emailInput_textField'),
+          key: const Key('registrationForm_emailInput_textField'),
           style: const TextStyle(
             fontSize: 20,
             color: Color.fromRGBO(90, 23, 238, 1),
@@ -164,7 +153,7 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           focusNode: focusNode,
-          key: const Key('loginForm_passwordInput_textField'),
+          key: const Key('registrationForm_passwordInput_textField'),
           style: const TextStyle(
             fontSize: 20,
             color: Color.fromRGBO(90, 23, 238, 1),
@@ -196,7 +185,7 @@ class _PasswordInput extends StatelessWidget {
   }
 }
 
-class _LoginButton extends StatelessWidget {
+class _SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
@@ -207,11 +196,11 @@ class _LoginButton extends StatelessWidget {
                 width: 210,
                 height: 50,
                 child: ElevatedButton(
-                  key: const Key('loginForm_login_raisedButton'),
+                  key: const Key('registrationForm_signup_raisedButton'),
                   onPressed: null,
                   style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
                   child: const Text(
-                    'Sign In',
+                    'Sign Up',
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.white70,
@@ -223,16 +212,16 @@ class _LoginButton extends StatelessWidget {
                 width: 210,
                 height: 50,
                 child: ElevatedButton(
-                  key: const Key('loginForm_login_raisedButton'),
+                  key: const Key('registrationForm_signup_raisedButton'),
                   onPressed: state.status.isValidated
-                      ? () => context.read<LoginCubit>().logInFormSubmitted()
+                      ? () => context.read<LoginCubit>().signUpFormSubmitted()
                       : null,
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     primary: const Color.fromRGBO(90, 23, 238, 1),
                   ),
                   child: const Text(
-                    'Sign In',
+                    'Sign Up',
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.white,
@@ -245,64 +234,7 @@ class _LoginButton extends StatelessWidget {
   }
 }
 
-class _GoogleLoginButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
-      builder: (context, state) {
-        return state.status.isSubmissionInProgress
-            ? SizedBox(
-                width: 250,
-                height: 50,
-                child: ElevatedButton.icon(
-                  icon: const Icon(
-                    FontAwesomeIcons.google,
-                    size: 17,
-                    color: Colors.white70,
-                  ),
-                  key: const Key('loginForm_googleLogin_raisedButton'),
-                  onPressed: null,
-                  style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-                  label: const Text(
-                    'Sign In with Google',
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
-              )
-            : SizedBox(
-                width: 250,
-                height: 50,
-                child: ElevatedButton.icon(
-                  icon: const Icon(
-                    FontAwesomeIcons.google,
-                    size: 17,
-                    color: Color.fromRGBO(90, 23, 238, 1),
-                  ),
-                  key: const Key('loginForm_googleLogin_raisedButton'),
-                  onPressed: () => context.read<LoginCubit>().googleLogIn(),
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    primary: Colors.white,
-                  ),
-                  label: const Text(
-                    'Sign In with Google',
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              );
-      },
-    );
-  }
-}
-
-class _SignUpButton extends StatelessWidget {
+class _LogInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -310,7 +242,7 @@ class _SignUpButton extends StatelessWidget {
       children: [
         const Flexible(
           child: Text(
-            'Don' 't have an account?',
+            'Already have an account?',
             textScaleFactor: 0.85,
           ),
         ),
@@ -325,7 +257,7 @@ class _SignUpButton extends StatelessWidget {
             onPressed: () => Navigator.of(context).push(
               PageRouteBuilder<void>(
                 pageBuilder: (context, animation, anotherAnimation) {
-                  return const RegistrationPage();
+                  return const LoginPage();
                 },
                 transitionsBuilder:
                     (context, animation, anotherAnimation, child) {
@@ -344,7 +276,7 @@ class _SignUpButton extends StatelessWidget {
               ),
             ),
             child: const Text(
-              'Sign Up',
+              'Sign In',
               textScaleFactor: 0.85,
             ),
           ),
