@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
-import 'package:corremundos/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class TripsForm extends BasePage {
