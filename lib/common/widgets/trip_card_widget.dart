@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trips_repository/trips_repository.dart';
@@ -44,6 +45,7 @@ class TripCardWidget extends StatelessWidget {
   }
 
   Widget _cardText(Trip trip) {
+    final now = DateTime.now();
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -68,9 +70,10 @@ class TripCardWidget extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text:
-                              ' ${trip.initDate.difference(DateTime.now()).inDays} '
-                              'days until take-off!',
+                          text: trip.initDate.difference(now).inDays > 0
+                              ? ' ${trip.initDate.difference(now).inDays} '
+                                  'days until take-off!'
+                              : 'enjoy your trip!',
                         )
                       ],
                     ),
@@ -141,7 +144,7 @@ class TripCardWidget extends StatelessWidget {
     return BoxDecoration(
       image: DecorationImage(
         fit: BoxFit.fitWidth,
-        image: NetworkImage(imageUrl),
+        image: CachedNetworkImageProvider(imageUrl),
         colorFilter: ColorFilter.mode(
           Colors.black.withOpacity(0.38),
           BlendMode.darken,

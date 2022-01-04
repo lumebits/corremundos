@@ -34,7 +34,11 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Stream<List<Trip>> getMyTrips(String uid) {
-    return collection.where('uid', isEqualTo: uid).snapshots().map((snapshot) {
+    return collection
+        .where('uid', isEqualTo: uid)
+        .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
+        .snapshots()
+        .map((snapshot) {
       return snapshot.docs
           .map(
             (doc) => Trip.fromEntity(TripEntity.fromSnapshot(doc)),
@@ -47,6 +51,7 @@ class FirebaseTripsRepository implements TripsRepository {
   Stream<List<Trip>> getSharedWithMeTrips(String uid) {
     return collection
         .where('sharedWith', arrayContains: uid)
+        .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
         .snapshots()
         .map((snapshot) {
       return snapshot.docs
