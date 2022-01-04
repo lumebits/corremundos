@@ -9,9 +9,10 @@ environment:
 dependencies:
   auth_repository:
     path: packages/auth_repository
+  auto_size_text: ^3.0.0-nullsafety.0
   bloc: ^8.0.1
   cached_network_image: ^3.2.0
-  cloud_firestore: ^3.1.5
+  cloud_firestore: ^1.0.5 # TODO: there is a 3.x.x version
   equatable: ^2.0.3
   flow_builder: ^0.0.6
   flutter:
@@ -26,6 +27,8 @@ dependencies:
   google_fonts: ^2.2.0
   intl: ^0.17.0
   top_snackbar_flutter: ^1.0.2
+  trips_repository:
+    path: packages/trips_repository
   utils:
     path: packages/utils
 

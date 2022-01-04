@@ -3,10 +3,12 @@ import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/app/routes/routes.dart';
 import 'package:corremundos/l10n/l10n.dart';
 import 'package:corremundos/theme.dart';
+import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:trips_repository/trips_repository.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -28,6 +30,11 @@ class App extends StatelessWidget {
               authRepository: _authRepository,
             ),
           ),
+          BlocProvider(
+            create: (_) =>
+                TripsCubit(FirebaseTripsRepository(), AuthRepository())
+                  ..loadMyTrips(),
+          ),
         ],
         child: const AppView(),
       ),
@@ -44,7 +51,7 @@ class AppView extends StatelessWidget {
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status == AppStatus.authenticated) {
-          //context.read<TripsCubit>().loadTrips();
+          context.read<TripsCubit>().loadMyTrips();
         }
       },
       child: MaterialApp(

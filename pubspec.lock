@@ -36,6 +36,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   bloc:
     dependency: "direct main"
     description:
@@ -112,21 +119,21 @@ packages:
       name: cloud_firestore
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.5"
+    version: "1.0.7"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
       name: cloud_firestore_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.10"
+    version: "4.0.3"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.5"
+    version: "1.0.7"
   collection:
     dependency: transitive
     description:
@@ -232,6 +239,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.3"
+  firebase_storage:
+    dependency: transitive
+    description:
+      name: firebase_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "10.2.4"
+  firebase_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_storage_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.11"
+  firebase_storage_web:
+    dependency: transitive
+    description:
+      name: firebase_storage_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.5"
   flow_builder:
     dependency: "direct main"
     description:
@@ -698,6 +726,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  trips_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/trips_repository"
+      relative: true
+    source: path
+    version: "1.0.0"
   typed_data:
     dependency: transitive
     description:
