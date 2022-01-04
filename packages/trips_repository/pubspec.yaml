@@ -1,0 +1,26 @@
+name: trips_repository
+description: Dart package which manages the trips.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.14.0 <3.0.0"
+
+dependencies:
+  # TODO: we have 3.x.x version, but we are still using 1.x.x, we should update it
+  cloud_firestore: ^1.0.5
+  equatable: ^2.0.3
+  firebase_core: ^1.10.6
+  firebase_storage: ^10.2.4
+  flutter:
+    sdk: flutter
+  meta: ^1.7.0
+  utils:
+    path: ../../packages/utils
+  uuid: ^3.0.5
+  very_good_analysis: ^2.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.2.0
