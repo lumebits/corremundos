@@ -33,6 +33,7 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (_) =>
                 TripsCubit(FirebaseTripsRepository(), AuthRepository())
+                  ..loadCurrentTrip()
                   ..loadMyTrips(),
           ),
         ],
@@ -51,6 +52,7 @@ class AppView extends StatelessWidget {
       listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status == AppStatus.authenticated) {
+          context.read<TripsCubit>().loadCurrentTrip();
           context.read<TripsCubit>().loadMyTrips();
         }
       },
