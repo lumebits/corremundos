@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
@@ -154,6 +156,7 @@ class SelectedDayTripData extends StatelessWidget {
                         ? Icons.hotel_rounded
                         : Icons.local_activity_rounded;
                 return _buildTimelineTile(
+                  context: context,
                   indicator: _IconIndicator(
                     iconData: icon,
                     size: 20,
@@ -161,6 +164,7 @@ class SelectedDayTripData extends StatelessWidget {
                   time: event.time,
                   location: event.location,
                   description: event.description,
+                  file: event.fileUrl,
                 );
               },
               separatorBuilder: (context, index) =>
@@ -171,10 +175,12 @@ class SelectedDayTripData extends StatelessWidget {
   }
 
   TimelineTile _buildTimelineTile({
+    required BuildContext context,
     required _IconIndicator indicator,
     required DateTime time,
     required String location,
     required String description,
+    String file = '',
     bool isLast = false,
   }) {
     return TimelineTile(
@@ -207,28 +213,75 @@ class SelectedDayTripData extends StatelessWidget {
       endChild: Padding(
         padding:
             const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              location,
-              style: TextStyle(
-                fontSize: 18,
-                color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.8),
-                fontWeight: FontWeight.bold,
+        child: SizedBox(
+          width: 150,
+          height: 110,
+          child: Card(
+            shadowColor: Colors.black54,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
+            clipBehavior: Clip.antiAlias,
+            elevation: 9,
+            child: Ink(
+              child: InkWell(
+                onTap: () => file != ''
+                    ? showDialog<void>(
+                        context: context,
+                        builder: (context) => ImageDialog(file: file),
+                      )
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 9,
+                            child: AutoSizeText(
+                              location,
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: const Color.fromRGBO(90, 23, 238, 1)
+                                    .withOpacity(0.8),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          if (file == '')
+                            const Center()
+                          else
+                            const Expanded(
+                              child: Icon(
+                                Icons.attach_file_rounded,
+                                color: Color.fromRGBO(90, 23, 238, 1),
+                                size: 14,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      AutoSizeText(
+                        description,
+                        maxLines: 3,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: const Color.fromRGBO(90, 23, 238, 1)
+                              .withOpacity(0.6),
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                    ],
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: 14,
-                color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.6),
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-            const SizedBox(height: 4),
-          ],
+          ),
         ),
       ),
     );
@@ -269,6 +322,29 @@ class _IconIndicator extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ImageDialog extends StatelessWidget {
+  const ImageDialog({
+    Key? key,
+    required this.file,
+  }) : super(key: key);
+
+  final String file;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: CachedNetworkImageProvider(file),
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
     );
   }
 }
