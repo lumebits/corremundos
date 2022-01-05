@@ -84,10 +84,9 @@ class CurrentTripForm extends BasePage {
                     scrollDirection: Axis.horizontal,
                     itemCount: state.tripDays,
                     itemBuilder: (context, index) {
-                      final day = index + 1;
                       final calendarDay =
                           state.currentTrip.initDate.add(Duration(days: index));
-                      final formattedDay =
+                      final day =
                           DateFormat('dd LLL').format(calendarDay);
                       return Padding(
                         padding: const EdgeInsets.all(6),
@@ -95,13 +94,12 @@ class CurrentTripForm extends BasePage {
                           onPressed: state.currentDayIndex == index
                               ? null
                               : () => {
-                                    print('going to day $day'),
                                     context
                                         .read<TripsCubit>()
                                         .refreshSelectedDay(index)
                                   },
                           child: Text(
-                              'Day ${state.currentTrip.initDate.day} - $formattedDay'),
+                              'Day ${state.currentTrip.initDate.day} - $day',),
                         ),
                       );
                     },
@@ -139,39 +137,42 @@ class SelectedDayTripData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: build timeline with activities
+    final events =
+        trip.eventMap.containsKey(index) ? trip.eventMap[index] : <dynamic>[];
+
     return Padding(
       padding: const EdgeInsets.only(top: 16),
-      child: ListView(
-        children: <Widget>[
-          _buildTimelineTile(
-            indicator: const _IconIndicator(
-              iconData: Icons.airplanemode_active_rounded,
-              size: 20,
-            ),
-            time: DateFormat('dd LLL hh:mm')
-                .format(trip.initDate.add(Duration(days: index))),
-            location: trip.transportations.first['location'] as String,
-            description: trip.transportations.first['notes'] as String,
-          ),
-          _buildTimelineTile(
-            indicator: const _IconIndicator(
-              iconData: Icons.hotel_rounded,
-              size: 20,
-            ),
-            time: DateFormat('dd LLL hh:mm')
-                .format(trip.initDate.add(Duration(days: index))),
-            location: trip.accommodations.first['location'] as String,
-            description: trip.accommodations.first['notes'] as String,
-          ),
-        ],
-      ),
+      child: events!.isNotEmpty
+          ? ListView.separated(
+              itemCount: events.length,
+              itemBuilder: (context, i) {
+                final event = events[i] as TripEvent;
+                final eventType = event.type;
+                final icon = eventType == EventType.transportation
+                    ? Icons.airplanemode_active_rounded
+                    : eventType == EventType.accommodation
+                        ? Icons.hotel_rounded
+                        : Icons.local_activity_rounded;
+                return _buildTimelineTile(
+                  indicator: _IconIndicator(
+                    iconData: icon,
+                    size: 20,
+                  ),
+                  time: event.time,
+                  location: event.location,
+                  description: event.description,
+                );
+              },
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: 16 / 2),
+            )
+          : const Text('No events today!'),
     );
   }
 
   TimelineTile _buildTimelineTile({
     required _IconIndicator indicator,
-    required String time,
+    required DateTime time,
     required String location,
     required String description,
     bool isLast = false,
@@ -180,7 +181,7 @@ class SelectedDayTripData extends StatelessWidget {
       alignment: TimelineAlign.manual,
       lineXY: 0.3,
       beforeLineStyle: LineStyle(
-          color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7)),
+          color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7),),
       indicatorStyle: IndicatorStyle(
         indicatorXY: 0.3,
         drawGap: true,
@@ -193,7 +194,7 @@ class SelectedDayTripData extends StatelessWidget {
         child: Container(
           alignment: const Alignment(0, -0.50),
           child: Text(
-            time,
+            DateFormat('dd LLL HH:mm').format(time.add(Duration(days: index))),
             style: const TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(90, 23, 238, 1),

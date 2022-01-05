@@ -1,14 +1,13 @@
 part of 'trips_cubit.dart';
 
 class TripsState extends Equatable {
-  // TODO: add list of "activities" with hour, file, location, notes and type (trans, accom, attrac) for selected current day index, order by hour asc
-  // this new field will be shown
   TripsState({
     List<Trip>? myTrips,
     List<Trip>? sharedWithMeTrips,
     Trip? currentTrip,
     int? currentDayIndex,
     int? tripDays,
+    Map<int, List<TripEvent>>? events,
     bool? isLoading,
     bool? error,
   })  : myTrips = myTrips ?? List.empty(),
@@ -16,6 +15,7 @@ class TripsState extends Equatable {
         currentTrip = currentTrip ?? Trip.empty,
         currentDayIndex = currentDayIndex ?? 0,
         tripDays = tripDays ?? 0,
+        events = events ?? {},
         isLoading = isLoading ?? true,
         error = error ?? false;
 
@@ -24,6 +24,7 @@ class TripsState extends Equatable {
   final Trip currentTrip;
   final int currentDayIndex;
   final int tripDays;
+  final Map<int, List<TripEvent>> events;
   final bool isLoading;
   final bool error;
 
@@ -33,6 +34,7 @@ class TripsState extends Equatable {
     Trip? currentTrip,
     int? currentDayIndex,
     int? tripDays,
+    Map<int, List<TripEvent>>? events,
     bool? isLoading,
     bool? error,
   }) {
@@ -42,6 +44,7 @@ class TripsState extends Equatable {
       currentTrip: currentTrip ?? this.currentTrip,
       currentDayIndex: currentDayIndex ?? this.currentDayIndex,
       tripDays: tripDays ?? this.tripDays,
+      events: events ?? this.events,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );
@@ -54,6 +57,7 @@ class TripsState extends Equatable {
         currentTrip,
         currentDayIndex,
         tripDays,
+        events,
         isLoading,
         error
       ];
@@ -62,5 +66,6 @@ class TripsState extends Equatable {
   String toString() => 'TripsState { myTrips: ${myTrips.length}, '
       'sharedWithMeTrips: ${sharedWithMeTrips.length}, '
       'currentTrip: $currentTrip, currentDayIndex: $currentDayIndex, '
-      'tripDays: $tripDays, isLoading: $isLoading, error: $error }';
+      'tripDays: $tripDays, events: ${events.length}, isLoading: $isLoading, '
+      'error: $error }';
 }

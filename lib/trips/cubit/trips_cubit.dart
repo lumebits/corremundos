@@ -58,12 +58,15 @@ class TripsCubit extends Cubit<TripsState> {
             currentTrip.endDate,
           ) +
           1;
-      emit(state.copyWith(
-        currentTrip: currentTrip,
-        currentDayIndex: selectedDay,
-        tripDays: tripDays,
-        isLoading: false,
-      ),);
+      emit(
+        state.copyWith(
+          currentTrip: currentTrip,
+          currentDayIndex: selectedDay,
+          tripDays: tripDays,
+          events: currentTrip.eventMap,
+          isLoading: false,
+        ),
+      );
     }).catchError((dynamic error) {
       emit(state.copyWith(error: true, isLoading: false));
     });
@@ -79,10 +82,5 @@ class TripsCubit extends Cubit<TripsState> {
                 .inHours /
             24)
         .round();
-  }
-
-  // TODO: fetch accomodation, transportation and activities for given day
-  Future<void> fetchSelectedDayData() async {
-
   }
 }
