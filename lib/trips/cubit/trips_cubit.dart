@@ -49,9 +49,40 @@ class TripsCubit extends Cubit<TripsState> {
     await tripsRepository
         .getCurrentTrip(authRepository.currentUser.id)
         .then((currentTrip) {
-      emit(state.copyWith(currentTrip: currentTrip, isLoading: false));
+      final selectedDay = currentTrip.endDate.day < DateTime.now().day ||
+              DateTime.now().day <= currentTrip.initDate.day
+          ? 0
+          : daysBetween(currentTrip.initDate, DateTime.now());
+      final tripDays = daysBetween(
+            currentTrip.initDate,
+            currentTrip.endDate,
+          ) +
+          1;
+      emit(state.copyWith(
+        currentTrip: currentTrip,
+        currentDayIndex: selectedDay,
+        tripDays: tripDays,
+        isLoading: false,
+      ),);
     }).catchError((dynamic error) {
       emit(state.copyWith(error: true, isLoading: false));
     });
+  }
+
+  Future<void> refreshSelectedDay(int index) async {
+    emit(state.copyWith(currentDayIndex: index, isLoading: false));
+  }
+
+  int daysBetween(DateTime from, DateTime to) {
+    return (DateTime(to.year, to.month, to.day)
+                .difference(DateTime(from.year, from.month, from.day))
+                .inHours /
+            24)
+        .round();
+  }
+
+  // TODO: fetch accomodation, transportation and activities for given day
+  Future<void> fetchSelectedDayData() async {
+
   }
 }
