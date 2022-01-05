@@ -86,8 +86,7 @@ class CurrentTripForm extends BasePage {
                     itemBuilder: (context, index) {
                       final calendarDay =
                           state.currentTrip.initDate.add(Duration(days: index));
-                      final day =
-                          DateFormat('dd LLL').format(calendarDay);
+                      final day = DateFormat('dd LLL').format(calendarDay);
                       return Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
@@ -99,7 +98,8 @@ class CurrentTripForm extends BasePage {
                                         .refreshSelectedDay(index)
                                   },
                           child: Text(
-                              'Day ${state.currentTrip.initDate.day} - $day',),
+                            'Day ${state.currentTrip.initDate.day} - $day',
+                          ),
                         ),
                       );
                     },
@@ -181,7 +181,8 @@ class SelectedDayTripData extends StatelessWidget {
       alignment: TimelineAlign.manual,
       lineXY: 0.3,
       beforeLineStyle: LineStyle(
-          color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7),),
+        color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7),
+      ),
       indicatorStyle: IndicatorStyle(
         indicatorXY: 0.3,
         drawGap: true,
