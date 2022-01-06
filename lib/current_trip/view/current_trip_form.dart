@@ -181,7 +181,7 @@ class SelectedDayTripData extends StatelessWidget {
                     SizedBox(height: 20),
                     Text(
                       'No events today!',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 24),
                     )
                   ],
                 ),
