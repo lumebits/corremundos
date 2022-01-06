@@ -4,6 +4,7 @@ class TripsState extends Equatable {
   TripsState({
     List<Trip>? myTrips,
     List<Trip>? sharedWithMeTrips,
+    Trip? newTrip,
     Trip? currentTrip,
     int? currentDayIndex,
     int? tripDays,
@@ -12,6 +13,7 @@ class TripsState extends Equatable {
     bool? error,
   })  : myTrips = myTrips ?? List.empty(),
         sharedWithMeTrips = sharedWithMeTrips ?? List.empty(),
+        newTrip = newTrip ?? Trip.empty,
         currentTrip = currentTrip ?? Trip.empty,
         currentDayIndex = currentDayIndex ?? 0,
         tripDays = tripDays ?? 0,
@@ -21,6 +23,7 @@ class TripsState extends Equatable {
 
   final List<Trip> myTrips;
   final List<Trip> sharedWithMeTrips;
+  final Trip newTrip;
   final Trip currentTrip;
   final int currentDayIndex;
   final int tripDays;
@@ -31,6 +34,7 @@ class TripsState extends Equatable {
   TripsState copyWith({
     List<Trip>? myTrips,
     List<Trip>? sharedWithMeTrips,
+    Trip? newTrip,
     Trip? currentTrip,
     int? currentDayIndex,
     int? tripDays,
@@ -41,6 +45,7 @@ class TripsState extends Equatable {
     return TripsState(
       myTrips: myTrips ?? this.myTrips,
       sharedWithMeTrips: sharedWithMeTrips ?? this.sharedWithMeTrips,
+      newTrip: newTrip ?? this.newTrip,
       currentTrip: currentTrip ?? this.currentTrip,
       currentDayIndex: currentDayIndex ?? this.currentDayIndex,
       tripDays: tripDays ?? this.tripDays,
@@ -54,6 +59,7 @@ class TripsState extends Equatable {
   List<Object> get props => [
         myTrips,
         sharedWithMeTrips,
+        newTrip,
         currentTrip,
         currentDayIndex,
         tripDays,
@@ -64,7 +70,7 @@ class TripsState extends Equatable {
 
   @override
   String toString() => 'TripsState { myTrips: ${myTrips.length}, '
-      'sharedWithMeTrips: ${sharedWithMeTrips.length}, '
+      'sharedWithMeTrips: ${sharedWithMeTrips.length}, newTrip: $newTrip, '
       'currentTrip: $currentTrip, currentDayIndex: $currentDayIndex, '
       'tripDays: $tripDays, events: ${events.length}, isLoading: $isLoading, '
       'error: $error }';

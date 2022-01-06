@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
+import 'package:corremundos/create_trip/view/create_trip_page.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,10 +49,9 @@ class CurrentTripForm extends BasePage {
   Widget? floatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        /*Navigator.of(context).push(MaterialPageRoute<void>(
-          builder: (context) => const AddTripPage(),
-        ),);*/
-        log('add new trip');
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (context) => const CreateTripPage(),
+        ),);
       },
       elevation: 2,
       child: const Icon(Icons.add_rounded),

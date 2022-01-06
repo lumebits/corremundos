@@ -1,5 +1,6 @@
 import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
+import 'package:corremundos/create_trip/create_trip.dart';
 import 'package:corremundos/current_trip/view/current_trip_page.dart';
 import 'package:corremundos/login/login.dart';
 import 'package:corremundos/trips/view/trips_page.dart';
@@ -18,9 +19,8 @@ List<Page> onGenerateAppViewPages(AppState state, List<Page<dynamic>> pages) {
         case AppTab.settings:
         //return [Settings.page()];
         case AppTab.addTrip:
-        //return [AddTrip.page()];
+        return [CreateTripPage.page()];
       }
-      return [TripsPage.page()];
     case AppStatus.unauthenticated:
       return [LoginPage.page()];
   }
