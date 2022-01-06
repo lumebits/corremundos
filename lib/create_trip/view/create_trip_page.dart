@@ -1,5 +1,9 @@
+import 'package:auth_repository/auth_repository.dart';
+import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
 import 'package:corremundos/create_trip/view/create_trip_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trips_repository/trips_repository.dart';
 
 class CreateTripPage extends StatelessWidget {
   const CreateTripPage({Key? key}) : super(key: key);
@@ -8,6 +12,10 @@ class CreateTripPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CreateTripForm();
+    return BlocProvider(
+      create: (context) =>
+          CreateTripCubit(FirebaseTripsRepository(), AuthRepository()),
+      child: const CreateTripForm(),
+    );
   }
 }

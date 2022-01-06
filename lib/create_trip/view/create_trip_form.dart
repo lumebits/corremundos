@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -31,11 +29,11 @@ class CreateTripForm extends BasePage {
               const CustomSnackBar.success(
                 message: 'Trip created',
                 icon: Icon(null),
-                backgroundColor: Color.fromRGBO(255, 88, 101, 1),
+                backgroundColor: Color.fromRGBO(90, 23, 238, 1),
               ),
             );
+            Navigator.of(context).pop(true);
           });
-          Navigator.of(context).pop();
         },
       )
     ];
@@ -46,9 +44,6 @@ class CreateTripForm extends BasePage {
   Widget widget(BuildContext context) {
     return BlocBuilder<CreateTripCubit, CreateTripState>(
       builder: (context, state) {
-        final imageUrl = state.imageUrl.isEmpty
-            ? 'https://firebasestorage.googleapis.com/v0/b/corremundos-9203a.appspot.com/o/trip_placeholder.jpg?alt=media&token=17259183-edb0-4323-8f12-07ad1fecfdcf'
-            : state.imageUrl;
         return Padding(
           padding: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -71,14 +66,14 @@ class CreateTripForm extends BasePage {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _GetTripImageButton(imageUrl),
+                  const _GetTripImageButton(),
                   const SizedBox(height: 24),
                   _TripNameInput(),
                   const SizedBox(height: 8),
                   _TripInitDatePicker(),
                   const SizedBox(height: 8),
                   _TripEndDatePicker(),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 24),
                   _SaveTrip(),
                 ],
               ),
@@ -91,9 +86,8 @@ class CreateTripForm extends BasePage {
 }
 
 class _GetTripImageButton extends StatelessWidget {
-  const _GetTripImageButton(this.image, {Key? key}) : super(key: key);
+  const _GetTripImageButton({Key? key}) : super(key: key);
 
-  final String image;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -107,18 +101,18 @@ class _GetTripImageButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         elevation: 9,
         child: Ink(
-          decoration: _cardDecoration(image),
+          decoration: _cardDecoration(),
         ),
       ),
     );
   }
 }
 
-Decoration _cardDecoration(String imageUrl) {
-  return BoxDecoration(
+Decoration _cardDecoration() {
+  return const BoxDecoration(
     image: DecorationImage(
       fit: BoxFit.fitWidth,
-      image: CachedNetworkImageProvider(imageUrl),
+      image: AssetImage('assets/trip_placeholder.jpg'),
     ),
   );
 }
@@ -173,6 +167,17 @@ class _TripInitDatePicker extends StatelessWidget {
               DateFormat('dd/MM/yyyy').format(state.initDate!);
         }
         return TextField(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            DatePicker.showDatePicker(
+              context,
+              onConfirm: (date) {
+                context.read<CreateTripCubit>().initDateChanged(date);
+              },
+              currentTime: DateTime.now(),
+            );
+            FocusScope.of(context).unfocus();
+          },
           readOnly: true,
           controller: _textController,
           style: const TextStyle(
@@ -226,6 +231,17 @@ class _TripEndDatePicker extends StatelessWidget {
               DateFormat('dd/MM/yyyy').format(state.endDate!);
         }
         return TextField(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            DatePicker.showDatePicker(
+              context,
+              onConfirm: (date) {
+                context.read<CreateTripCubit>().endDateChanged(date);
+              },
+              currentTime: DateTime.now(),
+            );
+            FocusScope.of(context).unfocus();
+          },
           readOnly: true,
           controller: _textController,
           style: const TextStyle(
@@ -276,8 +292,17 @@ class _SaveTrip extends StatelessWidget {
       child: ElevatedButton(
         key: const Key('newTripForm_save_button'),
         onPressed: () {
-          context.read<CreateTripCubit>().saveTrip();
-          Navigator.of(context).pop();
+          context.read<CreateTripCubit>().saveTrip().then((value) {
+            showTopSnackBar(
+              context,
+              const CustomSnackBar.success(
+                message: 'Trip created',
+                icon: Icon(null),
+                backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+              ),
+            );
+            Navigator.of(context).pop(true);
+          });
         },
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),

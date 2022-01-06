@@ -64,12 +64,12 @@ class CreateTripCubit extends Cubit<CreateTripState> {
   }
 
   Future<void> saveTrip() async {
-    await loadAppCredentialsFromFile().then((appCredentials) {
+    await loadAppCredentialsFromFile().then((appCredentials) async {
       final client = UnsplashClient(
         settings: ClientSettings(credentials: appCredentials),
       );
 
-      client.search.photos(state.name).goAndGet().then((photo) {
+      await client.search.photos(state.name).goAndGet().then((photo) async {
         final imageUrl = photo.results.first.urls.regular.toString();
         final trip = Trip(
           uid: authRepository.currentUser.id,
@@ -78,18 +78,9 @@ class CreateTripCubit extends Cubit<CreateTripState> {
           endDate: state.endDate,
           imageUrl: imageUrl,
         );
-        tripsRepository.updateOrCreateTrip(
+        await tripsRepository.updateOrCreateTrip(
           trip,
           authRepository.currentUser.id,
-        );
-        emit(
-          state.copyWith(
-            name: '',
-            initDate: DateTime.now(),
-            endDate: DateTime.now(),
-            imageUrl: '',
-            status: FormzStatus.valid,
-          ),
         );
       });
       client.close();

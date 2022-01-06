@@ -1,5 +1,6 @@
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/create_trip/view/create_trip_page.dart';
+import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,11 +19,17 @@ abstract class BasePage extends StatelessWidget {
   Widget? floatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.of(context).push<Route>(
+        Navigator.of(context)
+            .push<bool>(
           MaterialPageRoute(
             builder: (context) => const CreateTripPage(),
           ),
-        );
+        )
+            .then((value) {
+          if (value == true) {
+            context.read<TripsCubit>().loadMyTrips();
+          }
+        });
       },
       elevation: 2,
       child: const Icon(Icons.add_rounded),
@@ -39,6 +46,7 @@ abstract class BasePage extends StatelessWidget {
         title(context),
         style: const TextStyle(
           color: Colors.black54,
+          fontSize: 24,
         ),
       ),
       centerTitle: true,
