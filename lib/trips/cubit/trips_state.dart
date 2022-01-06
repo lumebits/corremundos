@@ -5,17 +5,26 @@ class TripsState extends Equatable {
     List<Trip>? myTrips,
     List<Trip>? sharedWithMeTrips,
     Trip? currentTrip,
+    int? currentDayIndex,
+    int? tripDays,
+    Map<int, List<TripEvent>>? events,
     bool? isLoading,
     bool? error,
   })  : myTrips = myTrips ?? List.empty(),
         sharedWithMeTrips = sharedWithMeTrips ?? List.empty(),
         currentTrip = currentTrip ?? Trip.empty,
+        currentDayIndex = currentDayIndex ?? 0,
+        tripDays = tripDays ?? 0,
+        events = events ?? {},
         isLoading = isLoading ?? true,
         error = error ?? false;
 
   final List<Trip> myTrips;
   final List<Trip> sharedWithMeTrips;
   final Trip currentTrip;
+  final int currentDayIndex;
+  final int tripDays;
+  final Map<int, List<TripEvent>> events;
   final bool isLoading;
   final bool error;
 
@@ -23,6 +32,9 @@ class TripsState extends Equatable {
     List<Trip>? myTrips,
     List<Trip>? sharedWithMeTrips,
     Trip? currentTrip,
+    int? currentDayIndex,
+    int? tripDays,
+    Map<int, List<TripEvent>>? events,
     bool? isLoading,
     bool? error,
   }) {
@@ -30,18 +42,30 @@ class TripsState extends Equatable {
       myTrips: myTrips ?? this.myTrips,
       sharedWithMeTrips: sharedWithMeTrips ?? this.sharedWithMeTrips,
       currentTrip: currentTrip ?? this.currentTrip,
+      currentDayIndex: currentDayIndex ?? this.currentDayIndex,
+      tripDays: tripDays ?? this.tripDays,
+      events: events ?? this.events,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );
   }
 
   @override
-  List<Object> get props =>
-      [myTrips, sharedWithMeTrips, currentTrip, isLoading, error];
+  List<Object> get props => [
+        myTrips,
+        sharedWithMeTrips,
+        currentTrip,
+        currentDayIndex,
+        tripDays,
+        events,
+        isLoading,
+        error
+      ];
 
   @override
   String toString() => 'TripsState { myTrips: ${myTrips.length}, '
       'sharedWithMeTrips: ${sharedWithMeTrips.length}, '
-      'currentTrip: $currentTrip, isLoading: $isLoading, '
+      'currentTrip: $currentTrip, currentDayIndex: $currentDayIndex, '
+      'tripDays: $tripDays, events: ${events.length}, isLoading: $isLoading, '
       'error: $error }';
 }

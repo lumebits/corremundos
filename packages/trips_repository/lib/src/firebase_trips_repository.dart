@@ -16,7 +16,8 @@ class FirebaseTripsRepository implements TripsRepository {
   Future<Trip> getCurrentTrip(String uid) {
     return collection
         .where('uid', isEqualTo: uid)
-        .orderBy('initDate', descending: true)
+        .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
+        .orderBy('endDate')
         .limit(1)
         .snapshots()
         .first
