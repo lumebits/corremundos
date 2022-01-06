@@ -170,7 +170,23 @@ class SelectedDayTripData extends StatelessWidget {
               separatorBuilder: (context, index) =>
                   const SizedBox(height: 16 / 2),
             )
-          : const Text('No events today!'),
+          : Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Image(
+                      image: AssetImage('assets/noevents.png'),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'No events today!',
+                      style: TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -337,11 +353,14 @@ class ImageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: CachedNetworkImageProvider(file),
-            fit: BoxFit.contain,
+      child: InteractiveViewer(
+        panEnabled: false,
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: CachedNetworkImageProvider(file),
+              fit: BoxFit.contain,
+            ),
           ),
         ),
       ),
