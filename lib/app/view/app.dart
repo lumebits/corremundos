@@ -39,7 +39,7 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (_) =>
-            CreateTripCubit(FirebaseTripsRepository(), AuthRepository()),
+                CreateTripCubit(FirebaseTripsRepository(), AuthRepository()),
           ),
         ],
         child: const AppView(),

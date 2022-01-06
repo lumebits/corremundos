@@ -13,12 +13,12 @@ dependencies:
   bloc: ^8.0.1
   cached_network_image: ^3.2.0
   cloud_firestore: ^1.0.5 # TODO: there is a 3.x.x version
-  flutter_datetime_picker: ^1.5.1
   equatable: ^2.0.3
   flow_builder: ^0.0.6
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.0
+  flutter_datetime_picker: ^1.5.1
   flutter_localizations:
     sdk: flutter
   font_awesome_flutter: ^9.2.0
@@ -32,6 +32,7 @@ dependencies:
   transparent_image: ^2.0.0
   trips_repository:
     path: packages/trips_repository
+  unsplash_client: ^2.1.0+1
   utils:
     path: packages/utils
 

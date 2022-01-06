@@ -125,3 +125,6 @@ app.*.map.json
 !.idea/codeStyles/
 !.idea/dictionaries/
 !.idea/runConfigurations/
+
+# Unsplash credential
+assets/unsplash_credentials.json

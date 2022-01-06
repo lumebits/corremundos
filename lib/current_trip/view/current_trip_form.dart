@@ -49,9 +49,11 @@ class CurrentTripForm extends BasePage {
   Widget? floatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute<void>(
-          builder: (context) => const CreateTripPage(),
-        ),);
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) => const CreateTripPage(),
+          ),
+        );
       },
       elevation: 2,
       child: const Icon(Icons.add_rounded),

@@ -9,7 +9,9 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Future<void> updateOrCreateTrip(Trip trip, String uid) {
-    throw UnimplementedError();
+    return collection
+        .doc(trip.id)
+        .set((trip.copyWith(uid: uid).toEntity().toDocument()));
   }
 
   @override

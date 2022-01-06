@@ -1,12 +1,13 @@
-import 'dart:developer';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class CreateTripForm extends BasePage {
   const CreateTripForm({Key? key}) : super(key);
@@ -18,9 +19,36 @@ class CreateTripForm extends BasePage {
   Widget? floatingActionButton(BuildContext context) => null;
 
   @override
+  List<Widget>? actions(BuildContext context) {
+    final items = <Widget>[
+      IconButton(
+        key: const Key('editTrip_save_iconButton'),
+        icon: const Icon(Icons.check),
+        onPressed: () async {
+          await context.read<CreateTripCubit>().saveTrip().then((value) {
+            showTopSnackBar(
+              context,
+              const CustomSnackBar.success(
+                message: 'Trip created',
+                icon: Icon(null),
+                backgroundColor: Color.fromRGBO(255, 88, 101, 1),
+              ),
+            );
+          });
+          Navigator.of(context).pop();
+        },
+      )
+    ];
+    return items;
+  }
+
+  @override
   Widget widget(BuildContext context) {
     return BlocBuilder<CreateTripCubit, CreateTripState>(
       builder: (context, state) {
+        final imageUrl = state.imageUrl.isEmpty
+            ? 'https://firebasestorage.googleapis.com/v0/b/corremundos-9203a.appspot.com/o/trip_placeholder.jpg?alt=media&token=17259183-edb0-4323-8f12-07ad1fecfdcf'
+            : state.imageUrl;
         return Padding(
           padding: const EdgeInsets.all(16),
           child: SingleChildScrollView(
@@ -34,7 +62,7 @@ class CreateTripForm extends BasePage {
                     child: Padding(
                       padding: EdgeInsets.only(left: 12),
                       child: Text(
-                        'New Trip',
+                        'Your new trip',
                         style: TextStyle(
                           fontSize: 24,
                           color: Colors.black87,
@@ -43,10 +71,15 @@ class CreateTripForm extends BasePage {
                     ),
                   ),
                   const SizedBox(height: 24),
+                  _GetTripImageButton(imageUrl),
+                  const SizedBox(height: 24),
                   _TripNameInput(),
                   const SizedBox(height: 8),
                   _TripInitDatePicker(),
                   const SizedBox(height: 8),
+                  _TripEndDatePicker(),
+                  const SizedBox(height: 8),
+                  _SaveTrip(),
                 ],
               ),
             ),
@@ -55,6 +88,39 @@ class CreateTripForm extends BasePage {
       },
     );
   }
+}
+
+class _GetTripImageButton extends StatelessWidget {
+  const _GetTripImageButton(this.image, {Key? key}) : super(key: key);
+
+  final String image;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200 * 1.85,
+      height: 200,
+      child: Card(
+        shadowColor: Colors.black54,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        clipBehavior: Clip.antiAlias,
+        elevation: 9,
+        child: Ink(
+          decoration: _cardDecoration(image),
+        ),
+      ),
+    );
+  }
+}
+
+Decoration _cardDecoration(String imageUrl) {
+  return BoxDecoration(
+    image: DecorationImage(
+      fit: BoxFit.fitWidth,
+      image: CachedNetworkImageProvider(imageUrl),
+    ),
+  );
 }
 
 class _TripNameInput extends StatelessWidget {
@@ -99,41 +165,48 @@ class _TripInitDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateTripCubit, CreateTripState>(
-      buildWhen: (previous, current) => previous.name != current.name,
+      buildWhen: (previous, current) => previous.initDate != current.initDate,
       builder: (context, state) {
-        return TextButton(
-          onPressed: () {
-            DatePicker.showDatePicker(
-              context,
-              onChanged: (date) {
-                log('change $date');
-              },
-              onConfirm: (date) {
-                context.read<CreateTripCubit>().initDateChanged(date);
-              },
-              currentTime: DateTime.now(),
-            );
-          },
-          // TODO: add init date format like input text
-          // TODO: add end date
-          child: RichText(
-            text: const TextSpan(
-              children: [
-                WidgetSpan(
-                  child: Icon(
-                    Icons.date_range_rounded,
-                    color: Color.fromRGBO(90, 23, 238, 1),
-                  ),
-                ),
-                TextSpan(
-                  text: 'Init date',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Color.fromRGBO(90, 23, 238, 1),
-                  ),
-                ),
-              ],
+        final _textController = TextEditingController();
+        if (state.initDate != null) {
+          _textController.text =
+              DateFormat('dd/MM/yyyy').format(state.initDate!);
+        }
+        return TextField(
+          readOnly: true,
+          controller: _textController,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Color.fromRGBO(90, 23, 238, 1),
+          ),
+          onSubmitted: (date) => context
+              .read<CreateTripCubit>()
+              .initDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
+          keyboardType: TextInputType.datetime,
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(
+              color: Colors.grey,
             ),
+            labelText: 'Init date',
+            prefix: const Padding(
+              padding: EdgeInsets.only(top: 2.5, right: 2.5),
+            ),
+            prefixIcon: IconButton(
+              icon: const Icon(Icons.calendar_today_rounded),
+              color: const Color.fromRGBO(90, 23, 238, 1),
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                DatePicker.showDatePicker(
+                  context,
+                  onConfirm: (date) {
+                    context.read<CreateTripCubit>().initDateChanged(date);
+                  },
+                  currentTime: DateTime.now(),
+                );
+                FocusScope.of(context).unfocus();
+              },
+            ),
+            hintText: 'dd/MM/yyyy',
           ),
         );
       },
@@ -141,42 +214,83 @@ class _TripInitDatePicker extends StatelessWidget {
   }
 }
 
-// TODO: load unsplash image, update it to firebase
-// TODO: set field as text + button inline
-class _ImageUrlInput extends StatelessWidget {
+class _TripEndDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final focusNode = FocusNode();
     return BlocBuilder<CreateTripCubit, CreateTripState>(
-      buildWhen: (previous, current) => previous.imageUrl != current.imageUrl,
+      buildWhen: (previous, current) => previous.endDate != current.endDate,
       builder: (context, state) {
+        final _textController = TextEditingController();
+        if (state.endDate != null) {
+          _textController.text =
+              DateFormat('dd/MM/yyyy').format(state.endDate!);
+        }
         return TextField(
-          focusNode: focusNode,
-          key: const Key('newTripForm_imageUrlInput_textField'),
+          readOnly: true,
+          controller: _textController,
           style: const TextStyle(
             fontSize: 20,
             color: Color.fromRGBO(90, 23, 238, 1),
           ),
-          onChanged: (name) =>
-              context.read<CreateTripCubit>().nameChanged(name),
-          keyboardType: TextInputType.url,
+          onSubmitted: (date) => context
+              .read<CreateTripCubit>()
+              .endDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
+          keyboardType: TextInputType.datetime,
           decoration: InputDecoration(
-            labelStyle: TextStyle(
-              color: focusNode.hasFocus
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
+            labelStyle: const TextStyle(
+              color: Colors.grey,
             ),
-            labelText: 'Trip image',
+            labelText: 'End date',
             prefix: const Padding(
               padding: EdgeInsets.only(top: 2.5, right: 2.5),
             ),
-            prefixIcon: const Icon(
-              Icons.image_rounded,
-              color: Color.fromRGBO(90, 23, 238, 1),
+            prefixIcon: IconButton(
+              icon: const Icon(Icons.calendar_today_rounded),
+              color: const Color.fromRGBO(90, 23, 238, 1),
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                DatePicker.showDatePicker(
+                  context,
+                  onConfirm: (date) {
+                    context.read<CreateTripCubit>().endDateChanged(date);
+                  },
+                  currentTime: DateTime.now(),
+                );
+                FocusScope.of(context).unfocus();
+              },
             ),
+            hintText: 'dd/MM/yyyy',
           ),
         );
       },
+    );
+  }
+}
+
+class _SaveTrip extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 210,
+      height: 50,
+      child: ElevatedButton(
+        key: const Key('newTripForm_save_button'),
+        onPressed: () {
+          context.read<CreateTripCubit>().saveTrip();
+          Navigator.of(context).pop();
+        },
+        style: ElevatedButton.styleFrom(
+          shape: const StadiumBorder(),
+          primary: const Color.fromRGBO(90, 23, 238, 1),
+        ),
+        child: const Text(
+          'Save',
+          style: TextStyle(
+            fontSize: 17,
+            color: Colors.white,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -19,7 +19,7 @@ List<Page> onGenerateAppViewPages(AppState state, List<Page<dynamic>> pages) {
         case AppTab.settings:
         //return [Settings.page()];
         case AppTab.addTrip:
-        return [CreateTripPage.page()];
+          return [CreateTripPage.page()];
       }
     case AppStatus.unauthenticated:
       return [LoginPage.page()];
