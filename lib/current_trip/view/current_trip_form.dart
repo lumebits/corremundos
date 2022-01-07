@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
@@ -47,20 +45,6 @@ class CurrentTripForm extends BasePage {
   bool avoidBottomInset() => true;
 
   @override
-  Widget? floatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        /*Navigator.of(context).push(MaterialPageRoute<void>(
-          builder: (context) => const AddTripPage(),
-        ),);*/
-        log('add new trip');
-      },
-      elevation: 2,
-      child: const Icon(Icons.add_rounded),
-    );
-  }
-
-  @override
   Widget widget(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -73,7 +57,7 @@ class CurrentTripForm extends BasePage {
             Center(
               child: Text(
                 'Current Trip',
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headline5,
               ),
             ),
             const SizedBox(

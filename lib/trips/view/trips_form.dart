@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/common/widgets/skeleton.dart';
@@ -44,20 +42,6 @@ class TripsForm extends BasePage {
   bool avoidBottomInset() => false;
 
   @override
-  Widget? floatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        /*Navigator.of(context).push(MaterialPageRoute<void>(
-          builder: (context) => const AddTripPage(),
-        ),);*/
-        log('add new trip');
-      },
-      elevation: 2,
-      child: const Icon(Icons.add_rounded),
-    );
-  }
-
-  @override
   Widget widget(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -70,7 +54,7 @@ class TripsForm extends BasePage {
             Center(
               child: Text(
                 'My Trips',
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headline5,
               ),
             ),
             const SizedBox(

@@ -13,11 +13,11 @@ class Navigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
-      notchMargin: 7,
+      notchMargin: 6,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+        padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Column(
               mainAxisSize: MainAxisSize.min,
