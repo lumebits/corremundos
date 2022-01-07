@@ -72,7 +72,7 @@ class CreateTripCubit extends Cubit<CreateTripState> {
       await client.search.photos(state.name).goAndGet().then((photo) async {
         final imageUrl = photo.results.first.urls.regular.toString();
         final trip = Trip(
-          uid: authRepository.currentUser.id,
+          uid: '',
           name: state.name,
           initDate: state.initDate,
           endDate: state.endDate,
