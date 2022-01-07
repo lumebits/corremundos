@@ -22,7 +22,7 @@ class CreateEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CreateEventCubit(FirebaseTripsRepository(), AuthRepository()),
+          CreateEventCubit(FirebaseTripsRepository(), AuthRepository(), trip),
       child: CreateEventForm(trip, day, eventType),
     );
   }

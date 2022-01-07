@@ -49,37 +49,32 @@ class CreateEventForm extends BasePage {
 
   @override
   Widget widget(BuildContext context) {
-    return BlocBuilder<CreateEventCubit, CreateEventState>(
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (eventType == EventType.transportation)
-                    _TransportationForm(trip, state.tripEvent, day)
-                  else
-                    eventType == EventType.accommodation
-                        ? Text('accommodation')
-                        : Text('activity'),
-                ],
-              ),
-            ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (eventType == EventType.transportation)
+                _TransportationForm(trip, day)
+              else
+                eventType == EventType.accommodation
+                    ? Text('accommodation')
+                    : Text('activity'),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
 
 class _TransportationForm extends StatelessWidget {
-  const _TransportationForm(this.trip, this.tripEvent, this.day);
+  const _TransportationForm(this.trip, this.day);
 
   final Trip trip;
-  final TripEvent tripEvent;
   final DateTime day;
 
   @override
@@ -109,9 +104,9 @@ class _TransportationForm extends StatelessWidget {
         const SizedBox(height: 8),
         _TripEventTimePicker(day),
         const SizedBox(height: 8),
-        _PickAndUploadFile(tripEvent),
+        _PickAndUploadFile(),
         const SizedBox(height: 24),
-        _SaveTrip(trip),
+        _SaveTrip(),
       ],
     );
   }
@@ -310,66 +305,59 @@ class _TripEventTimePicker extends StatelessWidget {
 }
 
 class _PickAndUploadFile extends StatelessWidget {
-  const _PickAndUploadFile(this.tripEvent);
-
-  final TripEvent tripEvent;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          tripEvent.fileUrl,
-          style: const TextStyle(
-            fontSize: 8,
-            color: Colors.grey,
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
         SizedBox(
-          width: 210,
+          width: double.infinity,
           height: 50,
-          child: ElevatedButton(
+          child: ElevatedButton.icon(
             key: const Key('newEventForm_save_button'),
+            icon: const Icon(
+              Icons.cloud_upload_rounded,
+              color: Color.fromRGBO(90, 23, 238, 1),
+              size: 22,
+            ),
             onPressed: () async {
               final result = await FilePicker.platform.pickFiles(
                 type: FileType.custom,
                 allowedExtensions: ['jpg', 'pdf', 'png', 'jpeg'],
                 withData: true,
               );
-              if (result != null) {
-                final fileBytes = result.files.first.bytes;
-                final fileName = result.files.first.name;
-                if (fileBytes != null) {
-                  context
-                      .read<CreateEventCubit>()
-                      .fileChanged('Uploading file...');
-                  await context
-                      .read<CreateEventCubit>()
-                      .uploadFile(fileBytes, fileName)
-                      .then((value) {
-                    if (value != null) {
-                      context.read<CreateEventCubit>().fileChanged(value);
-                    } else {
-                      context.read<CreateEventCubit>().fileChanged('Error!');
-                    }
-                  });
-                }
-              }
+              context.read<CreateEventCubit>().fileChanged(result);
             },
             style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              primary: const Color.fromRGBO(90, 23, 238, 1),
+              primary: Colors.white,
             ),
-            child: const Text(
-              'Upload file',
+            label: const Text(
+              'Attach file',
               style: TextStyle(
                 fontSize: 17,
-                color: Colors.white,
+                color: Color.fromRGBO(90, 23, 238, 1),
               ),
             ),
           ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        BlocBuilder<CreateEventCubit, CreateEventState>(
+          buildWhen: (previous, current) =>
+              previous.pickedFile != current.pickedFile,
+          builder: (context, state) {
+            if (state.pickedFile != null) {
+              return Text(
+                state.pickedFile!.files.first.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey,
+                ),
+              );
+            } else {
+              return const Center();
+            }
+          },
         ),
       ],
     );
@@ -377,44 +365,48 @@ class _PickAndUploadFile extends StatelessWidget {
 }
 
 class _SaveTrip extends StatelessWidget {
-  const _SaveTrip(this.trip);
-
-  final Trip trip;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 210,
       height: 50,
-      child: ElevatedButton(
-        key: const Key('newEventForm_save_button'),
-        onPressed: () {
-          context
-              .read<CreateEventCubit>()
-              .saveEvent(trip, EventType.transportation)
-              .then((value) {
-            showTopSnackBar(
-              context,
-              const CustomSnackBar.success(
-                message: 'Event created',
-                icon: Icon(null),
-                backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+      child: BlocBuilder<CreateEventCubit, CreateEventState>(
+          buildWhen: (previous, current) =>
+              previous.isLoading != current.isLoading,
+          builder: (context, state) {
+            return ElevatedButton(
+              key: const Key('newEventForm_save_button'),
+              onPressed: () => !state.isLoading
+                  ? context
+                      .read<CreateEventCubit>()
+                      .saveEvent(EventType.transportation)
+                      .then((value) {
+                      showTopSnackBar(
+                        context,
+                        const CustomSnackBar.success(
+                          message: 'Event created',
+                          icon: Icon(null),
+                          backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                        ),
+                      );
+                      Navigator.of(context).pop(true);
+                    })
+                  : null,
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                primary: !state.isLoading
+                    ? const Color.fromRGBO(90, 23, 238, 1)
+                    : Colors.grey,
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Colors.white,
+                ),
               ),
             );
-            Navigator.of(context).pop(true);
-          });
-        },
-        style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-          primary: const Color.fromRGBO(90, 23, 238, 1),
-        ),
-        child: const Text(
-          'Save',
-          style: TextStyle(
-            fontSize: 17,
-            color: Colors.white,
-          ),
-        ),
-      ),
+          }),
     );
   }
 }
