@@ -1,5 +1,6 @@
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/create_event/cubit/create_event_cubit.dart';
+import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,30 +23,6 @@ class CreateEventForm extends BasePage {
 
   @override
   Widget? floatingActionButton(BuildContext context) => null;
-
-  @override
-  List<Widget>? actions(BuildContext context) {
-    final items = <Widget>[
-      IconButton(
-        key: const Key('editEvent_save_iconButton'),
-        icon: const Icon(Icons.check),
-        onPressed: () async {
-          /*await context.read<CreateTripCubit>().saveTrip().then((value) {
-            showTopSnackBar(
-              context,
-              const CustomSnackBar.success(
-                message: 'Trip event created',
-                icon: Icon(null),
-                backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-              ),
-            );
-            Navigator.of(context).pop(true);
-          });*/
-        },
-      )
-    ];
-    return items;
-  }
 
   @override
   Widget widget(BuildContext context) {
@@ -233,8 +210,9 @@ class _TripEventTimePicker extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.tripEvent.time != current.tripEvent.time,
       builder: (context, state) {
-        final _textController = TextEditingController();
-        _textController.text = DateFormat('HH:mm').format(state.tripEvent.time);
+        final _textController = TextEditingController(
+          text: DateFormat('HH:mm').format(state.tripEvent.time),
+        );
         return TextField(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -328,13 +306,14 @@ class _PickAndUploadFile extends StatelessWidget {
               context.read<CreateEventCubit>().fileChanged(result);
             },
             style: ElevatedButton.styleFrom(
-                primary: const Color.fromRGBO(242, 238, 255, 1),
-                shadowColor: Colors.white10,
-                elevation: 1,
-                side: const BorderSide(
-                  width: 0.8,
-                  color: Color.fromRGBO(225, 220, 251, 1),
-                ),),
+              primary: const Color.fromRGBO(242, 238, 255, 1),
+              shadowColor: Colors.white10,
+              elevation: 1,
+              side: const BorderSide(
+                width: 0.8,
+                color: Color.fromRGBO(225, 220, 251, 1),
+              ),
+            ),
             label: const Text(
               'Attach file',
               style: TextStyle(
@@ -374,42 +353,45 @@ class _SaveTrip extends StatelessWidget {
       width: 210,
       height: 50,
       child: BlocBuilder<CreateEventCubit, CreateEventState>(
-          buildWhen: (previous, current) =>
-              previous.isLoading != current.isLoading,
-          builder: (context, state) {
-            return ElevatedButton(
-              key: const Key('newEventForm_save_button'),
-              onPressed: () => !state.isLoading
-                  ? context
-                      .read<CreateEventCubit>()
-                      .saveEvent(EventType.transportation)
-                      .then((value) {
-                      showTopSnackBar(
-                        context,
-                        const CustomSnackBar.success(
-                          message: 'Event created',
-                          icon: Icon(null),
-                          backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-                        ),
-                      );
-                      Navigator.of(context).pop(true);
-                    })
-                  : null,
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-                primary: !state.isLoading
-                    ? const Color.fromRGBO(90, 23, 238, 1)
-                    : Colors.grey,
+        buildWhen: (previous, current) =>
+            previous.isLoading != current.isLoading,
+        builder: (context, state) {
+          return ElevatedButton(
+            key: const Key('newEventForm_save_button'),
+            onPressed: () => !state.isLoading
+                ? context
+                    .read<CreateEventCubit>()
+                    .saveEvent(EventType.transportation)
+                    .then((value) {
+                    showTopSnackBar(
+                      context,
+                      const CustomSnackBar.success(
+                        message: 'Event created',
+                        icon: Icon(null),
+                        backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                      ),
+                    );
+                    context.read<TripsCubit>().loadMyTrips();
+                    context.read<TripsCubit>().loadCurrentTrip();
+                    Navigator.of(context).pop(true);
+                  })
+                : null,
+            style: ElevatedButton.styleFrom(
+              shape: const StadiumBorder(),
+              primary: !state.isLoading
+                  ? const Color.fromRGBO(90, 23, 238, 1)
+                  : Colors.grey,
+            ),
+            child: const Text(
+              'Save',
+              style: TextStyle(
+                fontSize: 17,
+                color: Colors.white,
               ),
-              child: const Text(
-                'Save',
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.white,
-                ),
-              ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
   }
 }

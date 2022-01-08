@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:auth_repository/auth_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -20,7 +18,10 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     final tripEvent = state.tripEvent.copyWith(location: value);
     emit(
       state.copyWith(
-          tripEvent: tripEvent, day: state.day, pickedFile: state.pickedFile),
+        tripEvent: tripEvent,
+        day: state.day,
+        pickedFile: state.pickedFile,
+      ),
     );
   }
 
@@ -28,7 +29,10 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     final tripEvent = state.tripEvent.copyWith(description: value);
     emit(
       state.copyWith(
-          tripEvent: tripEvent, day: state.day, pickedFile: state.pickedFile),
+        tripEvent: tripEvent,
+        day: state.day,
+        pickedFile: state.pickedFile,
+      ),
     );
   }
 
@@ -36,7 +40,10 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     final tripEvent = state.tripEvent.copyWith(time: value);
     emit(
       state.copyWith(
-          tripEvent: tripEvent, day: state.day, pickedFile: state.pickedFile),
+        tripEvent: tripEvent,
+        day: state.day,
+        pickedFile: state.pickedFile,
+      ),
     );
   }
 
@@ -53,11 +60,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
       final fileBytes = state.pickedFile!.files.first.bytes;
       final fileName = state.pickedFile!.files.first.name;
       if (fileBytes != null) {
-        await tripsRepository
-            .uploadFileToStorage(fileBytes, fileName)
-            .then((value) {
-          return value;
-        });
+        return tripsRepository.uploadFileToStorage(fileBytes, fileName);
       } else {
         return null;
       }
@@ -66,26 +69,27 @@ class CreateEventCubit extends Cubit<CreateEventState> {
 
   Future<void> saveEvent(EventType eventType) async {
     emit(state.copyWith(isLoading: true));
-    final uploadedFileUrl = await uploadFile();
-    if (uploadedFileUrl != null) {
-      if (eventType == EventType.transportation) {
-        final transportation = <String, dynamic>{
-          'file': uploadedFileUrl,
-          'location': state.tripEvent.location,
-          'notes': state.tripEvent.description,
-          'time': state.tripEvent.time,
-        };
-        trip.transportations.add(transportation);
-        final updatedTrip =
-            trip.copyWith(transportations: trip.transportations);
-        await tripsRepository.updateOrCreateTrip(
-          updatedTrip,
-          authRepository.currentUser.id,
-        );
+    await uploadFile().then((uploadedFileUrl) {
+      if (uploadedFileUrl != null) {
+        if (eventType == EventType.transportation) {
+          final transportation = <String, dynamic>{
+            'file': uploadedFileUrl,
+            'location': state.tripEvent.location,
+            'notes': state.tripEvent.description,
+            'time': state.tripEvent.time,
+          };
+          trip.transportations.add(transportation);
+          final updatedTrip =
+              trip.copyWith(transportations: trip.transportations);
+          tripsRepository.updateOrCreateTrip(
+            updatedTrip,
+            authRepository.currentUser.id,
+          );
+        }
+        emit(state.copyWith(isLoading: false));
+      } else {
+        emit(state.copyWith(isLoading: false, error: true));
       }
-      emit(state.copyWith(isLoading: false));
-    } else {
-      emit(state.copyWith(isLoading: false, error: true));
-    }
+    });
   }
 }

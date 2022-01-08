@@ -25,17 +25,18 @@ class CreateEventState extends Equatable {
     FilePickerResult? pickedFile,
   }) {
     return CreateEventState(
-        tripEvent: tripEvent ?? this.tripEvent,
-        day: day ?? this.day,
-        isLoading: isLoading ?? this.isLoading,
-        error: error ?? this.error,
-        pickedFile: pickedFile ?? this.pickedFile);
+      tripEvent: tripEvent ?? this.tripEvent,
+      day: day ?? this.day,
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+      pickedFile: pickedFile ?? this.pickedFile,
+    );
   }
 
   @override
-  List<Object?> get props => [tripEvent, day, isLoading, error];
+  List<Object?> get props => [tripEvent, day, isLoading, error, pickedFile];
 
   @override
   String toString() => 'TripsState { tripEvent: $tripEvent, day: $day, '
-      'isLoading: $isLoading, error: $error }';
+      'isLoading: $isLoading, error: $error,  pickedFile: $pickedFile }';
 }

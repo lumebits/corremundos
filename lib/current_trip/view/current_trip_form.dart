@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/create_event/create_event.dart';
@@ -7,7 +8,6 @@ import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -238,7 +238,7 @@ class SelectedDayTripData extends StatelessWidget {
             const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
         child: SizedBox(
           width: 150,
-          height: 110,
+          height: 115,
           child: Card(
             shadowColor: Colors.black54,
             shape: RoundedRectangleBorder(
@@ -251,7 +251,7 @@ class SelectedDayTripData extends StatelessWidget {
                 onTap: () => file != ''
                     ? showDialog<void>(
                         context: context,
-                        builder: (context) => ImageDialog(file: file),
+                        builder: (context) => ImageDialog(fileUrl: file),
                       )
                     : null,
                 child: Padding(
@@ -267,7 +267,7 @@ class SelectedDayTripData extends StatelessWidget {
                               location,
                               maxLines: 2,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 17,
                                 color: const Color.fromRGBO(90, 23, 238, 1)
                                     .withOpacity(0.8),
                                 fontWeight: FontWeight.bold,
@@ -290,7 +290,7 @@ class SelectedDayTripData extends StatelessWidget {
                       const SizedBox(height: 4),
                       AutoSizeText(
                         description,
-                        maxLines: 3,
+                        maxLines: 1,
                         style: TextStyle(
                           fontSize: 14,
                           color: const Color.fromRGBO(90, 23, 238, 1)
@@ -523,19 +523,30 @@ class _IconIndicator extends StatelessWidget {
 class ImageDialog extends StatelessWidget {
   const ImageDialog({
     Key? key,
-    required this.file,
+    required this.fileUrl,
   }) : super(key: key);
 
-  final String file;
+  final String fileUrl;
 
   @override
   Widget build(BuildContext context) {
-    if (file.contains('.pdf?') || file.endsWith('.pdf')) {
+    if (fileUrl.contains('.pdf?') || fileUrl.endsWith('.pdf')) {
+      context.read<LoadPdfCubit>().load(fileUrl);
       return Dialog(
-        child: InteractiveViewer(
-          panEnabled: false,
-          child: PdfViewer.openFutureFile(() async =>
-              (await DefaultCacheManager().getSingleFile(file)).path,),
+        child: BlocBuilder<LoadPdfCubit, LoadPdfState>(
+          builder: (context, state) {
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state.error) {
+              return const Center(
+                child: Text('Error loading file.'),
+              );
+            } else {
+              return InteractiveViewer(
+                child: PdfViewer.openFile(state.path),
+              );
+            }
+          },
         ),
       );
     } else {
@@ -545,7 +556,7 @@ class ImageDialog extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: CachedNetworkImageProvider(file),
+                image: CachedNetworkImageProvider(fileUrl),
                 fit: BoxFit.contain,
               ),
             ),
