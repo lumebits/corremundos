@@ -539,6 +539,7 @@ class _SaveTrip extends StatelessWidget {
                         .read<TripsCubit>()
                         .loadCurrentTrip(resetSelectedDay: false);
                     context.read<TripsCubit>().loadMyTrips();
+                    // TODO(palomapiot): Reload selected trip with new event
                     Navigator.of(context).pop(true);
                   })
                 : null,

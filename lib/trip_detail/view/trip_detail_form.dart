@@ -175,7 +175,11 @@ class SelectedDayTripData extends StatelessWidget {
           iconData: icon,
           size: 20,
         ),
-        time: event.time,
+        time: eventType == EventType.transportation
+            ? '${formatHour(event.time)} - '
+                '${formatHour(event.endTime!)}'
+            : DateFormat('dd LLL HH:mm')
+                .format(event.time.add(Duration(days: index))),
         location: event.location,
         description: event.description,
         file: event.fileUrl,
@@ -188,10 +192,13 @@ class SelectedDayTripData extends StatelessWidget {
     }
   }
 
+  String formatHour(DateTime time) =>
+      DateFormat('HH:mm').format(time.add(Duration(days: index)));
+
   TimelineTile _buildTimelineTile({
     required BuildContext context,
     required _IconIndicator indicator,
-    required DateTime time,
+    required String time,
     required String location,
     required String description,
     String file = '',
@@ -215,7 +222,7 @@ class SelectedDayTripData extends StatelessWidget {
         child: Container(
           alignment: const Alignment(0, -0.50),
           child: Text(
-            DateFormat('dd LLL HH:mm').format(time.add(Duration(days: index))),
+            time,
             style: const TextStyle(
               fontSize: 12,
               color: Color.fromRGBO(90, 23, 238, 1),
