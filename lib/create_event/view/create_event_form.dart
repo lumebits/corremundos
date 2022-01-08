@@ -534,6 +534,9 @@ class _SaveTrip extends StatelessWidget {
                     context
                         .read<TripsCubit>()
                         .loadCurrentTrip(resetSelectedDay: false);
+                    context
+                        .read<TripsCubit>()
+                        .loadMyTrips();
                     Navigator.of(context).pop(true);
                   })
                 : null,

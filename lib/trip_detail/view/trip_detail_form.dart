@@ -17,10 +17,13 @@ class TripDetailForm extends BasePage {
   const TripDetailForm({Key? key}) : super(key, appTab: AppTab.trips);
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => null;
+  String title(BuildContext context) => 'Trip detail';
 
   @override
-  bool avoidBottomInset() => true;
+  Widget? floatingActionButton(BuildContext context) => null;
+
+  @override
+  Widget? bottomNavigationBar() => null;
 
   @override
   Widget widget(BuildContext context) {
@@ -29,18 +32,6 @@ class TripDetailForm extends BasePage {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            const SizedBox(
-              height: 8,
-            ),
-            Center(
-              child: Text(
-                'Current Trip',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
             Expanded(
               child: BlocBuilder<TripDetailCubit, TripDetailState>(
                 builder: (context, state) {
