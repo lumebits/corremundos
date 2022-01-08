@@ -74,6 +74,11 @@ class TripsCubit extends Cubit<TripsState> {
     });
   }
 
+  Future<void> changeSelectedTrip(Trip trip) async {
+    // TODO(palomapiot): set selected day and trip days
+    emit(state.copyWith(currentTrip: trip, isLoading: false));
+  }
+
   Future<void> refreshSelectedDay(int index) async {
     emit(state.copyWith(currentDayIndex: index, isLoading: false));
   }

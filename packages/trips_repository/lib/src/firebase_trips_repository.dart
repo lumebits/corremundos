@@ -47,7 +47,6 @@ class FirebaseTripsRepository implements TripsRepository {
     return collection
         .where('uid', isEqualTo: uid)
         .where('id', isEqualTo: id)
-        .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
         .orderBy('endDate')
         .limit(1)
         .snapshots()
