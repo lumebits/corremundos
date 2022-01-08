@@ -121,6 +121,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     } else {
       if (eventType == EventType.transportation) {
         final transportation = <String, dynamic>{
+          'file': '',
           'location': state.tripEvent.location,
           'notes': state.tripEvent.description,
           'time': state.tripEvent.time,
@@ -146,6 +147,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         );
       } else if (eventType == EventType.accommodation) {
         final accommodation = <String, dynamic>{
+          'file': '',
           'location': state.tripEvent.location,
           'notes': state.tripEvent.description,
           'checkin': state.tripEvent.time,
