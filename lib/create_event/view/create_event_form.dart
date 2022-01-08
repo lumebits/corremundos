@@ -38,8 +38,8 @@ class CreateEventForm extends BasePage {
                 _TransportationForm(trip, day)
               else
                 eventType == EventType.accommodation
-                    ? Text('accommodation')
-                    : Text('activity'),
+                    ? _AccommodationForm(trip, day)
+                    : _ActivityForm(trip, day),
             ],
           ),
         ),
@@ -73,24 +73,108 @@ class _TransportationForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const _GetTripImageButton(),
+        const _GetTripImageButton('assets/transportation_placeholder.jpg'),
         const SizedBox(height: 24),
-        _TripLocationInput(),
+        const _TripLocationInput('Route'),
         const SizedBox(height: 8),
         _TripDescriptionInput(),
         const SizedBox(height: 8),
-        _TripEventTimePicker(day),
+        _TripEventTimePicker(day, 'Departure time'),
         const SizedBox(height: 8),
         _PickAndUploadFile(),
         const SizedBox(height: 24),
-        _SaveTrip(),
+        const _SaveTrip(EventType.transportation),
+      ],
+    );
+  }
+}
+
+class _AccommodationForm extends StatelessWidget {
+  const _AccommodationForm(this.trip, this.day);
+
+  final Trip trip;
+  final DateTime day;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Text(
+              '${DateFormat('dd LLL').format(day)}: Add accommodation',
+              style: const TextStyle(
+                fontSize: 24,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        const _GetTripImageButton('assets/accommodation_placeholder.jpg'),
+        const SizedBox(height: 24),
+        const _TripLocationInput('Location'),
+        const SizedBox(height: 8),
+        _TripDescriptionInput(),
+        const SizedBox(height: 8),
+        _TripEventTimePicker(day, 'Check-in'),
+        const SizedBox(height: 8),
+        _TripEventEndTimePicker(day, 'Check-out'),
+        const SizedBox(height: 8),
+        _PickAndUploadFile(),
+        const SizedBox(height: 24),
+        const _SaveTrip(EventType.accommodation),
+      ],
+    );
+  }
+}
+
+class _ActivityForm extends StatelessWidget {
+  const _ActivityForm(this.trip, this.day);
+
+  final Trip trip;
+  final DateTime day;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: Text(
+              '${DateFormat('dd LLL').format(day)}: Add activity',
+              style: const TextStyle(
+                fontSize: 24,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        const _GetTripImageButton('assets/activity_placeholder.jpg'),
+        const SizedBox(height: 24),
+        const _TripLocationInput('Location'),
+        const SizedBox(height: 8),
+        _TripDescriptionInput(),
+        const SizedBox(height: 8),
+        _TripEventTimePicker(day, 'Time'),
+        const SizedBox(height: 24),
+        const _SaveTrip(EventType.activity),
       ],
     );
   }
 }
 
 class _GetTripImageButton extends StatelessWidget {
-  const _GetTripImageButton({Key? key}) : super(key: key);
+  const _GetTripImageButton(this.file, {Key? key}) : super(key: key);
+
+  final String file;
 
   @override
   Widget build(BuildContext context) {
@@ -105,23 +189,26 @@ class _GetTripImageButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         elevation: 9,
         child: Ink(
-          decoration: _cardDecoration(),
+          decoration: _cardDecoration(file),
         ),
       ),
     );
   }
 }
 
-Decoration _cardDecoration() {
-  return const BoxDecoration(
+Decoration _cardDecoration(String file) {
+  return BoxDecoration(
     image: DecorationImage(
       fit: BoxFit.fitWidth,
-      image: AssetImage('assets/transportation_placeholder.jpg'),
+      image: AssetImage(file),
     ),
   );
 }
 
 class _TripLocationInput extends StatelessWidget {
+  const _TripLocationInput(this.label);
+
+  final String label;
   @override
   Widget build(BuildContext context) {
     final focusNode = FocusNode();
@@ -145,7 +232,7 @@ class _TripLocationInput extends StatelessWidget {
                   ? Theme.of(context).colorScheme.primary
                   : Colors.grey,
             ),
-            labelText: 'Route',
+            labelText: label,
             prefix: const Padding(
               padding: EdgeInsets.only(top: 2.5, right: 2.5),
             ),
@@ -200,9 +287,10 @@ class _TripDescriptionInput extends StatelessWidget {
 }
 
 class _TripEventTimePicker extends StatelessWidget {
-  const _TripEventTimePicker(this.day);
+  const _TripEventTimePicker(this.day, this.label);
 
   final DateTime day;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +335,7 @@ class _TripEventTimePicker extends StatelessWidget {
             labelStyle: const TextStyle(
               color: Colors.grey,
             ),
-            labelText: 'Departure time',
+            labelText: label,
             prefix: const Padding(
               padding: EdgeInsets.only(top: 2.5, right: 2.5),
             ),
@@ -270,6 +358,74 @@ class _TripEventTimePicker extends StatelessWidget {
                     context.read<CreateEventCubit>().timeChanged(eventDate);
                   },
                   currentTime: DateTime.now(),
+                );
+                FocusScope.of(context).unfocus();
+              },
+            ),
+            hintText: 'dd/MM/yyyy',
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _TripEventEndTimePicker extends StatelessWidget {
+  const _TripEventEndTimePicker(this.day, this.label);
+
+  final DateTime day;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateEventCubit, CreateEventState>(
+      buildWhen: (previous, current) =>
+          previous.tripEvent.endTime != current.tripEvent.endTime,
+      builder: (context, state) {
+        final _textController = TextEditingController(
+          text: DateFormat('dd/MM/yyyy HH:mm').format(state.tripEvent.endTime!),
+        );
+        return TextField(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            DatePicker.showDateTimePicker(
+              context,
+              onConfirm: (date) {
+                context.read<CreateEventCubit>().endTimeChanged(date);
+              },
+              currentTime: state.tripEvent.time,
+            );
+            FocusScope.of(context).unfocus();
+          },
+          readOnly: true,
+          controller: _textController,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Color.fromRGBO(90, 23, 238, 1),
+          ),
+          onSubmitted: (date) => context
+              .read<CreateEventCubit>()
+              .endTimeChanged(DateFormat('dd/MM/yyyy HH:mm').parse(date)),
+          keyboardType: TextInputType.datetime,
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(
+              color: Colors.grey,
+            ),
+            labelText: label,
+            prefix: const Padding(
+              padding: EdgeInsets.only(top: 2.5, right: 2.5),
+            ),
+            prefixIcon: IconButton(
+              icon: const Icon(Icons.calendar_today_rounded),
+              color: const Color.fromRGBO(90, 23, 238, 1),
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                DatePicker.showDateTimePicker(
+                  context,
+                  onConfirm: (date) {
+                    context.read<CreateEventCubit>().endTimeChanged(date);
+                  },
+                  currentTime: state.tripEvent.time,
                 );
                 FocusScope.of(context).unfocus();
               },
@@ -347,6 +503,10 @@ class _PickAndUploadFile extends StatelessWidget {
 }
 
 class _SaveTrip extends StatelessWidget {
+  const _SaveTrip(this.eventType);
+
+  final EventType eventType;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -361,7 +521,7 @@ class _SaveTrip extends StatelessWidget {
             onPressed: () => !state.isLoading
                 ? context
                     .read<CreateEventCubit>()
-                    .saveEvent(EventType.transportation)
+                    .saveEvent(eventType)
                     .then((value) {
                     showTopSnackBar(
                       context,
@@ -371,6 +531,8 @@ class _SaveTrip extends StatelessWidget {
                         backgroundColor: Color.fromRGBO(90, 23, 238, 1),
                       ),
                     );
+                    // TODO(palomapiot): fix this so after the event we are still
+                    // in the selected day page
                     context.read<TripsCubit>().loadMyTrips();
                     context.read<TripsCubit>().loadCurrentTrip();
                     Navigator.of(context).pop(true);

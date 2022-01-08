@@ -8,17 +8,20 @@ class TripEvent extends Equatable {
   TripEvent(
       {
         DateTime? time,
+        DateTime? endTime,
         String? fileUrl,
         String? location,
         String? description,
         EventType? type,})
       : time = time ?? DateTime.now(),
+        endTime = endTime ?? DateTime.now(),
         fileUrl = fileUrl ?? '',
         location = location ?? '',
         description = description ?? '',
         type = type ?? EventType.activity;
 
   final DateTime time;
+  final DateTime? endTime;
   final String fileUrl;
   final String location;
   final String description;
@@ -33,6 +36,7 @@ class TripEvent extends Equatable {
   @override
   List<Object?> get props => [
     time,
+    endTime,
     fileUrl,
     location,
     description,
@@ -42,6 +46,7 @@ class TripEvent extends Equatable {
   TripEvent copyWith(
       {
         DateTime? time,
+        DateTime? endTime,
         String? fileUrl,
         String? location,
         String? description,
@@ -49,6 +54,7 @@ class TripEvent extends Equatable {
       }) {
     return TripEvent(
       time: time ?? this.time,
+      endTime: endTime ?? this.endTime,
       fileUrl: fileUrl ?? this.fileUrl,
       location: location ?? this.location,
       description: description ?? this.description,
@@ -58,7 +64,7 @@ class TripEvent extends Equatable {
   @override
   String toString() {
     return 'Event '
-        '{ time: $time, fileUrl: $fileUrl, location: $location, '
+        '{ time: $time, endTime: $endTime, fileUrl: $fileUrl, location: $location, '
         'description: $description, type: $type }';
   }
 

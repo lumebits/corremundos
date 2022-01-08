@@ -148,15 +148,41 @@ class SelectedDayTripData extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Image(
+                  children: [
+                    const Image(
                       image: AssetImage('assets/noevents.png'),
                     ),
-                    SizedBox(height: 20),
-                    Text(
-                      'No events today!',
-                      style: TextStyle(fontSize: 24),
-                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 280,
+                      height: 70,
+                      child: ElevatedButton.icon(
+                        key: const Key('addNewEvent_button'),
+                        icon: const Icon(
+                          Icons.add_rounded,
+                          color: Color.fromRGBO(90, 23, 238, 1),
+                          size: 22,
+                        ),
+                        onPressed: () =>
+                            showNewEventDialog(context, trip, selectedDayDate),
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color.fromRGBO(242, 238, 255, 1),
+                          shadowColor: Colors.white10,
+                          elevation: 1,
+                          side: const BorderSide(
+                            width: 0.8,
+                            color: Color.fromRGBO(225, 220, 251, 1),
+                          ),
+                        ),
+                        label: const Text(
+                          'Add new event',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Color.fromRGBO(90, 23, 238, 1),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -363,96 +389,7 @@ class NewEventWidget extends StatelessWidget {
         radius: const Radius.circular(25),
         child: Ink(
           child: InkWell(
-            onTap: () => showDialog<int>(
-              context: context,
-              builder: (BuildContext context) {
-                var selectedType = 0;
-                final selectedList = [
-                  'Transportation',
-                  'Accommodation',
-                  'Activity'
-                ];
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  title: Center(
-                    child: Text(
-                      'Select event type',
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: const Color.fromRGBO(90, 23, 238, 1)
-                            .withOpacity(0.8),
-                      ),
-                    ),
-                  ),
-                  content: StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List<Widget>.generate(3, (int index) {
-                          return RadioListTile<int>(
-                            title: Text(
-                              selectedList[index],
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: selectedType == index
-                                    ? const Color.fromRGBO(90, 23, 238, 1)
-                                        .withOpacity(0.8)
-                                    : Colors.grey,
-                              ),
-                            ),
-                            value: index,
-                            activeColor: const Color.fromRGBO(90, 23, 238, 1),
-                            groupValue: selectedType,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedType = value!;
-                              });
-                            },
-                          );
-                        }),
-                      );
-                    },
-                  ),
-                  actions: <Widget>[
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(),
-                            key: const Key(
-                              'selectEventType_continue_iconButton',
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop(selectedType);
-                            },
-                            child: const Text('Continue'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              },
-            ).then((value) {
-              if (value != null) {
-                var eventType = EventType.transportation;
-                if (value == 1) {
-                  eventType = EventType.accommodation;
-                } else if (value == 2) {
-                  eventType = EventType.activity;
-                }
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) {
-                      return CreateEventPage(trip, selectedTripDay, eventType);
-                    },
-                  ),
-                );
-              }
-              return true;
-            }),
+            onTap: () => showNewEventDialog(context, trip, selectedTripDay),
             child: Card(
               shadowColor: Colors.white10,
               shape: RoundedRectangleBorder(
@@ -480,6 +417,99 @@ class NewEventWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<bool> showNewEventDialog(
+  BuildContext context,
+  Trip trip,
+  DateTime selectedTripDay,
+) {
+  return showDialog<int>(
+    context: context,
+    builder: addNewEventDialog,
+  ).then((value) {
+    if (value != null) {
+      var eventType = EventType.transportation;
+      if (value == 1) {
+        eventType = EventType.accommodation;
+      } else if (value == 2) {
+        eventType = EventType.activity;
+      }
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) {
+            return CreateEventPage(trip, selectedTripDay, eventType);
+          },
+        ),
+      );
+    }
+    return true;
+  });
+}
+
+AlertDialog addNewEventDialog(BuildContext context) {
+  var selectedType = 0;
+  final selectedList = ['Transportation', 'Accommodation', 'Activity'];
+  return AlertDialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(25),
+    ),
+    title: Center(
+      child: Text(
+        'Select event type',
+        style: TextStyle(
+          fontSize: 22,
+          color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.8),
+        ),
+      ),
+    ),
+    content: StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List<Widget>.generate(3, (int index) {
+            return RadioListTile<int>(
+              title: Text(
+                selectedList[index],
+                style: TextStyle(
+                  fontSize: 18,
+                  color: selectedType == index
+                      ? const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.8)
+                      : Colors.grey,
+                ),
+              ),
+              value: index,
+              activeColor: const Color.fromRGBO(90, 23, 238, 1),
+              groupValue: selectedType,
+              onChanged: (value) {
+                setState(() {
+                  selectedType = value!;
+                });
+              },
+            );
+          }),
+        );
+      },
+    ),
+    actions: <Widget>[
+      Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(),
+              key: const Key(
+                'selectEventType_continue_iconButton',
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(selectedType);
+              },
+              child: const Text('Continue'),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
 }
 
 class _IconIndicator extends StatelessWidget {
