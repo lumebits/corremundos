@@ -251,7 +251,7 @@ class SelectedDayTripData extends StatelessWidget {
                 onTap: () => file != ''
                     ? showDialog<void>(
                         context: context,
-                        builder: (context) => ImageDialog(fileUrl: file),
+                        builder: (context) => AttachedFileDialog(fileUrl: file),
                       )
                     : null,
                 child: Padding(
@@ -520,8 +520,8 @@ class _IconIndicator extends StatelessWidget {
   }
 }
 
-class ImageDialog extends StatelessWidget {
-  const ImageDialog({
+class AttachedFileDialog extends StatelessWidget {
+  const AttachedFileDialog({
     Key? key,
     required this.fileUrl,
   }) : super(key: key);
@@ -536,14 +536,27 @@ class ImageDialog extends StatelessWidget {
         child: BlocBuilder<LoadPdfCubit, LoadPdfState>(
           builder: (context, state) {
             if (state.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxHeight: 100,
+                ),
+                child: const Center(child: CircularProgressIndicator()),
+              );
             } else if (state.error) {
               return const Center(
                 child: Text('Error loading file.'),
               );
             } else {
-              return InteractiveViewer(
-                child: PdfViewer.openFile(state.path),
+              return ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxHeight: 440,
+                ),
+                child: PdfViewer.openFile(
+                  state.path,
+                  params: const PdfViewerParams(
+                    panEnabled: false,
+                  ),
+                ),
               );
             }
           },
@@ -553,11 +566,16 @@ class ImageDialog extends StatelessWidget {
       return Dialog(
         child: InteractiveViewer(
           panEnabled: false,
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(fileUrl),
-                fit: BoxFit.contain,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 440,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: CachedNetworkImageProvider(fileUrl),
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
