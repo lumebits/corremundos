@@ -60,6 +60,8 @@ class Trip extends Equatable {
 
   bool get isNotEmpty => this != Trip.empty;
 
+  int get duration => daysBetween(initDate, endDate) + 1;
+
   @override
   List<Object?> get props => [
         id,

@@ -54,11 +54,7 @@ class TripsCubit extends Cubit<TripsState> {
           ? 0
           : daysBetween(currentTrip.initDate, DateTime.now());
 
-      final tripDays = daysBetween(
-            currentTrip.initDate,
-            currentTrip.endDate,
-          ) +
-          1;
+      final tripDays = currentTrip.duration;
       emit(
         state.copyWith(
           currentTrip: currentTrip,
