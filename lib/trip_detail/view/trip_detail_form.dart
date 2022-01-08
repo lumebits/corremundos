@@ -40,7 +40,7 @@ class TripDetailForm extends BasePage {
                     itemCount: state.trip.duration,
                     itemBuilder: (context, index) {
                       final calendarDay =
-                      state.trip.initDate.add(Duration(days: index));
+                          state.trip.initDate.add(Duration(days: index));
                       final day = DateFormat('dd LLL').format(calendarDay);
                       return Padding(
                         padding: const EdgeInsets.all(6),
@@ -48,10 +48,10 @@ class TripDetailForm extends BasePage {
                           onPressed: state.dayIndex == index
                               ? null
                               : () => {
-                            context
-                                .read<TripDetailCubit>()
-                                .refreshSelectedDay(index)
-                          },
+                                    context
+                                        .read<TripDetailCubit>()
+                                        .refreshSelectedDay(index)
+                                  },
                           child: Text(
                             'Day ${index + 1} - $day',
                           ),
@@ -96,79 +96,79 @@ class SelectedDayTripData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final events =
-    trip.eventMap.containsKey(index) ? trip.eventMap[index] : <dynamic>[];
+        trip.eventMap.containsKey(index) ? trip.eventMap[index] : <dynamic>[];
     final selectedDayDate = initTripDay.add(Duration(days: index));
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: events!.isNotEmpty
           ? ListView.separated(
-        itemCount: events.length + 1,
-        itemBuilder: (context, i) {
-          return buildEvent(events, i, context, selectedDayDate);
-        },
-        separatorBuilder: (context, index) =>
-        const SizedBox(height: 16 / 2),
-      )
+              itemCount: events.length + 1,
+              itemBuilder: (context, i) {
+                return buildEvent(events, i, context, selectedDayDate);
+              },
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: 16 / 2),
+            )
           : Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Image(
-                image: AssetImage('assets/noevents.png'),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 280,
-                height: 70,
-                child: ElevatedButton.icon(
-                  key: const Key('addNewEvent_button'),
-                  icon: const Icon(
-                    Icons.add_rounded,
-                    color: Color.fromRGBO(90, 23, 238, 1),
-                    size: 22,
-                  ),
-                  onPressed: () =>
-                      showNewEventDialog(context, trip, selectedDayDate),
-                  style: ElevatedButton.styleFrom(
-                    primary: const Color.fromRGBO(242, 238, 255, 1),
-                    shadowColor: Colors.white10,
-                    elevation: 1,
-                    side: const BorderSide(
-                      width: 0.8,
-                      color: Color.fromRGBO(225, 220, 251, 1),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Image(
+                      image: AssetImage('assets/noevents.png'),
                     ),
-                  ),
-                  label: const Text(
-                    'Add new event',
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Color.fromRGBO(90, 23, 238, 1),
-                    ),
-                  ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 280,
+                      height: 70,
+                      child: ElevatedButton.icon(
+                        key: const Key('addNewEvent_button'),
+                        icon: const Icon(
+                          Icons.add_rounded,
+                          color: Color.fromRGBO(90, 23, 238, 1),
+                          size: 22,
+                        ),
+                        onPressed: () =>
+                            showNewEventDialog(context, trip, selectedDayDate),
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color.fromRGBO(242, 238, 255, 1),
+                          shadowColor: Colors.white10,
+                          elevation: 1,
+                          side: const BorderSide(
+                            width: 0.8,
+                            color: Color.fromRGBO(225, 220, 251, 1),
+                          ),
+                        ),
+                        label: const Text(
+                          'Add new event',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Color.fromRGBO(90, 23, 238, 1),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
+              ),
+            ),
     );
   }
 
   TimelineTile buildEvent(
-      List<dynamic> events,
-      int i,
-      BuildContext context,
-      DateTime selectedDayDate,
-      ) {
+    List<dynamic> events,
+    int i,
+    BuildContext context,
+    DateTime selectedDayDate,
+  ) {
     if (i < events.length) {
       final event = events[i] as TripEvent;
       final eventType = event.type;
       final icon = eventType == EventType.transportation
           ? Icons.airplanemode_active_rounded
           : eventType == EventType.accommodation
-          ? Icons.hotel_rounded
-          : Icons.local_activity_rounded;
+              ? Icons.hotel_rounded
+              : Icons.local_activity_rounded;
       return _buildTimelineTile(
         context: context,
         indicator: _IconIndicator(
@@ -226,7 +226,7 @@ class SelectedDayTripData extends StatelessWidget {
       ),
       endChild: Padding(
         padding:
-        const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
         child: SizedBox(
           width: 150,
           height: 115,
@@ -241,9 +241,9 @@ class SelectedDayTripData extends StatelessWidget {
               child: InkWell(
                 onTap: () => file != ''
                     ? showDialog<void>(
-                  context: context,
-                  builder: (context) => AttachedFileDialog(fileUrl: file),
-                )
+                        context: context,
+                        builder: (context) => AttachedFileDialog(fileUrl: file),
+                      )
                     : null,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -324,7 +324,7 @@ class SelectedDayTripData extends StatelessWidget {
       isLast: true,
       endChild: Padding(
         padding:
-        const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
         child: NewEventWidget(trip: trip, selectedTripDay: time),
       ),
     );
@@ -370,7 +370,7 @@ class NewEventWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       color:
-                      const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.6),
+                          const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.6),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -385,10 +385,10 @@ class NewEventWidget extends StatelessWidget {
 }
 
 Future<bool> showNewEventDialog(
-    BuildContext context,
-    Trip trip,
-    DateTime selectedTripDay,
-    ) {
+  BuildContext context,
+  Trip trip,
+  DateTime selectedTripDay,
+) {
   return showDialog<int>(
     context: context,
     builder: addNewEventDialog,

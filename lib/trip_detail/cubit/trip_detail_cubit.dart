@@ -5,8 +5,7 @@ import 'package:trips_repository/trips_repository.dart';
 part 'trip_detail_state.dart';
 
 class TripDetailCubit extends Cubit<TripDetailState> {
-  TripDetailCubit(Trip trip)
-      : super(TripDetailState(trip, 0));
+  TripDetailCubit(Trip trip) : super(TripDetailState(trip, 0));
 
   Future<void> refreshSelectedDay(int index) async {
     emit(state.copyWith(dayIndex: index));

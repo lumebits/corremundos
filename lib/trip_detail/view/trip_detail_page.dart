@@ -9,13 +9,13 @@ class TripDetailPage extends StatelessWidget {
 
   final Trip trip;
 
-  static Page page(Trip trip) => MaterialPage<void>(child: TripDetailPage(trip));
+  static Page page(Trip trip) =>
+      MaterialPage<void>(child: TripDetailPage(trip));
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          TripDetailCubit(trip),
+      create: (context) => TripDetailCubit(trip),
       child: const TripDetailForm(),
     );
   }

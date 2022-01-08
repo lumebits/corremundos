@@ -81,6 +81,8 @@ class _TransportationForm extends StatelessWidget {
         const SizedBox(height: 8),
         _TripEventTimePicker(day, 'Departure time'),
         const SizedBox(height: 8),
+        _TripEventEndTimePicker(day, 'Arrival time'),
+        const SizedBox(height: 8),
         _PickAndUploadFile(),
         const SizedBox(height: 24),
         const _SaveTrip(EventType.transportation),
@@ -382,8 +384,10 @@ class _TripEventEndTimePicker extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.tripEvent.endTime != current.tripEvent.endTime,
       builder: (context, state) {
+        final endTime = state.tripEvent.endTime ??
+            context.read<CreateEventCubit>().setEndTime(day);
         final _textController = TextEditingController(
-          text: DateFormat('dd/MM/yyyy HH:mm').format(state.tripEvent.endTime!),
+          text: DateFormat('dd/MM/yyyy HH:mm').format(endTime),
         );
         return TextField(
           onTap: () {
@@ -393,7 +397,7 @@ class _TripEventEndTimePicker extends StatelessWidget {
               onConfirm: (date) {
                 context.read<CreateEventCubit>().endTimeChanged(date);
               },
-              currentTime: state.tripEvent.time,
+              currentTime: state.tripEvent.endTime ?? endTime,
             );
             FocusScope.of(context).unfocus();
           },
@@ -425,7 +429,7 @@ class _TripEventEndTimePicker extends StatelessWidget {
                   onConfirm: (date) {
                     context.read<CreateEventCubit>().endTimeChanged(date);
                   },
-                  currentTime: state.tripEvent.time,
+                  currentTime: state.tripEvent.endTime,
                 );
                 FocusScope.of(context).unfocus();
               },
@@ -534,9 +538,7 @@ class _SaveTrip extends StatelessWidget {
                     context
                         .read<TripsCubit>()
                         .loadCurrentTrip(resetSelectedDay: false);
-                    context
-                        .read<TripsCubit>()
-                        .loadMyTrips();
+                    context.read<TripsCubit>().loadMyTrips();
                     Navigator.of(context).pop(true);
                   })
                 : null,

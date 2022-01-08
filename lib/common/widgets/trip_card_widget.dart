@@ -1,13 +1,8 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:corremundos/current_trip/view/current_trip_page.dart';
 import 'package:corremundos/trip_detail/trip_detail.dart';
-import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/src/provider.dart';
 import 'package:trips_repository/trips_repository.dart';
 
 const double cardBorderRadius = 25;
