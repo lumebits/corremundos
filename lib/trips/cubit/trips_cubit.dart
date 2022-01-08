@@ -44,7 +44,7 @@ class TripsCubit extends Cubit<TripsState> {
     });
   }
 
-  Future<void> loadCurrentTrip() async {
+  Future<void> loadCurrentTrip({bool resetSelectedDay = true}) async {
     emit(state.copyWith(isLoading: true));
     await tripsRepository
         .getCurrentTrip(authRepository.currentUser.id)
@@ -53,6 +53,7 @@ class TripsCubit extends Cubit<TripsState> {
               DateTime.now().day <= currentTrip.initDate.day
           ? 0
           : daysBetween(currentTrip.initDate, DateTime.now());
+
       final tripDays = daysBetween(
             currentTrip.initDate,
             currentTrip.endDate,
@@ -61,7 +62,8 @@ class TripsCubit extends Cubit<TripsState> {
       emit(
         state.copyWith(
           currentTrip: currentTrip,
-          currentDayIndex: selectedDay,
+          currentDayIndex:
+              resetSelectedDay ? selectedDay : state.currentDayIndex,
           tripDays: tripDays,
           events: currentTrip.eventMap,
           isLoading: false,

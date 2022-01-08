@@ -531,10 +531,9 @@ class _SaveTrip extends StatelessWidget {
                         backgroundColor: Color.fromRGBO(90, 23, 238, 1),
                       ),
                     );
-                    // TODO(palomapiot): fix this so after the event we are
-                    // still in the selected day page
-                    context.read<TripsCubit>().loadMyTrips();
-                    context.read<TripsCubit>().loadCurrentTrip();
+                    context
+                        .read<TripsCubit>()
+                        .loadCurrentTrip(resetSelectedDay: false);
                     Navigator.of(context).pop(true);
                   })
                 : null,
