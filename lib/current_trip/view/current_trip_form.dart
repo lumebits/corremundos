@@ -1,11 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
+import 'package:corremundos/create_event/create_event.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -84,7 +88,7 @@ class CurrentTripForm extends BasePage {
                                         .refreshSelectedDay(index)
                                   },
                           child: Text(
-                            'Day ${state.currentTrip.initDate.day} - $day',
+                            'Day ${index + 1} - $day',
                           ),
                         ),
                       );
@@ -100,6 +104,7 @@ class CurrentTripForm extends BasePage {
                   return SelectedDayTripData(
                     trip: state.currentTrip,
                     index: state.currentDayIndex,
+                    initTripDay: state.currentTrip.initDate,
                   );
                 },
               ),
@@ -116,40 +121,25 @@ class SelectedDayTripData extends StatelessWidget {
     Key? key,
     required this.trip,
     required this.index,
+    required this.initTripDay,
   }) : super(key: key);
 
   final Trip trip;
   final int index;
+  final DateTime initTripDay;
 
   @override
   Widget build(BuildContext context) {
     final events =
         trip.eventMap.containsKey(index) ? trip.eventMap[index] : <dynamic>[];
-
+    final selectedDayDate = initTripDay.add(Duration(days: index));
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: events!.isNotEmpty
           ? ListView.separated(
-              itemCount: events.length,
+              itemCount: events.length + 1,
               itemBuilder: (context, i) {
-                final event = events[i] as TripEvent;
-                final eventType = event.type;
-                final icon = eventType == EventType.transportation
-                    ? Icons.airplanemode_active_rounded
-                    : eventType == EventType.accommodation
-                        ? Icons.hotel_rounded
-                        : Icons.local_activity_rounded;
-                return _buildTimelineTile(
-                  context: context,
-                  indicator: _IconIndicator(
-                    iconData: icon,
-                    size: 20,
-                  ),
-                  time: event.time,
-                  location: event.location,
-                  description: event.description,
-                  file: event.fileUrl,
-                );
+                return buildEvent(events, i, context, selectedDayDate);
               },
               separatorBuilder: (context, index) =>
                   const SizedBox(height: 16 / 2),
@@ -158,20 +148,79 @@ class SelectedDayTripData extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Image(
+                  children: [
+                    const Image(
                       image: AssetImage('assets/noevents.png'),
                     ),
-                    SizedBox(height: 20),
-                    Text(
-                      'No events today!',
-                      style: TextStyle(fontSize: 24),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 280,
+                      height: 70,
+                      child: ElevatedButton.icon(
+                        key: const Key('addNewEvent_button'),
+                        icon: const Icon(
+                          Icons.add_rounded,
+                          color: Color.fromRGBO(90, 23, 238, 1),
+                          size: 22,
+                        ),
+                        onPressed: () =>
+                            showNewEventDialog(context, trip, selectedDayDate),
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color.fromRGBO(242, 238, 255, 1),
+                          shadowColor: Colors.white10,
+                          elevation: 1,
+                          side: const BorderSide(
+                            width: 0.8,
+                            color: Color.fromRGBO(225, 220, 251, 1),
+                          ),
+                        ),
+                        label: const Text(
+                          'Add new event',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Color.fromRGBO(90, 23, 238, 1),
+                          ),
+                        ),
+                      ),
                     )
                   ],
                 ),
               ),
             ),
     );
+  }
+
+  TimelineTile buildEvent(
+    List<dynamic> events,
+    int i,
+    BuildContext context,
+    DateTime selectedDayDate,
+  ) {
+    if (i < events.length) {
+      final event = events[i] as TripEvent;
+      final eventType = event.type;
+      final icon = eventType == EventType.transportation
+          ? Icons.airplanemode_active_rounded
+          : eventType == EventType.accommodation
+              ? Icons.hotel_rounded
+              : Icons.local_activity_rounded;
+      return _buildTimelineTile(
+        context: context,
+        indicator: _IconIndicator(
+          iconData: icon,
+          size: 20,
+        ),
+        time: event.time,
+        location: event.location,
+        description: event.description,
+        file: event.fileUrl,
+      );
+    } else {
+      return _buildAddEvent(
+        context: context,
+        time: selectedDayDate,
+      );
+    }
   }
 
   TimelineTile _buildTimelineTile({
@@ -215,7 +264,7 @@ class SelectedDayTripData extends StatelessWidget {
             const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
         child: SizedBox(
           width: 150,
-          height: 110,
+          height: 115,
           child: Card(
             shadowColor: Colors.black54,
             shape: RoundedRectangleBorder(
@@ -228,7 +277,7 @@ class SelectedDayTripData extends StatelessWidget {
                 onTap: () => file != ''
                     ? showDialog<void>(
                         context: context,
-                        builder: (context) => ImageDialog(file: file),
+                        builder: (context) => AttachedFileDialog(fileUrl: file),
                       )
                     : null,
                 child: Padding(
@@ -244,7 +293,7 @@ class SelectedDayTripData extends StatelessWidget {
                               location,
                               maxLines: 2,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 17,
                                 color: const Color.fromRGBO(90, 23, 238, 1)
                                     .withOpacity(0.8),
                                 fontWeight: FontWeight.bold,
@@ -267,7 +316,7 @@ class SelectedDayTripData extends StatelessWidget {
                       const SizedBox(height: 4),
                       AutoSizeText(
                         description,
-                        maxLines: 3,
+                        maxLines: 1,
                         style: TextStyle(
                           fontSize: 14,
                           color: const Color.fromRGBO(90, 23, 238, 1)
@@ -286,6 +335,181 @@ class SelectedDayTripData extends StatelessWidget {
       ),
     );
   }
+
+  TimelineTile _buildAddEvent({
+    required BuildContext context,
+    required DateTime time,
+  }) {
+    return TimelineTile(
+      alignment: TimelineAlign.manual,
+      lineXY: 0.3,
+      beforeLineStyle: LineStyle(
+        color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7),
+      ),
+      indicatorStyle: const IndicatorStyle(
+        indicatorXY: 0.3,
+        drawGap: true,
+        width: 30,
+        height: 30,
+        indicator: _IconIndicator(
+          iconData: Icons.add_rounded,
+          size: 20,
+        ),
+      ),
+      isLast: true,
+      endChild: Padding(
+        padding:
+            const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
+        child: NewEventWidget(trip: trip, selectedTripDay: time),
+      ),
+    );
+  }
+}
+
+class NewEventWidget extends StatelessWidget {
+  const NewEventWidget({
+    Key? key,
+    required this.trip,
+    required this.selectedTripDay,
+  }) : super(key: key);
+
+  final Trip trip;
+  final DateTime selectedTripDay;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: DottedBorder(
+        color: Theme.of(context).primaryColor.withOpacity(0.5),
+        borderType: BorderType.RRect,
+        dashPattern: const [10, 7],
+        strokeWidth: 2,
+        strokeCap: StrokeCap.round,
+        padding: const EdgeInsets.all(0.1),
+        radius: const Radius.circular(25),
+        child: Ink(
+          child: InkWell(
+            onTap: () => showNewEventDialog(context, trip, selectedTripDay),
+            child: Card(
+              shadowColor: Colors.white10,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              clipBehavior: Clip.antiAlias,
+              elevation: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: Text(
+                    'Add new event',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color:
+                          const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.6),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Future<bool> showNewEventDialog(
+  BuildContext context,
+  Trip trip,
+  DateTime selectedTripDay,
+) {
+  return showDialog<int>(
+    context: context,
+    builder: addNewEventDialog,
+  ).then((value) {
+    if (value != null) {
+      var eventType = EventType.transportation;
+      if (value == 1) {
+        eventType = EventType.accommodation;
+      } else if (value == 2) {
+        eventType = EventType.activity;
+      }
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) {
+            return CreateEventPage(trip, selectedTripDay, eventType);
+          },
+        ),
+      );
+    }
+    return true;
+  });
+}
+
+AlertDialog addNewEventDialog(BuildContext context) {
+  var selectedType = 0;
+  final selectedList = ['Transportation', 'Accommodation', 'Activity'];
+  return AlertDialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(25),
+    ),
+    title: Center(
+      child: Text(
+        'Select event type',
+        style: TextStyle(
+          fontSize: 22,
+          color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.8),
+        ),
+      ),
+    ),
+    content: StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List<Widget>.generate(3, (int index) {
+            return RadioListTile<int>(
+              title: Text(
+                selectedList[index],
+                style: TextStyle(
+                  fontSize: 18,
+                  color: selectedType == index
+                      ? const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.8)
+                      : Colors.grey,
+                ),
+              ),
+              value: index,
+              activeColor: const Color.fromRGBO(90, 23, 238, 1),
+              groupValue: selectedType,
+              onChanged: (value) {
+                setState(() {
+                  selectedType = value!;
+                });
+              },
+            );
+          }),
+        );
+      },
+    ),
+    actions: <Widget>[
+      Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(),
+              key: const Key(
+                'selectEventType_continue_iconButton',
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(selectedType);
+              },
+              child: const Text('Continue'),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
 }
 
 class _IconIndicator extends StatelessWidget {
@@ -326,28 +550,67 @@ class _IconIndicator extends StatelessWidget {
   }
 }
 
-class ImageDialog extends StatelessWidget {
-  const ImageDialog({
+class AttachedFileDialog extends StatelessWidget {
+  const AttachedFileDialog({
     Key? key,
-    required this.file,
+    required this.fileUrl,
   }) : super(key: key);
 
-  final String file;
+  final String fileUrl;
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: InteractiveViewer(
-        panEnabled: false,
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(file),
-              fit: BoxFit.contain,
+    if (fileUrl.contains('.pdf?') || fileUrl.endsWith('.pdf')) {
+      context.read<LoadPdfCubit>().load(fileUrl);
+      return Dialog(
+        child: BlocBuilder<LoadPdfCubit, LoadPdfState>(
+          builder: (context, state) {
+            if (state.isLoading) {
+              return ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxHeight: 100,
+                ),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            } else if (state.error) {
+              return const Center(
+                child: Text('Error loading file.'),
+              );
+            } else {
+              return ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxHeight: 440,
+                ),
+                child: PdfViewer.openFile(
+                  state.path,
+                  params: const PdfViewerParams(
+                    panEnabled: false,
+                  ),
+                ),
+              );
+            }
+          },
+        ),
+      );
+    } else {
+      return Dialog(
+        child: InteractiveViewer(
+          panEnabled: false,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 440,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: CachedNetworkImageProvider(fileUrl),
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
