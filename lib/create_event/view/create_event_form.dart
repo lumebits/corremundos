@@ -328,8 +328,13 @@ class _PickAndUploadFile extends StatelessWidget {
               context.read<CreateEventCubit>().fileChanged(result);
             },
             style: ElevatedButton.styleFrom(
-              primary: Colors.white,
-            ),
+                primary: const Color.fromRGBO(242, 238, 255, 1),
+                shadowColor: Colors.white10,
+                elevation: 1,
+                side: const BorderSide(
+                  width: 0.8,
+                  color: Color.fromRGBO(225, 220, 251, 1),
+                ),),
             label: const Text(
               'Attach file',
               style: TextStyle(
@@ -343,8 +348,6 @@ class _PickAndUploadFile extends StatelessWidget {
           height: 8,
         ),
         BlocBuilder<CreateEventCubit, CreateEventState>(
-          buildWhen: (previous, current) =>
-              previous.pickedFile != current.pickedFile,
           builder: (context, state) {
             if (state.pickedFile != null) {
               return Text(

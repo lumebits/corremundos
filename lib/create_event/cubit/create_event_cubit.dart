@@ -43,8 +43,6 @@ class CreateEventCubit extends Cubit<CreateEventState> {
   void fileChanged(FilePickerResult? result) {
     emit(
       state.copyWith(
-        tripEvent: state.tripEvent,
-        day: state.day,
         pickedFile: result,
       ),
     );

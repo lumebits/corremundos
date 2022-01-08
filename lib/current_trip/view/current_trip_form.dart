@@ -7,7 +7,9 @@ import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -528,18 +530,28 @@ class ImageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: InteractiveViewer(
-        panEnabled: false,
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(file),
-              fit: BoxFit.contain,
+    if (file.contains('.pdf?') || file.endsWith('.pdf')) {
+      return Dialog(
+        child: InteractiveViewer(
+          panEnabled: false,
+          child: PdfViewer.openFutureFile(() async =>
+              (await DefaultCacheManager().getSingleFile(file)).path,),
+        ),
+      );
+    } else {
+      return Dialog(
+        child: InteractiveViewer(
+          panEnabled: false,
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(file),
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
