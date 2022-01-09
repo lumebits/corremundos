@@ -1,6 +1,5 @@
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/create_trip/view/create_trip_page.dart';
-import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
