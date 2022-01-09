@@ -66,6 +66,16 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     );
   }
 
+  DateTime setEndTime(DateTime day) {
+    final now = DateTime.now();
+    if (state.day == null ||
+        now.year == day.year && now.month == day.month && now.day == day.day) {
+      return day;
+    } else {
+      return state.day!;
+    }
+  }
+
   Future<String?> uploadFile() async {
     if (state.pickedFile != null) {
       final fileBytes = state.pickedFile!.files.first.bytes;
@@ -88,7 +98,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               'file': uploadedFileUrl,
               'location': state.tripEvent.location,
               'notes': state.tripEvent.description,
-              'time': state.tripEvent.time,
+              'departureTime': state.tripEvent.time,
+              'arrivalTime': state.tripEvent.endTime,
             };
             trip.transportations.add(transportation);
             final updatedTrip =
@@ -124,7 +135,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           'file': '',
           'location': state.tripEvent.location,
           'notes': state.tripEvent.description,
-          'time': state.tripEvent.time,
+          'departureTime': state.tripEvent.time,
+          'arrivalTime': state.tripEvent.endTime,
         };
         trip.transportations.add(transportation);
         final updatedTrip =

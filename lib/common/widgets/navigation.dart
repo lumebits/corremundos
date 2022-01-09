@@ -1,4 +1,5 @@
 import 'package:corremundos/app/app.dart';
+import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,6 +47,7 @@ class Navigation extends StatelessWidget {
                       ? Theme.of(context).colorScheme.primary
                       : Colors.grey,
                   onPressed: () {
+                    context.read<TripsCubit>().loadCurrentTrip();
                     context
                         .read<AppBloc>()
                         .add(const NavigationRequested(AppTab.current));

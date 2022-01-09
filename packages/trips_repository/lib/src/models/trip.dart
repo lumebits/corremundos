@@ -60,6 +60,8 @@ class Trip extends Equatable {
 
   bool get isNotEmpty => this != Trip.empty;
 
+  int get duration => daysBetween(initDate, endDate) + 1;
+
   @override
   List<Object?> get props => [
         id,
@@ -161,9 +163,11 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
   });
 
   entity.transportations!.forEach((dynamic t) {
-    var time = t['time'].toDate() as DateTime;
+    var time = t['departureTime'].toDate() as DateTime;
+    var arrivalTime = t['arrivalTime'].toDate() as DateTime;
     var event = TripEvent(
         time: time,
+        endTime: arrivalTime,
         fileUrl: t['file'] as String,
         location: t['location'] as String,
         description: t['notes'] as String,

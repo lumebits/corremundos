@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/trip_detail/trip_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trips_repository/trips_repository.dart';
@@ -34,7 +33,13 @@ class TripCardWidget extends StatelessWidget {
             decoration: _cardDecoration(trip.imageUrl),
             child: InkWell(
               onTap: () {
-                log('trip tapped');
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) {
+                      return TripDetailPage(trip);
+                    },
+                  ),
+                );
               },
               child: _cardText(trip),
             ),

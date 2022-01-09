@@ -54,11 +54,7 @@ class TripsCubit extends Cubit<TripsState> {
           ? 0
           : daysBetween(currentTrip.initDate, DateTime.now());
 
-      final tripDays = daysBetween(
-            currentTrip.initDate,
-            currentTrip.endDate,
-          ) +
-          1;
+      final tripDays = currentTrip.duration;
       emit(
         state.copyWith(
           currentTrip: currentTrip,
@@ -72,6 +68,10 @@ class TripsCubit extends Cubit<TripsState> {
     }).catchError((dynamic error) {
       emit(state.copyWith(error: true, isLoading: false));
     });
+  }
+
+  Future<void> changeSelectedTrip(Trip trip) async {
+    emit(state.copyWith(currentTrip: trip, isLoading: false));
   }
 
   Future<void> refreshSelectedDay(int index) async {

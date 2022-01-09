@@ -4,46 +4,26 @@ import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/create_event/create_event.dart';
-import 'package:corremundos/trips/cubit/trips_cubit.dart';
+import 'package:corremundos/trip_detail/cubit/trip_detail_cubit.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:trips_repository/trips_repository.dart';
 
-class CurrentTripForm extends BasePage {
-  const CurrentTripForm({Key? key}) : super(key, appTab: AppTab.current);
+class TripDetailForm extends BasePage {
+  const TripDetailForm({Key? key}) : super(key, appTab: AppTab.trips);
 
   @override
-  List<BlocListener> listeners(BuildContext context) {
-    return [
-      BlocListener<TripsCubit, TripsState>(
-        listenWhen: (previous, current) => previous.error != current.error,
-        listener: (context, state) {
-          if (state.error) {
-            showTopSnackBar(
-              context,
-              const CustomSnackBar.info(
-                message: 'Error loading current trip',
-                icon: Icon(null),
-                backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-              ),
-            );
-          }
-        },
-      ),
-    ];
-  }
+  String title(BuildContext context) => 'Trip detail';
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => null;
+  Widget? floatingActionButton(BuildContext context) => null;
 
   @override
-  bool avoidBottomInset() => true;
+  Widget? bottomNavigationBar() => null;
 
   @override
   Widget widget(BuildContext context) {
@@ -52,36 +32,24 @@ class CurrentTripForm extends BasePage {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            const SizedBox(
-              height: 8,
-            ),
-            Center(
-              child: Text(
-                'Current Trip',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
             Expanded(
-              child: BlocBuilder<TripsCubit, TripsState>(
+              child: BlocBuilder<TripDetailCubit, TripDetailState>(
                 builder: (context, state) {
                   return ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: state.tripDays,
+                    itemCount: state.trip.duration,
                     itemBuilder: (context, index) {
                       final calendarDay =
-                          state.currentTrip.initDate.add(Duration(days: index));
+                          state.trip.initDate.add(Duration(days: index));
                       final day = DateFormat('dd LLL').format(calendarDay);
                       return Padding(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
-                          onPressed: state.currentDayIndex == index
+                          onPressed: state.dayIndex == index
                               ? null
                               : () => {
                                     context
-                                        .read<TripsCubit>()
+                                        .read<TripDetailCubit>()
                                         .refreshSelectedDay(index)
                                   },
                           child: Text(
@@ -96,12 +64,12 @@ class CurrentTripForm extends BasePage {
             ),
             Expanded(
               flex: 9,
-              child: BlocBuilder<TripsCubit, TripsState>(
+              child: BlocBuilder<TripDetailCubit, TripDetailState>(
                 builder: (context, state) {
                   return SelectedDayTripData(
-                    trip: state.currentTrip,
-                    index: state.currentDayIndex,
-                    initTripDay: state.currentTrip.initDate,
+                    trip: state.trip,
+                    index: state.dayIndex,
+                    initTripDay: state.trip.initDate,
                   );
                 },
               ),

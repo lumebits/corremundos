@@ -8,13 +8,12 @@ class TripEvent extends Equatable {
   TripEvent(
       {
         DateTime? time,
-        DateTime? endTime,
+        this.endTime,
         String? fileUrl,
         String? location,
         String? description,
         EventType? type,})
       : time = time ?? DateTime.now(),
-        endTime = endTime ?? DateTime.now(),
         fileUrl = fileUrl ?? '',
         location = location ?? '',
         description = description ?? '',
