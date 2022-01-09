@@ -43,9 +43,6 @@ class CurrentTripForm extends BasePage {
   PreferredSizeWidget? appBar(BuildContext context) => null;
 
   @override
-  Future<bool> onWillPop(BuildContext context) => Future.value(false);
-
-  @override
   bool avoidBottomInset() => true;
 
   @override

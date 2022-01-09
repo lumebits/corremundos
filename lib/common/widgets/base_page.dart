@@ -19,17 +19,11 @@ abstract class BasePage extends StatelessWidget {
   Widget? floatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.of(context)
-            .push<bool>(
+        Navigator.of(context).push<Route>(
           MaterialPageRoute(
             builder: (context) => const CreateTripPage(),
           ),
-        )
-            .then((value) {
-          if (value == true) {
-            context.read<TripsCubit>().loadMyTrips();
-          }
-        });
+        );
       },
       elevation: 2,
       child: const Icon(Icons.add_rounded),
@@ -63,7 +57,7 @@ abstract class BasePage extends StatelessWidget {
 
   Widget scaffoldWidget(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => onWillPop(context),
+      onWillPop: () async => onWillPop(context),
       child: Scaffold(
         appBar: appBar(context),
         //extendBody: true,
