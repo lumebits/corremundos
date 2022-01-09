@@ -451,7 +451,7 @@ class _PickAndUploadFile extends StatelessWidget {
           width: double.infinity,
           height: 50,
           child: ElevatedButton.icon(
-            key: const Key('newEventForm_save_button'),
+            key: const Key('newEventForm_pickFile_button'),
             icon: const Icon(
               Icons.cloud_upload_rounded,
               color: Color.fromRGBO(90, 23, 238, 1),
@@ -490,7 +490,7 @@ class _PickAndUploadFile extends StatelessWidget {
           builder: (context, state) {
             if (state.pickedFile != null) {
               return Text(
-                state.pickedFile!.files.first.name,
+                '\u{2611} ${state.pickedFile!.files.first.name}',
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.grey,

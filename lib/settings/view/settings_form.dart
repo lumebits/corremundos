@@ -1,5 +1,7 @@
 import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
+import 'package:corremundos/common/widgets/navigation.dart';
+import 'package:corremundos/profile/view/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -12,55 +14,62 @@ class SettingsForm extends BasePage {
   String title(BuildContext context) => 'Settings';
 
   @override
-  Widget? floatingActionButton(BuildContext context) => null;
+  Widget? bottomNavigationBar() => const Navigation(activeTab: AppTab.settings);
+
+  @override
+  bool avoidBottomInset() => false;
 
   @override
   Widget widget(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-                  ListTile(
-                    title: Text('Profile'),
-                    leading: const Icon(Icons.edit_rounded),
-                    onTap: () {
-                      /*Navigator.of(context).push(MaterialPageRoute<void>(
-                        builder: (context) => const EditProfilePage(),
-                      ),);*/
-                    },
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-                  ListTile(
-                    title: Text('Delete account'),
-                    leading: const Icon(Icons.warning_rounded),
-                    onTap: () => _deleteAllDataConfirmation(context),
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _LogOutButton(),
-                    ],
-                  ),
-                ],
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+      child: Column(
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Divider(
+                color: Colors.grey,
+              ),
+              ListTile(
+                title: const Text('Profile'),
+                leading: const Icon(Icons.edit_rounded),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const ProfilePage(),
+                    ),
+                  );
+                },
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              ListTile(
+                title: const Text('Delete account'),
+                leading: const Icon(Icons.warning_rounded),
+                onTap: () => _deleteAllDataConfirmation(context),
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              const SizedBox(
+                height: 8,
               ),
             ],
           ),
-        ));
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: _LogOutButton(),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -70,21 +79,24 @@ Future<bool> _deleteAllDataConfirmation(BuildContext context) {
     builder: (BuildContext context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: BorderRadius.circular(25),
         ),
-        title: Text('Do you want to delete your account and lose all your trips and data?'),
+        title: const Text(
+          'Do you want to delete your account and lose your trips and data?',
+        ),
         actions: <Widget>[
           Row(
             children: <Widget>[
               Expanded(
-                  child: OutlinedButton(
-                style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-                key: const Key('deleteAccount_discard_iconButton'),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text('Cancel'),
-              )),
+                child: OutlinedButton(
+                  style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                  key: const Key('deleteAccount_discard_iconButton'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text('Cancel'),
+                ),
+              ),
               const SizedBox(
                 width: 8,
               ),
@@ -95,7 +107,7 @@ Future<bool> _deleteAllDataConfirmation(BuildContext context) {
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Delete'),
+                  child: const Text('Delete'),
                 ),
               ),
             ],

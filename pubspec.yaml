@@ -33,6 +33,8 @@ dependencies:
   google_fonts: ^2.2.0
   intl: ^0.17.0
   pdf_render: ^1.0.18
+  profile_repository:
+    path: packages/profile_repository
   timeline_tile: ^2.0.0
   top_snackbar_flutter: ^1.0.2
   transparent_image: ^2.0.0
