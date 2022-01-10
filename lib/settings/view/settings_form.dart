@@ -1,6 +1,8 @@
 import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
+import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:corremundos/profile/view/profile_page.dart';
+import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -14,6 +16,9 @@ class SettingsForm extends BasePage {
 
   @override
   Widget? floatingActionButton(BuildContext context) => null;
+
+  @override
+  List<Widget>? actions(BuildContext context) => null;
 
   @override
   Widget widget(BuildContext context) {
@@ -113,7 +118,8 @@ Future<bool> _deleteAllDataConfirmation(BuildContext context) {
     },
   ).then((value) {
     if (value == true) {
-      // TODO(palomapiot): delete all trips
+      context.read<TripsCubit>().deleteTrips();
+      context.read<ProfileCubit>().deleteProfile();
       context.read<AppBloc>().add(AppDeleteUserRequested());
       Navigator.of(context).pop();
       showTopSnackBar(

@@ -33,7 +33,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(state.copyWith(isLoading: true));
     await uploadFiles().then((val) {
       final profile = Profile(
-        uid: '',
+        uid: authRepository.currentUser.id,
+        id: state.profile.id,
         name: state.profile.name,
         documents: state.profile.documents,
       );
@@ -82,5 +83,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
     }
+  }
+
+  Future<void> deleteProfile() async {
+    await profileRepository.deleteProfile(authRepository.currentUser.id);
   }
 }

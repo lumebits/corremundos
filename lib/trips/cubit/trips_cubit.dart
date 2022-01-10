@@ -78,6 +78,10 @@ class TripsCubit extends Cubit<TripsState> {
     emit(state.copyWith(currentDayIndex: index, isLoading: false));
   }
 
+  Future<void> deleteTrips() async {
+    await tripsRepository.deleteTrips(authRepository.currentUser.id);
+  }
+
   int daysBetween(DateTime from, DateTime to) {
     return (DateTime(to.year, to.month, to.day)
                 .difference(DateTime(from.year, from.month, from.day))

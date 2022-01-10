@@ -3,6 +3,7 @@ import 'package:corremundos/login/cubit/login_cubit.dart';
 import 'package:corremundos/login/view/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -25,7 +26,8 @@ class LoginPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: BlocProvider(
-          create: (_) => LoginCubit(context.read<AuthRepository>()),
+          create: (_) => LoginCubit(
+              context.read<AuthRepository>(), FirebaseProfileRepository(),),
           child: const LoginForm(),
         ),
       ),

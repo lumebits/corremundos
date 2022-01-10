@@ -74,10 +74,9 @@ class _Documents extends StatelessWidget {
           previous.profile.documents != current.profile.documents,
       builder: (context, state) {
         if (state.profile.documents!.isEmpty) {
-          return const Center();
-        } else if (state.profile.documents?.length == 1) {
-          return OtherDocuments(
-            fileUrl: state.profile.documents?.first as String,
+          return const SizedBox(
+            height: 500,
+            child: Center(child: Text('No documents')),
           );
         } else {
           return SizedBox(

@@ -31,7 +31,7 @@ class FirebaseProfileRepository implements ProfileRepository {
 
   @override
   Future<void> updateOrCreateProfile(Profile profile, String uid) {
-    if (profile.uid.isNotEmpty) {
+    if (profile.id.isNotEmpty) {
       return collection.doc(profile.id).update(profile.toEntity().toDocument());
     } else {
       return collection
@@ -52,6 +52,18 @@ class FirebaseProfileRepository implements ProfileRepository {
       print("Done: $value");
       return value;
     }));
+  }
+
+  @override
+  Future<void> deleteProfile(String uid) async {
+    return collection
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        collection.doc(element.id).delete();
+      }
+    });
   }
 
 }
