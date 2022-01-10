@@ -12,6 +12,9 @@ class TripsForm extends BasePage {
   const TripsForm({Key? key}) : super(key, appTab: AppTab.trips);
 
   @override
+  String title(BuildContext context) => 'My Trips';
+
+  @override
   List<BlocListener> listeners(BuildContext context) {
     return [
       BlocListener<TripsCubit, TripsState>(
@@ -33,9 +36,6 @@ class TripsForm extends BasePage {
   }
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => null;
-
-  @override
   bool avoidBottomInset() => false;
 
   @override
@@ -45,38 +45,49 @@ class TripsForm extends BasePage {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            const SizedBox(
-              height: 8,
-            ),
-            Center(
-              child: Text(
-                'My Trips',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
             Expanded(
               child: BlocBuilder<TripsCubit, TripsState>(
                 builder: (context, state) {
                   final trips = state.myTrips + state.sharedWithMeTrips;
-                  return state.isLoading
-                      ? ListView.separated(
-                          itemCount: 3,
-                          itemBuilder: (context, index) =>
-                              const TripsCardSkeleton(),
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 16 / 2),
-                        )
-                      : ListView.separated(
-                          itemCount: trips.length,
-                          itemBuilder: (context, index) {
-                            return TripCardWidget(trips[index]);
-                          },
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 16 / 2),
-                        );
+                  if (state.isLoading || trips.isNotEmpty) {
+                    return state.isLoading
+                        ? ListView.separated(
+                            itemCount: 3,
+                            itemBuilder: (context, index) =>
+                                const TripsCardSkeleton(),
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 16 / 2),
+                          )
+                        : ListView.separated(
+                            itemCount: trips.length,
+                            itemBuilder: (context, index) {
+                              return TripCardWidget(trips[index]);
+                            },
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: 16 / 2),
+                          );
+                  } else {
+                    return Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Image(
+                              image: AssetImage('assets/noevents.png'),
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'No future trips!',
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Color.fromRGBO(90, 23, 238, 1),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ),

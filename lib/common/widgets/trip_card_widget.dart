@@ -148,7 +148,7 @@ class TripCardWidget extends StatelessWidget {
   Decoration _cardDecoration(String imageUrl) {
     return BoxDecoration(
       image: DecorationImage(
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.cover,
         image: CachedNetworkImageProvider(imageUrl),
         colorFilter: ColorFilter.mode(
           Colors.black.withOpacity(0.38),

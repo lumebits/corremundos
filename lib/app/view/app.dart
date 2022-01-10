@@ -3,12 +3,14 @@ import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/app/routes/routes.dart';
 import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/l10n/l10n.dart';
+import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:corremundos/theme.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:profile_repository/profile_repository.dart';
 import 'package:trips_repository/trips_repository.dart';
 
 class App extends StatelessWidget {
@@ -39,6 +41,11 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (_) => LoadPdfCubit(),
+          ),
+          BlocProvider(
+            create: (_) =>
+                ProfileCubit(FirebaseProfileRepository(), AuthRepository())
+                  ..loadProfile(),
           ),
         ],
         child: const AppView(),

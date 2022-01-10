@@ -1,5 +1,4 @@
 import 'package:corremundos/login/login.dart';
-import 'package:corremundos/trips/view/trips_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,13 +23,7 @@ class LoginForm extends StatelessWidget {
             ),
           );
         } else if (state.status.isSubmissionSuccess) {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (context) {
-                return const TripsPage();
-              },
-            ),
-          );
+          Navigator.of(context).popUntil((route) => route.isFirst);
         }
       },
       child: Padding(

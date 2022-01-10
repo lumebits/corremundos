@@ -19,6 +19,9 @@ class CurrentTripForm extends BasePage {
   const CurrentTripForm({Key? key}) : super(key, appTab: AppTab.current);
 
   @override
+  String title(BuildContext context) => 'Current Trip';
+
+  @override
   List<BlocListener> listeners(BuildContext context) {
     return [
       BlocListener<TripsCubit, TripsState>(
@@ -40,9 +43,6 @@ class CurrentTripForm extends BasePage {
   }
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => null;
-
-  @override
   bool avoidBottomInset() => true;
 
   @override
@@ -55,42 +55,48 @@ class CurrentTripForm extends BasePage {
             const SizedBox(
               height: 8,
             ),
-            Center(
-              child: Text(
-                'Current Trip',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
             Expanded(
               child: BlocBuilder<TripsCubit, TripsState>(
                 builder: (context, state) {
-                  return ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.tripDays,
-                    itemBuilder: (context, index) {
-                      final calendarDay =
-                          state.currentTrip.initDate.add(Duration(days: index));
-                      final day = DateFormat('dd LLL').format(calendarDay);
-                      return Padding(
-                        padding: const EdgeInsets.all(6),
-                        child: ElevatedButton(
-                          onPressed: state.currentDayIndex == index
-                              ? null
-                              : () => {
-                                    context
-                                        .read<TripsCubit>()
-                                        .refreshSelectedDay(index)
-                                  },
-                          child: Text(
-                            'Day ${index + 1} - $day',
+                  if (state.currentTrip.isNotEmpty) {
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.tripDays,
+                      itemBuilder: (context, index) {
+                        final calendarDay = state.currentTrip.initDate
+                            .add(Duration(days: index));
+                        final day = DateFormat('dd LLL').format(calendarDay);
+                        return Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: ElevatedButton(
+                            onPressed: state.currentDayIndex == index
+                                ? null
+                                : () => {
+                                      context
+                                          .read<TripsCubit>()
+                                          .refreshSelectedDay(index)
+                                    },
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                      (states) {
+                                if (states.contains(MaterialState.disabled)) {
+                                  return const Color.fromRGBO(90, 23, 238, 1);
+                                }
+                                return Colors.grey;
+                              }),
+                            ),
+                            child: Text(
+                              'Day ${index + 1} - $day',
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center();
+                  }
                 },
               ),
             ),
@@ -98,11 +104,34 @@ class CurrentTripForm extends BasePage {
               flex: 9,
               child: BlocBuilder<TripsCubit, TripsState>(
                 builder: (context, state) {
-                  return SelectedDayTripData(
-                    trip: state.currentTrip,
-                    index: state.currentDayIndex,
-                    initTripDay: state.currentTrip.initDate,
-                  );
+                  if (state.currentTrip.isNotEmpty) {
+                    return SelectedDayTripData(
+                      trip: state.currentTrip,
+                      index: state.currentDayIndex,
+                      initTripDay: state.currentTrip.initDate,
+                    );
+                  } else {
+                    return Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Image(
+                              image: AssetImage('assets/noevents.png'),
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'No current trip!',
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Color.fromRGBO(90, 23, 238, 1),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ),

@@ -106,6 +106,18 @@ class FirebaseTripsRepository implements TripsRepository {
               return value;
             }));
   }
+
+  @override
+  Future<void> deleteTrips(String uid) async {
+    return collection
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        collection.doc(element.id).delete();
+      }
+    });
+  }
 }
 
 const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';

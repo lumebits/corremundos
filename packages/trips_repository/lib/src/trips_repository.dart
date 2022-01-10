@@ -17,4 +17,5 @@ abstract class TripsRepository {
 
   Future<String?> uploadFileToStorage(Uint8List uint8list, String name);
 
+  Future<void> deleteTrips(String uid);
 }
