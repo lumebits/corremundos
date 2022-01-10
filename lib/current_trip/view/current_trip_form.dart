@@ -4,7 +4,6 @@ import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/create_event/create_event.dart';
-import 'package:corremundos/settings/view/settings_page.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';

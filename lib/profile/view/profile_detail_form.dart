@@ -88,8 +88,8 @@ class _Documents extends StatelessWidget {
               itemCount: state.profile.documents?.length,
               itemBuilder: (context, index) {
                 return OtherDocuments(
-                      fileUrl: state.profile.documents![index] as String,);
-
+                  fileUrl: state.profile.documents![index] as String,
+                );
               },
             ),
           );
@@ -126,11 +126,11 @@ class OtherDocuments extends StatelessWidget {
             );
           } else {
             return PdfViewer.openFile(
-                state.path,
-                params: const PdfViewerParams(
-                  panEnabled: false,
-                  maxScale: 30,
-                ),
+              state.path,
+              params: const PdfViewerParams(
+                panEnabled: false,
+                maxScale: 30,
+              ),
             );
           }
         },
@@ -140,13 +140,13 @@ class OtherDocuments extends StatelessWidget {
         panEnabled: false,
         maxScale: 30,
         child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(fileUrl),
-                fit: BoxFit.contain,
-              ),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: CachedNetworkImageProvider(fileUrl),
+              fit: BoxFit.contain,
             ),
           ),
+        ),
       );
     }
   }
