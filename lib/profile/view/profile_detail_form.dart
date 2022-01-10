@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/profile/cubit/profile_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class ProfileDetailForm extends BasePage {
   const ProfileDetailForm({Key? key}) : super(key, appTab: AppTab.profile);
@@ -43,30 +44,21 @@ class ProfileDetailForm extends BasePage {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: Text(
-                        state.profile.name != null && state.profile.name != ''
-                            ? 'Your profile, ${state.profile.name}!'
-                            : 'Your profile',
-                        style: const TextStyle(fontSize: 24),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _Documents()
-                ],
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  state.profile.name != null && state.profile.name != ''
+                      ? 'Welcome, ${state.profile.name}!'
+                      : 'Welcome!',
+                  style: const TextStyle(fontSize: 24),
+                ),
               ),
-            ),
+              _Documents()
+            ],
           ),
         );
       },
@@ -84,11 +76,78 @@ class _Documents extends StatelessWidget {
         if (state.profile.documents!.isEmpty) {
           return const Center();
         } else if (state.profile.documents?.length == 1) {
-          return const Text('Show one doc');
+          return OtherDocuments(
+            fileUrl: state.profile.documents?.first as String,
+          );
         } else {
-          return const Text('Show multiple doc');
+          return SizedBox(
+            height: 500,
+            child: ListView.builder(
+              itemExtent: MediaQuery.of(context).size.width - (20 * 2),
+              scrollDirection: Axis.horizontal,
+              itemCount: state.profile.documents?.length,
+              itemBuilder: (context, index) {
+                return OtherDocuments(
+                      fileUrl: state.profile.documents![index] as String,);
+
+              },
+            ),
+          );
         }
       },
     );
+  }
+}
+
+class OtherDocuments extends StatelessWidget {
+  const OtherDocuments({
+    Key? key,
+    required this.fileUrl,
+  }) : super(key: key);
+
+  final String fileUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    if (fileUrl.contains('.pdf?') || fileUrl.endsWith('.pdf')) {
+      context.read<LoadPdfCubit>().load(fileUrl);
+      return BlocBuilder<LoadPdfCubit, LoadPdfState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: const Center(child: CircularProgressIndicator()),
+            );
+          } else if (state.error) {
+            return const Center(
+              child: Text('Error loading file.'),
+            );
+          } else {
+            return PdfViewer.openFile(
+                state.path,
+                params: const PdfViewerParams(
+                  panEnabled: false,
+                  maxScale: 30,
+                ),
+            );
+          }
+        },
+      );
+    } else {
+      return InteractiveViewer(
+        panEnabled: false,
+        maxScale: 30,
+        child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(fileUrl),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+      );
+    }
   }
 }

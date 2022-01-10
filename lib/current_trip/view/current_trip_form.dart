@@ -76,8 +76,19 @@ class CurrentTripForm extends BasePage {
                                         .read<TripsCubit>()
                                         .refreshSelectedDay(index)
                                   },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                                    (states) {
+                              if (states.contains(MaterialState.disabled)) {
+                                return const Color.fromRGBO(90, 23, 238, 1);
+                              }
+                              return Colors.grey;
+                            }),
+                          ),
                           child: Text(
                             'Day ${index + 1} - $day',
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       );
@@ -103,7 +114,6 @@ class CurrentTripForm extends BasePage {
       ),
     );
   }
-
 }
 
 class SelectedDayTripData extends StatelessWidget {

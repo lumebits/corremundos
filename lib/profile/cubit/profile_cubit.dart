@@ -31,18 +31,18 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> save() async {
     emit(state.copyWith(isLoading: true));
-      await uploadFiles().then((val) {
-        final profile = Profile(
-          uid: '',
-          name: state.profile.name,
-          documents: state.profile.documents,
-        );
-        profileRepository.updateOrCreateProfile(
-          profile,
-          authRepository.currentUser.id,
-        );
-        emit(state.copyWith(isLoading: false));
-      });
+    await uploadFiles().then((val) {
+      final profile = Profile(
+        uid: '',
+        name: state.profile.name,
+        documents: state.profile.documents,
+      );
+      profileRepository.updateOrCreateProfile(
+        profile,
+        authRepository.currentUser.id,
+      );
+      emit(state.copyWith(isLoading: false));
+    });
   }
 
   Future<void> uploadFiles() async {

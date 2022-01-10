@@ -201,7 +201,7 @@ class _GetTripImageButton extends StatelessWidget {
 Decoration _cardDecoration(String file) {
   return BoxDecoration(
     image: DecorationImage(
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.cover,
       image: AssetImage(file),
     ),
   );

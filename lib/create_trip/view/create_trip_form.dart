@@ -111,7 +111,7 @@ class _GetTripImageButton extends StatelessWidget {
 Decoration _cardDecoration() {
   return const BoxDecoration(
     image: DecorationImage(
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.cover,
       image: AssetImage('assets/trip_placeholder.jpg'),
     ),
   );

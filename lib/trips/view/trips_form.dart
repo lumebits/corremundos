@@ -45,9 +45,6 @@ class TripsForm extends BasePage {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            const SizedBox(
-              height: 8,
-            ),
             Expanded(
               child: BlocBuilder<TripsCubit, TripsState>(
                 builder: (context, state) {

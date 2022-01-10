@@ -1,5 +1,4 @@
 import 'package:corremundos/profile/view/profile_detail_form.dart';
-import 'package:corremundos/profile/view/profile_form.dart';
 import 'package:flutter/material.dart';
 
 class ProfileDetailPage extends StatelessWidget {

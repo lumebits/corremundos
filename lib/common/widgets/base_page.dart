@@ -18,7 +18,10 @@ abstract class BasePage extends StatelessWidget {
     return [
       IconButton(
         key: const Key('settings_iconButton'),
-        icon: const Icon(Icons.settings_rounded, color: Colors.grey,),
+        icon: const Icon(
+          Icons.settings_rounded,
+          color: Colors.grey,
+        ),
         onPressed: () => Navigator.of(context).push<void>(
           MaterialPageRoute(
             builder: (context) => const SettingsPage(),
