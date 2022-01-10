@@ -49,7 +49,7 @@ class TripsForm extends BasePage {
               child: BlocBuilder<TripsCubit, TripsState>(
                 builder: (context, state) {
                   final trips = state.myTrips + state.sharedWithMeTrips;
-                  if (trips.isNotEmpty) {
+                  if (state.isLoading || trips.isNotEmpty) {
                     return state.isLoading
                         ? ListView.separated(
                             itemCount: 3,

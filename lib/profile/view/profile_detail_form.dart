@@ -46,7 +46,7 @@ class ProfileDetailForm extends BasePage {
         return Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Align(
                 alignment: Alignment.centerLeft,
