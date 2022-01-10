@@ -29,7 +29,42 @@ class ProfileCubit extends Cubit<ProfileState> {
     });
   }
 
-  Future<void> save() async {}
+  Future<void> save() async {
+    emit(state.copyWith(isLoading: true));
+      await uploadFiles().then((val) {
+        final profile = Profile(
+          uid: '',
+          name: state.profile.name,
+          documents: state.profile.documents,
+        );
+        profileRepository.updateOrCreateProfile(
+          profile,
+          authRepository.currentUser.id,
+        );
+        emit(state.copyWith(isLoading: false));
+      });
+  }
+
+  Future<void> uploadFiles() async {
+    final uploadedFiles = <String>[];
+    if (state.pickedFiles.isNotEmpty) {
+      for (final file in state.pickedFiles) {
+        if (file.bytes != null) {
+          await profileRepository
+              .uploadFileToStorage(file.bytes!, file.name)
+              .then((file) {
+            if (file != null) {
+              uploadedFiles.add(file);
+              final profile = state.profile.copyWith(documents: uploadedFiles);
+              emit(state.copyWith(profile: profile));
+            } else {
+              emit(state.copyWith(isLoading: false, error: true));
+            }
+          });
+        }
+      }
+    }
+  }
 
   void nameChanged(String value) {
     final profile = state.profile.copyWith(name: value);
