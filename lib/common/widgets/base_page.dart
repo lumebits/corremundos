@@ -1,5 +1,6 @@
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/create_trip/view/create_trip_page.dart';
+import 'package:corremundos/settings/view/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +14,19 @@ abstract class BasePage extends StatelessWidget {
   Widget? bottomNavigationBar() =>
       appTab != null ? Navigation(activeTab: appTab!) : null;
 
-  List<Widget>? actions(BuildContext context) => null;
+  List<Widget>? actions(BuildContext context) {
+    return [
+      IconButton(
+        key: const Key('settings_iconButton'),
+        icon: const Icon(Icons.settings_rounded, color: Colors.grey,),
+        onPressed: () => Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (context) => const SettingsPage(),
+          ),
+        ),
+      )
+    ];
+  }
 
   Widget? floatingActionButton(BuildContext context) {
     return FloatingActionButton(

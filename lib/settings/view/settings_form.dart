@@ -1,6 +1,5 @@
 import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
-import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/profile/view/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,10 +13,7 @@ class SettingsForm extends BasePage {
   String title(BuildContext context) => 'Settings';
 
   @override
-  Widget? bottomNavigationBar() => const Navigation(activeTab: AppTab.settings);
-
-  @override
-  bool avoidBottomInset() => false;
+  Widget? floatingActionButton(BuildContext context) => null;
 
   @override
   Widget widget(BuildContext context) {
@@ -118,7 +114,6 @@ Future<bool> _deleteAllDataConfirmation(BuildContext context) {
   ).then((value) {
     if (value == true) {
       // TODO(palomapiot): delete all trips
-
       context.read<AppBloc>().add(AppDeleteUserRequested());
       Navigator.of(context).pop();
       showTopSnackBar(

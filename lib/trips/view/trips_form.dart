@@ -12,6 +12,9 @@ class TripsForm extends BasePage {
   const TripsForm({Key? key}) : super(key, appTab: AppTab.trips);
 
   @override
+  String title(BuildContext context) => 'My Trips';
+
+  @override
   List<BlocListener> listeners(BuildContext context) {
     return [
       BlocListener<TripsCubit, TripsState>(
@@ -33,9 +36,6 @@ class TripsForm extends BasePage {
   }
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => null;
-
-  @override
   bool avoidBottomInset() => false;
 
   @override
@@ -45,15 +45,6 @@ class TripsForm extends BasePage {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            const SizedBox(
-              height: 8,
-            ),
-            Center(
-              child: Text(
-                'My Trips',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
             const SizedBox(
               height: 8,
             ),

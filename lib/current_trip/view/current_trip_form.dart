@@ -4,6 +4,7 @@ import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/create_event/create_event.dart';
+import 'package:corremundos/settings/view/settings_page.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,9 @@ import 'package:trips_repository/trips_repository.dart';
 
 class CurrentTripForm extends BasePage {
   const CurrentTripForm({Key? key}) : super(key, appTab: AppTab.current);
+
+  @override
+  String title(BuildContext context) => 'Current Trip';
 
   @override
   List<BlocListener> listeners(BuildContext context) {
@@ -40,9 +44,6 @@ class CurrentTripForm extends BasePage {
   }
 
   @override
-  PreferredSizeWidget? appBar(BuildContext context) => null;
-
-  @override
   bool avoidBottomInset() => true;
 
   @override
@@ -52,15 +53,6 @@ class CurrentTripForm extends BasePage {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            const SizedBox(
-              height: 8,
-            ),
-            Center(
-              child: Text(
-                'Current Trip',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
             const SizedBox(
               height: 8,
             ),
@@ -111,6 +103,7 @@ class CurrentTripForm extends BasePage {
       ),
     );
   }
+
 }
 
 class SelectedDayTripData extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum AppTab { trips, current, addTrip, calendar, settings }
+enum AppTab { trips, current, addTrip, calendar, profile }
 
 class Navigation extends StatelessWidget {
   const Navigation({Key? key, this.activeTab = AppTab.trips}) : super(key: key);
@@ -77,17 +77,17 @@ class Navigation extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.settings_rounded),
-                  color: activeTab == AppTab.settings
+                  icon: const Icon(Icons.person_rounded),
+                  color: activeTab == AppTab.profile
                       ? Theme.of(context).colorScheme.primary
                       : Colors.grey,
                   onPressed: () {
                     context
                         .read<AppBloc>()
-                        .add(const NavigationRequested(AppTab.settings));
+                        .add(const NavigationRequested(AppTab.profile));
                   },
                 ),
-                const Text('Settings'),
+                const Text('Profile'),
               ],
             )
           ],
