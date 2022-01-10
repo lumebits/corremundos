@@ -76,7 +76,16 @@ class _Documents extends StatelessWidget {
         if (state.profile.documents!.isEmpty) {
           return const SizedBox(
             height: 500,
-            child: Center(child: Text('No documents')),
+            child: Center(
+              child: Text(
+                'Press the settings icon to attach your travel documents!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  color: Color.fromRGBO(90, 23, 238, 1),
+                ),
+              ),
+            ),
           );
         } else {
           return SizedBox(
