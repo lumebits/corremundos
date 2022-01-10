@@ -31,7 +31,7 @@ class FirebaseProfileRepository implements ProfileRepository {
 
   @override
   Future<void> updateOrCreateProfile(Profile profile, String uid) {
-    if (profile.id.isNotEmpty) {
+    if (profile.name != '' || profile.documents!.isNotEmpty) {
       return collection.doc(profile.id).update(profile.toEntity().toDocument());
     } else {
       return collection

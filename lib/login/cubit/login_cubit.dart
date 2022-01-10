@@ -62,19 +62,22 @@ class LoginCubit extends Cubit<LoginState> {
     if (!state.status.isValidated) return;
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
     try {
-      await _authRepository.signUp(
+      await _authRepository
+          .signUp(
         email: state.email.value,
         password: state.password.value,
-      );
-      final profile = Profile(
-        uid: '',
-        name: '',
-        documents: const <String>[],
-      );
-      await profileRepository.updateOrCreateProfile(
-        profile,
-        _authRepository.currentUser.id,
-      );
+      )
+          .then((value) {
+        final profile = Profile(
+          uid: _authRepository.currentUser.id,
+          name: '',
+          documents: const <String>[],
+        );
+        profileRepository.updateOrCreateProfile(
+          profile,
+          _authRepository.currentUser.id,
+        );
+      });
       emit(state.copyWith(status: FormzStatus.submissionSuccess));
     } on Exception {
       emit(state.copyWith(status: FormzStatus.submissionFailure));

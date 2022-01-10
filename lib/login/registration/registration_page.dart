@@ -27,7 +27,9 @@ class RegistrationPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         body: BlocProvider(
           create: (_) => LoginCubit(
-              context.read<AuthRepository>(), FirebaseProfileRepository(),),
+            context.read<AuthRepository>(),
+            FirebaseProfileRepository(),
+          ),
           child: const RegistrationForm(),
         ),
       ),
