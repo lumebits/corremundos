@@ -19,10 +19,49 @@ class CreateEventForm extends BasePage {
   final EventType eventType;
 
   @override
-  String title(BuildContext context) => 'Create Trip Event';
+  Widget? floatingActionButton(BuildContext context) => null;
 
   @override
-  Widget? floatingActionButton(BuildContext context) => null;
+  List<Widget>? actions(BuildContext context) => null;
+
+  @override
+  PreferredSizeWidget? appBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(220),
+      child: AppBar(
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: eventType == EventType.transport
+              ? _cardDecoration('assets/transportation_placeholder.jpg')
+              : eventType == EventType.accommodation
+                  ? _cardDecoration('assets/accommodation_placeholder.jpg')
+                  : _cardDecoration('assets/activity_placeholder.jpg'),
+        ),
+        title: BlocBuilder<CreateEventCubit, CreateEventState>(
+          builder: (context, state) {
+            return FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                eventType == EventType.transport
+                    ? '${formatDay()}: Add transport'
+                    : eventType == EventType.accommodation
+                        ? '${formatDay()}: Add accommodation'
+                        : '${formatDay()}: Add activity',
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            );
+          },
+        ),
+        actions: actions(context),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+    );
+  }
+
+  String formatDay() => DateFormat('dd LLL').format(day);
 
   @override
   Widget widget(BuildContext context) {
@@ -34,7 +73,7 @@ class CreateEventForm extends BasePage {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              if (eventType == EventType.transportation)
+              if (eventType == EventType.transport)
                 _TransportationForm(trip, day)
               else
                 eventType == EventType.accommodation
@@ -48,6 +87,19 @@ class CreateEventForm extends BasePage {
   }
 }
 
+Decoration _cardDecoration(String file) {
+  return BoxDecoration(
+    image: DecorationImage(
+      fit: BoxFit.cover,
+      image: AssetImage(file),
+      colorFilter: ColorFilter.mode(
+        Colors.black.withOpacity(0.35),
+        BlendMode.darken,
+      ),
+    ),
+  );
+}
+
 class _TransportationForm extends StatelessWidget {
   const _TransportationForm(this.trip, this.day);
 
@@ -59,22 +111,6 @@ class _TransportationForm extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(
-              '${DateFormat('dd LLL').format(day)}: Add conveyance',
-              style: const TextStyle(
-                fontSize: 24,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        const _GetTripImageButton('assets/transportation_placeholder.jpg'),
-        const SizedBox(height: 24),
         const _TripLocationInput('Route'),
         const SizedBox(height: 8),
         _TripDescriptionInput(),
@@ -85,7 +121,7 @@ class _TransportationForm extends StatelessWidget {
         const SizedBox(height: 8),
         _PickAndUploadFile(),
         const SizedBox(height: 24),
-        const _SaveTrip(EventType.transportation),
+        const _SaveTrip(EventType.transport),
       ],
     );
   }
@@ -102,22 +138,6 @@ class _AccommodationForm extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(
-              '${DateFormat('dd LLL').format(day)}: Add accommodation',
-              style: const TextStyle(
-                fontSize: 24,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        const _GetTripImageButton('assets/accommodation_placeholder.jpg'),
-        const SizedBox(height: 24),
         const _TripLocationInput('Location'),
         const SizedBox(height: 8),
         _TripDescriptionInput(),
@@ -145,22 +165,6 @@ class _ActivityForm extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(
-              '${DateFormat('dd LLL').format(day)}: Add activity',
-              style: const TextStyle(
-                fontSize: 24,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        const _GetTripImageButton('assets/activity_placeholder.jpg'),
-        const SizedBox(height: 24),
         const _TripLocationInput('Location'),
         const SizedBox(height: 8),
         _TripDescriptionInput(),
@@ -171,40 +175,6 @@ class _ActivityForm extends StatelessWidget {
       ],
     );
   }
-}
-
-class _GetTripImageButton extends StatelessWidget {
-  const _GetTripImageButton(this.file, {Key? key}) : super(key: key);
-
-  final String file;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200 * 1.85,
-      height: 200,
-      child: Card(
-        shadowColor: Colors.black54,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
-        clipBehavior: Clip.antiAlias,
-        elevation: 9,
-        child: Ink(
-          decoration: _cardDecoration(file),
-        ),
-      ),
-    );
-  }
-}
-
-Decoration _cardDecoration(String file) {
-  return BoxDecoration(
-    image: DecorationImage(
-      fit: BoxFit.cover,
-      image: AssetImage(file),
-    ),
-  );
 }
 
 class _TripLocationInput extends StatelessWidget {

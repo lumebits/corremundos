@@ -175,7 +175,7 @@ class SelectedDayTripData extends StatelessWidget {
     if (i < events.length) {
       final event = events[i] as TripEvent;
       final eventType = event.type;
-      final icon = eventType == EventType.transportation
+      final icon = eventType == EventType.transport
           ? Icons.airplanemode_active_rounded
           : eventType == EventType.accommodation
               ? Icons.hotel_rounded
@@ -186,7 +186,7 @@ class SelectedDayTripData extends StatelessWidget {
           iconData: icon,
           size: 20,
         ),
-        time: eventType == EventType.transportation
+        time: eventType == EventType.transport
             ? '${formatHour(event.time)} - '
                 '${formatHour(event.endTime!)}'
             : DateFormat('dd LLL HH:mm')
@@ -412,7 +412,7 @@ Future<bool> showNewEventDialog(
     builder: addNewEventDialog,
   ).then((value) {
     if (value != null) {
-      var eventType = EventType.transportation;
+      var eventType = EventType.transport;
       if (value == 1) {
         eventType = EventType.accommodation;
       } else if (value == 2) {
@@ -432,7 +432,7 @@ Future<bool> showNewEventDialog(
 
 AlertDialog addNewEventDialog(BuildContext context) {
   var selectedType = 0;
-  final selectedList = ['Transportation', 'Accommodation', 'Activity'];
+  final selectedList = ['Transport', 'Accommodation', 'Activity'];
   return AlertDialog(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(25),

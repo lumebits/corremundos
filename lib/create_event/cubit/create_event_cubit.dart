@@ -93,7 +93,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     if (state.pickedFile != null) {
       await uploadFile().then((uploadedFileUrl) {
         if (uploadedFileUrl != null) {
-          if (eventType == EventType.transportation) {
+          if (eventType == EventType.transport) {
             final transportation = <String, dynamic>{
               'file': uploadedFileUrl,
               'location': state.tripEvent.location,
@@ -130,7 +130,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         }
       });
     } else {
-      if (eventType == EventType.transportation) {
+      if (eventType == EventType.transport) {
         final transportation = <String, dynamic>{
           'file': '',
           'location': state.tripEvent.location,

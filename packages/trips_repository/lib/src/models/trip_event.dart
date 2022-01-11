@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-enum EventType { transportation, accommodation, activity }
+enum EventType { transport, accommodation, activity }
 
 @immutable
 class TripEvent extends Equatable {

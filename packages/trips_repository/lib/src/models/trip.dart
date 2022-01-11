@@ -171,7 +171,7 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
         fileUrl: t['file'] as String,
         location: t['location'] as String,
         description: t['notes'] as String,
-        type: EventType.transportation);
+        type: EventType.transport);
     var index = daysBetween(entity.initDate!, time);
     if (events.containsKey(index)) {
       events[index]!.add(event);

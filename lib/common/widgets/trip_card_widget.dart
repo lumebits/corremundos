@@ -97,7 +97,8 @@ class TripCardWidget extends StatelessWidget {
                   AutoSizeText(
                     '${DateFormat('dd LLL').format(trip.initDate)} - '
                     '${DateFormat('dd LLL').format(trip.endDate)} '
-                    '· ${trip.endDate.difference(trip.initDate).inDays} days',
+                    '· ${trip.endDate.difference(trip.initDate).inDays + 1} '
+                    'days',
                     maxLines: 1,
                     style: const TextStyle(
                       color: Colors.white,

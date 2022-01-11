@@ -11,33 +11,32 @@ class CreateTripForm extends BasePage {
   const CreateTripForm({Key? key}) : super(key);
 
   @override
-  String title(BuildContext context) => 'Create Trip';
-
-  @override
   Widget? floatingActionButton(BuildContext context) => null;
 
   @override
-  List<Widget>? actions(BuildContext context) {
-    final items = <Widget>[
-      IconButton(
-        key: const Key('editTrip_save_iconButton'),
-        icon: const Icon(Icons.check),
-        onPressed: () async {
-          await context.read<CreateTripCubit>().saveTrip().then((value) {
-            showTopSnackBar(
-              context,
-              const CustomSnackBar.success(
-                message: 'Trip created',
-                icon: Icon(null),
-                backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-              ),
-            );
-            Navigator.of(context).pop(true);
-          });
-        },
-      )
-    ];
-    return items;
+  List<Widget>? actions(BuildContext context) => null;
+
+  @override
+  PreferredSizeWidget? appBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(220),
+      child: AppBar(
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: _cardDecoration(),
+        ),
+        title: const Text(
+          'Your new trip',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+          ),
+        ),
+        actions: actions(context),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+    );
   }
 
   @override
@@ -52,21 +51,6 @@ class CreateTripForm extends BasePage {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Text(
-                        'Your new trip',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const _GetTripImageButton(),
                   const SizedBox(height: 24),
                   _TripNameInput(),
                   const SizedBox(height: 8),
@@ -85,34 +69,15 @@ class CreateTripForm extends BasePage {
   }
 }
 
-class _GetTripImageButton extends StatelessWidget {
-  const _GetTripImageButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200 * 1.85,
-      height: 200,
-      child: Card(
-        shadowColor: Colors.black54,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
-        clipBehavior: Clip.antiAlias,
-        elevation: 9,
-        child: Ink(
-          decoration: _cardDecoration(),
-        ),
-      ),
-    );
-  }
-}
-
 Decoration _cardDecoration() {
   return const BoxDecoration(
     image: DecorationImage(
       fit: BoxFit.cover,
       image: AssetImage('assets/trip_placeholder.jpg'),
+      colorFilter: ColorFilter.mode(
+        Colors.black26,
+        BlendMode.darken,
+      ),
     ),
   );
 }
