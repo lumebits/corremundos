@@ -137,15 +137,17 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
 
     var checkinEvent = TripEvent(
         time: checkin,
+        isCheckIn: true,
         fileUrl: a['file'] as String,
+        name: a['name'] as String,
         location: a['location'] as String,
-        description: a['notes'] as String,
         type: EventType.accommodation);
     var checkoutEvent = TripEvent(
         time: checkout,
+        isCheckIn: false,
         fileUrl: a['file'] as String,
+        name: a['name'] as String,
         location: a['location'] as String,
-        description: a['notes'] as String,
         type: EventType.accommodation);
 
     var checkinIndex = daysBetween(entity.initDate!, checkin);
@@ -169,8 +171,8 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
         time: time,
         endTime: arrivalTime,
         fileUrl: t['file'] as String,
-        location: t['location'] as String,
-        description: t['notes'] as String,
+        name: t['location'] as String,
+        location: t['notes'] as String,
         type: EventType.transport);
     var index = daysBetween(entity.initDate!, time);
     if (events.containsKey(index)) {
@@ -185,8 +187,8 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
     var event = TripEvent(
         time: time,
         fileUrl: '',
+        name: t['name'] as String,
         location: t['location'] as String,
-        description: t['notes'] as String,
         type: EventType.activity);
     var index = daysBetween(entity.initDate!, time);
     if (events.containsKey(index)) {

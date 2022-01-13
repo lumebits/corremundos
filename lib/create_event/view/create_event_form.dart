@@ -113,7 +113,7 @@ class _TransportationForm extends StatelessWidget {
       children: [
         const _TripLocationInput('Route'),
         const SizedBox(height: 8),
-        _TripDescriptionInput(),
+        const _TripNameInput('Notes'),
         const SizedBox(height: 8),
         _TripEventTimePicker(day, 'Departure time'),
         const SizedBox(height: 8),
@@ -138,9 +138,9 @@ class _AccommodationForm extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const _TripLocationInput('Location'),
+        const _TripNameInput('Name'),
         const SizedBox(height: 8),
-        _TripDescriptionInput(),
+        const _TripLocationInput('Location'),
         const SizedBox(height: 8),
         _TripEventTimePicker(day, 'Check-in'),
         const SizedBox(height: 8),
@@ -165,9 +165,9 @@ class _ActivityForm extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const _TripLocationInput('Location'),
+        const _TripNameInput('Activity'),
         const SizedBox(height: 8),
-        _TripDescriptionInput(),
+        const _TripLocationInput('Location'),
         const SizedBox(height: 8),
         _TripEventTimePicker(day, 'Time'),
         const SizedBox(height: 24),
@@ -186,7 +186,7 @@ class _TripLocationInput extends StatelessWidget {
     final focusNode = FocusNode();
     return BlocBuilder<CreateEventCubit, CreateEventState>(
       buildWhen: (previous, current) =>
-          previous.tripEvent.location != current.tripEvent.location,
+          previous.tripEvent.name != current.tripEvent.name,
       builder: (context, state) {
         return TextField(
           focusNode: focusNode,
@@ -219,13 +219,16 @@ class _TripLocationInput extends StatelessWidget {
   }
 }
 
-class _TripDescriptionInput extends StatelessWidget {
+class _TripNameInput extends StatelessWidget {
+  const _TripNameInput(this.label);
+
+  final String label;
   @override
   Widget build(BuildContext context) {
     final focusNode = FocusNode();
     return BlocBuilder<CreateEventCubit, CreateEventState>(
       buildWhen: (previous, current) =>
-          previous.tripEvent.description != current.tripEvent.description,
+          previous.tripEvent.location != current.tripEvent.location,
       builder: (context, state) {
         return TextField(
           focusNode: focusNode,
@@ -235,7 +238,7 @@ class _TripDescriptionInput extends StatelessWidget {
             color: Color.fromRGBO(90, 23, 238, 1),
           ),
           onChanged: (value) =>
-              context.read<CreateEventCubit>().descriptionChanged(value),
+              context.read<CreateEventCubit>().nameChanged(value),
           keyboardType: TextInputType.text,
           decoration: InputDecoration(
             labelStyle: TextStyle(
@@ -243,7 +246,7 @@ class _TripDescriptionInput extends StatelessWidget {
                   ? Theme.of(context).colorScheme.primary
                   : Colors.grey,
             ),
-            labelText: 'Notes',
+            labelText: label,
             prefix: const Padding(
               padding: EdgeInsets.only(top: 2.5, right: 2.5),
             ),

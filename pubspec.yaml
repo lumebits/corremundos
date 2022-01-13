@@ -42,6 +42,7 @@ dependencies:
   trips_repository:
     path: packages/trips_repository
   unsplash_client: ^2.1.0+1
+  url_launcher: ^6.0.18
   utils:
     path: packages/utils
 

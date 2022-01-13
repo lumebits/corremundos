@@ -9,21 +9,23 @@ class TripEvent extends Equatable {
       {
         DateTime? time,
         this.endTime,
+        this.isCheckIn,
         String? fileUrl,
+        String? name,
         String? location,
-        String? description,
         EventType? type,})
       : time = time ?? DateTime.now(),
         fileUrl = fileUrl ?? '',
+        name = name ?? '',
         location = location ?? '',
-        description = description ?? '',
         type = type ?? EventType.activity;
 
   final DateTime time;
   final DateTime? endTime;
+  final bool? isCheckIn;
   final String fileUrl;
+  final String name;
   final String location;
-  final String description;
   final EventType type;
 
   static TripEvent empty = TripEvent();
@@ -36,9 +38,10 @@ class TripEvent extends Equatable {
   List<Object?> get props => [
     time,
     endTime,
+    isCheckIn,
     fileUrl,
+    name,
     location,
-    description,
     type,
   ];
 
@@ -46,25 +49,28 @@ class TripEvent extends Equatable {
       {
         DateTime? time,
         DateTime? endTime,
+        bool? isCheckIn,
         String? fileUrl,
+        String? name,
         String? location,
-        String? description,
         EventType? type,
       }) {
     return TripEvent(
       time: time ?? this.time,
       endTime: endTime ?? this.endTime,
+      isCheckIn: isCheckIn ?? this.isCheckIn,
       fileUrl: fileUrl ?? this.fileUrl,
+      name: name ?? this.name,
       location: location ?? this.location,
-      description: description ?? this.description,
       type: type ?? this.type,);
   }
 
   @override
   String toString() {
     return 'Event '
-        '{ time: $time, endTime: $endTime, fileUrl: $fileUrl, location: $location, '
-        'description: $description, type: $type }';
+        '{ time: $time, endTime: $endTime, isCheckIn: $isCheckIn, '
+        'fileUrl: $fileUrl, name: $name, location: $location, '
+        'type: $type }';
   }
 
 }

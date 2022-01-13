@@ -114,6 +114,8 @@ class FirebaseTripsRepository implements TripsRepository {
         .get()
         .then((value) {
       for (var element in value.docs) {
+        // TODO(palomapiot): if the element is accommodation or transportation
+        // FirebaseStorage.instance.refFromURL(imageUrl).delete();
         collection.doc(element.id).delete();
       }
     });

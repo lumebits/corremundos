@@ -25,8 +25,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     );
   }
 
-  void descriptionChanged(String value) {
-    final tripEvent = state.tripEvent.copyWith(description: value);
+  void nameChanged(String value) {
+    final tripEvent = state.tripEvent.copyWith(name: value);
     emit(
       state.copyWith(
         tripEvent: tripEvent,
@@ -96,8 +96,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           if (eventType == EventType.transport) {
             final transportation = <String, dynamic>{
               'file': uploadedFileUrl,
-              'location': state.tripEvent.location,
-              'notes': state.tripEvent.description,
+              'location': state.tripEvent.name,
+              'notes': state.tripEvent.location,
               'departureTime': state.tripEvent.time,
               'arrivalTime': state.tripEvent.endTime,
             };
@@ -111,8 +111,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           } else if (eventType == EventType.accommodation) {
             final accommodation = <String, dynamic>{
               'file': uploadedFileUrl,
+              'name': state.tripEvent.name,
               'location': state.tripEvent.location,
-              'notes': state.tripEvent.description,
               'checkin': state.tripEvent.time,
               'checkout': state.tripEvent.endTime,
             };
@@ -133,8 +133,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
       if (eventType == EventType.transport) {
         final transportation = <String, dynamic>{
           'file': '',
-          'location': state.tripEvent.location,
-          'notes': state.tripEvent.description,
+          'location': state.tripEvent.name,
+          'notes': state.tripEvent.location,
           'departureTime': state.tripEvent.time,
           'arrivalTime': state.tripEvent.endTime,
         };
@@ -147,8 +147,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         );
       } else if (eventType == EventType.activity) {
         final activity = <String, dynamic>{
+          'name': state.tripEvent.name,
           'location': state.tripEvent.location,
-          'notes': state.tripEvent.description,
           'time': state.tripEvent.time,
         };
         trip.activities.add(activity);
@@ -160,8 +160,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
       } else if (eventType == EventType.accommodation) {
         final accommodation = <String, dynamic>{
           'file': '',
+          'name': state.tripEvent.name,
           'location': state.tripEvent.location,
-          'notes': state.tripEvent.description,
           'checkin': state.tripEvent.time,
           'checkout': state.tripEvent.endTime,
         };
