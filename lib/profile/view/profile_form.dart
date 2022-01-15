@@ -1,4 +1,5 @@
 import 'package:corremundos/common/widgets/base_page.dart';
+import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -17,38 +18,34 @@ class ProfileForm extends BasePage {
 
   @override
   Widget widget(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Text(
-                        'Your profile',
-                        style: TextStyle(fontSize: 24, color: Colors.black87),
-                      ),
-                    ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 12),
+                  child: Text(
+                    'Your profile',
+                    style: TextStyle(fontSize: 24, color: Colors.black87),
                   ),
-                  const SizedBox(height: 12),
-                  _NameInput(),
-                  const SizedBox(height: 8),
-                  _PickAndUploadFile(),
-                  const SizedBox(height: 24),
-                  _SaveProfile(),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(height: 12),
+              _NameInput(),
+              const SizedBox(height: 8),
+              _PickAndUploadFile(),
+              const SizedBox(height: 24),
+              _SaveProfile(),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -56,36 +53,13 @@ class ProfileForm extends BasePage {
 class _NameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final focusNode = FocusNode();
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      buildWhen: (previous, current) =>
-          previous.profile.name != current.profile.name,
-      builder: (context, state) {
-        return TextField(
-          focusNode: focusNode,
-          key: const Key('profileForm_nameInput_textField'),
-          style: const TextStyle(
-            fontSize: 20,
-            color: Color.fromRGBO(90, 23, 238, 1),
-          ),
-          onChanged: (name) => context.read<ProfileCubit>().nameChanged(name),
-          keyboardType: TextInputType.name,
-          decoration: InputDecoration(
-            labelStyle: TextStyle(
-              color: focusNode.hasFocus
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
-            ),
-            labelText: 'Name',
-            prefix: const Padding(
-              padding: EdgeInsets.only(top: 2.5, right: 2.5),
-            ),
-            prefixIcon: const Icon(
-              Icons.person_rounded,
-              color: Color.fromRGBO(90, 23, 238, 1),
-            ),
-          ),
-        );
+    return TextInput(
+      key: const Key('profileForm_nameInput_textField'),
+      label: 'Name',
+      initialValue: context.read<ProfileCubit>().state.profile.name!,
+      iconData: Icons.person_rounded,
+      onChanged: (newValue) async {
+        await context.read<ProfileCubit>().nameChanged(newValue);
       },
     );
   }
@@ -113,7 +87,7 @@ class _PickAndUploadFile extends StatelessWidget {
                 allowedExtensions: ['jpg', 'pdf', 'png', 'jpeg'],
                 withData: true,
               );
-              context.read<ProfileCubit>().filesChanged(result);
+              await context.read<ProfileCubit>().filesChanged(result);
             },
             style: ElevatedButton.styleFrom(
               primary: const Color.fromRGBO(242, 238, 255, 1),

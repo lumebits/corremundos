@@ -244,15 +244,17 @@ class SelectedDayTripData extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  TextButton.icon(
+                  IconButton(
                     icon: const Icon(Icons.edit_rounded),
-                    label: const Text(''),
+                    color: const Color.fromRGBO(90, 23, 238, 1),
+                    iconSize: 18,
                     onPressed: () {/* ... */},
                   ),
                   if (location.isNotEmpty && eventType != EventType.transport)
-                    TextButton.icon(
+                    IconButton(
                       icon: const Icon(Icons.pin_drop_rounded),
-                      label: const Text(''),
+                      color: const Color.fromRGBO(90, 23, 238, 1),
+                      iconSize: 18,
                       onPressed: () {
                         _launchURL(
                           'https://www.google.com/maps/search/?api=1&query='
