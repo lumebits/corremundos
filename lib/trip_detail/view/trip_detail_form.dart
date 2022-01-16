@@ -10,7 +10,29 @@ class TripDetailForm extends BasePage {
   const TripDetailForm({Key? key}) : super(key, appTab: AppTab.trips);
 
   @override
-  String title(BuildContext context) => 'Trip detail';
+  PreferredSizeWidget? appBar(BuildContext context) {
+    return AppBar(
+      title: BlocBuilder<TripDetailCubit, TripDetailState>(
+        builder: (context, state) {
+          return FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              'Trip to ${state.trip.name}',
+              style: const TextStyle(
+                color: Colors.black54,
+                fontSize: 24,
+              ),
+            ),
+          );
+        },
+      ),
+      centerTitle: true,
+      actions: actions(context),
+      elevation: 0,
+      backgroundColor: Colors.white10,
+      iconTheme: const IconThemeData(color: Colors.black54),
+    );
+  }
 
   @override
   Widget? floatingActionButton(BuildContext context) => null;

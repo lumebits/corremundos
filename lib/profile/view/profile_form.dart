@@ -61,6 +61,7 @@ class _NameInput extends StatelessWidget {
       onChanged: (newValue) async {
         await context.read<ProfileCubit>().nameChanged(newValue);
       },
+      keyboardType: TextInputType.name,
     );
   }
 }

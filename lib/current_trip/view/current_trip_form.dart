@@ -12,7 +12,29 @@ class CurrentTripForm extends BasePage {
   const CurrentTripForm({Key? key}) : super(key, appTab: AppTab.current);
 
   @override
-  String title(BuildContext context) => 'Current Trip';
+  PreferredSizeWidget? appBar(BuildContext context) {
+    return AppBar(
+      title: BlocBuilder<TripsCubit, TripsState>(
+        builder: (context, state) {
+          return FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              'Trip to ${state.currentTrip.name}',
+              style: const TextStyle(
+                color: Colors.black54,
+                fontSize: 24,
+              ),
+            ),
+          );
+        },
+      ),
+      centerTitle: true,
+      actions: actions(context),
+      elevation: 0,
+      backgroundColor: Colors.white10,
+      iconTheme: const IconThemeData(color: Colors.black54),
+    );
+  }
 
   @override
   List<BlocListener> listeners(BuildContext context) {

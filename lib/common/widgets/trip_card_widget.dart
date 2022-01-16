@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/create_trip/create_trip.dart';
 import 'package:corremundos/trip_detail/trip_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,6 +39,13 @@ class TripCardWidget extends StatelessWidget {
                     builder: (context) {
                       return TripDetailPage(trip);
                     },
+                  ),
+                );
+              },
+              onLongPress: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => CreateTripPage(trip: trip),
                   ),
                 );
               },

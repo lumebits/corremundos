@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
 
-class TextInput extends StatelessWidget {
-  const TextInput({
+class DateTimeInput extends StatelessWidget {
+  const DateTimeInput({
     Key? key,
     required this.label,
     required this.initialValue,
     required this.iconData,
-    this.onChanged,
+    this.onPressed,
+    this.onSubmitted,
     this.keyboardType = TextInputType.text,
   }) : super(key: key);
 
   final String label;
   final String initialValue;
   final IconData iconData;
-  final ValueChanged<String>? onChanged;
+  final Function()? onPressed;
+  final Function(String)? onSubmitted;
   final TextInputType keyboardType;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: TextEditingController(text: initialValue),
-      onChanged: onChanged,
+      readOnly: true,
+      onTap: onPressed,
+      onSubmitted: onSubmitted,
       style: const TextStyle(
         fontSize: 20,
         color: Color.fromRGBO(90, 23, 238, 1),
@@ -34,10 +38,12 @@ class TextInput extends StatelessWidget {
         prefix: const Padding(
           padding: EdgeInsets.only(top: 2.5, right: 2.5),
         ),
-        prefixIcon: Icon(
-          iconData,
+        prefixIcon: IconButton(
+          icon: Icon(iconData),
           color: const Color.fromRGBO(90, 23, 238, 1),
+          onPressed: onPressed,
         ),
+        hintText: 'dd/MM/yyyy',
       ),
     );
   }
