@@ -255,10 +255,8 @@ class SelectedDayTripData extends StatelessWidget {
                       // (create trip event and pass it)
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (context) => CreateEventPage(
-                              trip,
-                              day,
-                              eventType),
+                          builder: (context) =>
+                              CreateEventPage(trip, day, eventType),
                         ),
                       );
                     },

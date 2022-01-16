@@ -237,7 +237,6 @@ class _TripNameInput extends StatelessWidget {
   }
 }
 
-
 class _TripEventTimePicker extends StatelessWidget {
   const _TripEventTimePicker(this.day, this.label);
 
