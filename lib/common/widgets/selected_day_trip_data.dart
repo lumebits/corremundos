@@ -122,6 +122,7 @@ class SelectedDayTripData extends StatelessWidget {
         name: event.name,
         location: event.location,
         eventType: event.type,
+        day: event.time,
         file: event.fileUrl,
       );
     } else {
@@ -142,6 +143,7 @@ class SelectedDayTripData extends StatelessWidget {
     required String name,
     required String location,
     required EventType eventType,
+    required DateTime day,
     String file = '',
     bool isLast = false,
   }) {
@@ -248,7 +250,18 @@ class SelectedDayTripData extends StatelessWidget {
                     icon: const Icon(Icons.edit_rounded),
                     color: const Color.fromRGBO(90, 23, 238, 1),
                     iconSize: 18,
-                    onPressed: () {/* ... */},
+                    onPressed: () {
+                      // TODO(palomapiot): pass event
+                      // (create trip event and pass it)
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (context) => CreateEventPage(
+                              trip,
+                              day,
+                              eventType),
+                        ),
+                      );
+                    },
                   ),
                   if (location.isNotEmpty && eventType != EventType.transport)
                     IconButton(

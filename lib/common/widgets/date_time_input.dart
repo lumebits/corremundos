@@ -20,6 +20,8 @@ class DateTimeInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO(palomapiot): no actualiza el input text al valor del state
+    // pero se envía el valor OK y se crea OK
     return TextField(
       controller: TextEditingController(text: initialValue),
       readOnly: true,

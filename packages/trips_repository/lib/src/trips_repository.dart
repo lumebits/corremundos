@@ -7,6 +7,8 @@ abstract class TripsRepository {
 
   Future<void> updateOrCreateTrip(Trip trip, String uid);
 
+  Future<void> addEvents(Trip trip, String uid);
+
   Future<Trip> getCurrentTrip(String uid);
 
   Future<Trip> getTripById(String uid, String id);

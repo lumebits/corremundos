@@ -104,7 +104,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
             trip.transportations.add(transportation);
             final updatedTrip =
                 trip.copyWith(transportations: trip.transportations);
-            tripsRepository.updateOrCreateTrip(
+            tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
             );
@@ -119,7 +119,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
             trip.accommodations.add(accommodation);
             final updatedTrip =
                 trip.copyWith(accommodations: trip.accommodations);
-            tripsRepository.updateOrCreateTrip(
+            tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
             );
@@ -141,7 +141,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         trip.transportations.add(transportation);
         final updatedTrip =
             trip.copyWith(transportations: trip.transportations);
-        await tripsRepository.updateOrCreateTrip(
+        await tripsRepository.addEvents(
           updatedTrip,
           authRepository.currentUser.id,
         );
@@ -153,7 +153,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         };
         trip.activities.add(activity);
         final updatedTrip = trip.copyWith(activities: trip.activities);
-        await tripsRepository.updateOrCreateTrip(
+        await tripsRepository.addEvents(
           updatedTrip,
           authRepository.currentUser.id,
         );
@@ -167,7 +167,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         };
         trip.accommodations.add(accommodation);
         final updatedTrip = trip.copyWith(accommodations: trip.accommodations);
-        await tripsRepository.updateOrCreateTrip(
+        await tripsRepository.addEvents(
           updatedTrip,
           authRepository.currentUser.id,
         );

@@ -27,6 +27,21 @@ class FirebaseTripsRepository implements TripsRepository {
   }
 
   @override
+  Future<void> addEvents(Trip trip, String uid) {
+    if (trip.uid.isNotEmpty) {
+      return collection.doc(trip.id).update(<String, dynamic>{
+        'transportations': trip.transportations,
+        'accommodations': trip.accommodations,
+        'activities': trip.activities
+      });
+    } else {
+      return collection
+          .doc(trip.id)
+          .set((trip.copyWith(uid: uid).toEntity().toDocument()));
+    }
+  }
+
+  @override
   Future<Trip> getCurrentTrip(String uid) {
     return collection
         .where('uid', isEqualTo: uid)

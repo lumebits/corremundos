@@ -1,4 +1,5 @@
 import 'package:corremundos/common/widgets/base_page.dart';
+import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/create_event/cubit/create_event_cubit.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:file_picker/file_picker.dart';
@@ -225,41 +226,17 @@ class _TripNameInput extends StatelessWidget {
   final String label;
   @override
   Widget build(BuildContext context) {
-    final focusNode = FocusNode();
-    return BlocBuilder<CreateEventCubit, CreateEventState>(
-      buildWhen: (previous, current) =>
-          previous.tripEvent.location != current.tripEvent.location,
-      builder: (context, state) {
-        return TextField(
-          focusNode: focusNode,
-          key: const Key('newEventForm_descriptionInput_textField'),
-          style: const TextStyle(
-            fontSize: 20,
-            color: Color.fromRGBO(90, 23, 238, 1),
-          ),
-          onChanged: (value) =>
-              context.read<CreateEventCubit>().nameChanged(value),
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-            labelStyle: TextStyle(
-              color: focusNode.hasFocus
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
-            ),
-            labelText: label,
-            prefix: const Padding(
-              padding: EdgeInsets.only(top: 2.5, right: 2.5),
-            ),
-            prefixIcon: const Icon(
-              Icons.description_rounded,
-              color: Color.fromRGBO(90, 23, 238, 1),
-            ),
-          ),
-        );
-      },
+    return TextInput(
+      key: const Key('newEventForm_nameInput_textField'),
+      label: label,
+      initialValue: context.read<CreateEventCubit>().state.tripEvent.name,
+      iconData: Icons.description_rounded,
+      onChanged: (newValue) =>
+          context.read<CreateEventCubit>().nameChanged(newValue),
     );
   }
 }
+
 
 class _TripEventTimePicker extends StatelessWidget {
   const _TripEventTimePicker(this.day, this.label);
