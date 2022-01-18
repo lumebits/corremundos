@@ -7,6 +7,7 @@ enum EventType { transport, accommodation, activity }
 class TripEvent extends Equatable {
   TripEvent(
       {
+        int? index,
         DateTime? time,
         this.endTime,
         this.isCheckIn,
@@ -14,12 +15,14 @@ class TripEvent extends Equatable {
         String? name,
         String? location,
         EventType? type,})
-      : time = time ?? DateTime.now(),
+      : index = index,
+        time = time ?? DateTime.now(),
         fileUrl = fileUrl ?? '',
         name = name ?? '',
         location = location ?? '',
         type = type ?? EventType.activity;
 
+  final int? index;
   final DateTime time;
   final DateTime? endTime;
   final bool? isCheckIn;
@@ -36,6 +39,7 @@ class TripEvent extends Equatable {
 
   @override
   List<Object?> get props => [
+    index,
     time,
     endTime,
     isCheckIn,
@@ -47,6 +51,7 @@ class TripEvent extends Equatable {
 
   TripEvent copyWith(
       {
+        int? index,
         DateTime? time,
         DateTime? endTime,
         bool? isCheckIn,
@@ -56,6 +61,7 @@ class TripEvent extends Equatable {
         EventType? type,
       }) {
     return TripEvent(
+      index: index ?? this.index,
       time: time ?? this.time,
       endTime: endTime ?? this.endTime,
       isCheckIn: isCheckIn ?? this.isCheckIn,
@@ -68,7 +74,7 @@ class TripEvent extends Equatable {
   @override
   String toString() {
     return 'Event '
-        '{ time: $time, endTime: $endTime, isCheckIn: $isCheckIn, '
+        '{ index: $index, time: $time, endTime: $endTime, isCheckIn: $isCheckIn, '
         'fileUrl: $fileUrl, name: $name, location: $location, '
         'type: $type }';
   }

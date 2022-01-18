@@ -131,11 +131,13 @@ class Trip extends Equatable {
 
 Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
   var events = <int, List<TripEvent>>{};
+  var dbIndex = 0;
   entity.accommodations!.forEach((dynamic a) {
     var checkin = a['checkin'].toDate() as DateTime;
     var checkout = a['checkout'].toDate() as DateTime;
 
     var checkinEvent = TripEvent(
+        index: dbIndex,
         time: checkin,
         isCheckIn: true,
         fileUrl: a['file'] as String,
@@ -143,6 +145,7 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
         location: a['location'] as String,
         type: EventType.accommodation);
     var checkoutEvent = TripEvent(
+        index: dbIndex,
         time: checkout,
         isCheckIn: false,
         fileUrl: a['file'] as String,
@@ -164,10 +167,12 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
     }
   });
 
+  dbIndex = 0;
   entity.transportations!.forEach((dynamic t) {
     var time = t['departureTime'].toDate() as DateTime;
     var arrivalTime = t['arrivalTime'].toDate() as DateTime;
     var event = TripEvent(
+        index: dbIndex,
         time: time,
         endTime: arrivalTime,
         fileUrl: t['file'] as String,
@@ -182,11 +187,13 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
     }
   });
 
+  dbIndex = 0;
   entity.activities!.forEach((dynamic t) {
     var time = t['time'].toDate() as DateTime;
     var event = TripEvent(
+        index: dbIndex,
         time: time,
-        fileUrl: '',
+        fileUrl: t['file'] as String,
         name: t['name'] as String,
         location: t['location'] as String,
         type: EventType.activity);

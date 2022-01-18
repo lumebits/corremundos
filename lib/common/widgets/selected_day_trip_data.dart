@@ -124,6 +124,7 @@ class SelectedDayTripData extends StatelessWidget {
         eventType: event.type,
         day: event.time,
         file: event.fileUrl,
+        event: event,
       );
     } else {
       return _buildAddEvent(
@@ -144,6 +145,7 @@ class SelectedDayTripData extends StatelessWidget {
     required String location,
     required EventType eventType,
     required DateTime day,
+    required TripEvent event,
     String file = '',
     bool isLast = false,
   }) {
@@ -223,7 +225,7 @@ class SelectedDayTripData extends StatelessWidget {
                                 child: Icon(
                                   Icons.attach_file_rounded,
                                   color: Color.fromRGBO(90, 23, 238, 1),
-                                  size: 14,
+                                  size: 18,
                                 ),
                               ),
                           ],
@@ -251,12 +253,16 @@ class SelectedDayTripData extends StatelessWidget {
                     color: const Color.fromRGBO(90, 23, 238, 1),
                     iconSize: 18,
                     onPressed: () {
-                      // TODO(palomapiot): pass event
-                      // (create trip event and pass it)
                       Navigator.of(context).push(
+                        // TODO(paloma): if the event is an accommodation,
+                        // we need to load the checkin and checkout times
                         MaterialPageRoute<void>(
-                          builder: (context) =>
-                              CreateEventPage(trip, day, eventType),
+                          builder: (context) => CreateEventPage(
+                            trip,
+                            day,
+                            eventType,
+                            tripEvent: event,
+                          ),
                         ),
                       );
                     },

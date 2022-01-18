@@ -14,6 +14,15 @@ class CreateEventCubit extends Cubit<CreateEventState> {
   final AuthRepository authRepository;
   final Trip trip;
 
+  void loadEventToEdit(TripEvent event, DateTime day) {
+    emit(
+      state.copyWith(
+        tripEvent: event,
+        day: day,
+      ),
+    );
+  }
+
   void locationChanged(String value) {
     final tripEvent = state.tripEvent.copyWith(location: value);
     emit(
@@ -101,7 +110,11 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               'departureTime': state.tripEvent.time,
               'arrivalTime': state.tripEvent.endTime,
             };
-            trip.transportations.add(transportation);
+            if (state.tripEvent.index != null) {
+              trip.transportations[state.tripEvent.index!] = transportation;
+            } else {
+              trip.transportations.add(transportation);
+            }
             final updatedTrip =
                 trip.copyWith(transportations: trip.transportations);
             tripsRepository.addEvents(
@@ -116,9 +129,31 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               'checkin': state.tripEvent.time,
               'checkout': state.tripEvent.endTime,
             };
-            trip.accommodations.add(accommodation);
+            if (state.tripEvent.index != null) {
+              trip.accommodations[state.tripEvent.index!] = accommodation;
+            } else {
+              trip.accommodations.add(accommodation);
+            }
             final updatedTrip =
                 trip.copyWith(accommodations: trip.accommodations);
+            tripsRepository.addEvents(
+              updatedTrip,
+              authRepository.currentUser.id,
+            );
+          } else if (eventType == EventType.activity) {
+            final activity = <String, dynamic>{
+              'file': uploadedFileUrl,
+              'name': state.tripEvent.name,
+              'location': state.tripEvent.location,
+              'checkin': state.tripEvent.time,
+              'checkout': state.tripEvent.endTime,
+            };
+            if (state.tripEvent.index != null) {
+              trip.activities[state.tripEvent.index!] = activity;
+            } else {
+              trip.activities.add(activity);
+            }
+            final updatedTrip = trip.copyWith(activities: trip.activities);
             tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
@@ -138,7 +173,11 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           'departureTime': state.tripEvent.time,
           'arrivalTime': state.tripEvent.endTime,
         };
-        trip.transportations.add(transportation);
+        if (state.tripEvent.index != null) {
+          trip.transportations[state.tripEvent.index!] = transportation;
+        } else {
+          trip.transportations.add(transportation);
+        }
         final updatedTrip =
             trip.copyWith(transportations: trip.transportations);
         await tripsRepository.addEvents(
@@ -147,11 +186,16 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         );
       } else if (eventType == EventType.activity) {
         final activity = <String, dynamic>{
+          'file': '',
           'name': state.tripEvent.name,
           'location': state.tripEvent.location,
           'time': state.tripEvent.time,
         };
-        trip.activities.add(activity);
+        if (state.tripEvent.index != null) {
+          trip.activities[state.tripEvent.index!] = activity;
+        } else {
+          trip.activities.add(activity);
+        }
         final updatedTrip = trip.copyWith(activities: trip.activities);
         await tripsRepository.addEvents(
           updatedTrip,
@@ -165,7 +209,11 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           'checkin': state.tripEvent.time,
           'checkout': state.tripEvent.endTime,
         };
-        trip.accommodations.add(accommodation);
+        if (state.tripEvent.index != null) {
+          trip.accommodations[state.tripEvent.index!] = accommodation;
+        } else {
+          trip.accommodations.add(accommodation);
+        }
         final updatedTrip = trip.copyWith(accommodations: trip.accommodations);
         await tripsRepository.addEvents(
           updatedTrip,

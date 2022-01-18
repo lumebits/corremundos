@@ -6,12 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trips_repository/trips_repository.dart';
 
 class CreateEventPage extends StatelessWidget {
-  const CreateEventPage(this.trip, this.day, this.eventType, {Key? key})
-      : super(key: key);
+  const CreateEventPage(
+    this.trip,
+    this.day,
+    this.eventType, {
+    this.tripEvent,
+    Key? key,
+  }) : super(key: key);
 
   final Trip trip;
   final DateTime day;
   final EventType eventType;
+  final TripEvent? tripEvent;
 
   static Page page(Trip trip, DateTime day, EventType eventType) =>
       MaterialPage<void>(
@@ -20,6 +26,14 @@ class CreateEventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (tripEvent != null) {
+      return BlocProvider(
+        create: (context) =>
+            CreateEventCubit(FirebaseTripsRepository(), AuthRepository(), trip)
+              ..loadEventToEdit(tripEvent!, day),
+        child: CreateEventForm(trip, day, eventType),
+      );
+    }
     return BlocProvider(
       create: (context) =>
           CreateEventCubit(FirebaseTripsRepository(), AuthRepository(), trip),

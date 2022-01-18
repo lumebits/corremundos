@@ -114,25 +114,29 @@ class _TripNameInput extends StatelessWidget {
 class _TripInitDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return DateTimeInput(
-      key: const Key('newTripForm_initDate_textField'),
-      label: 'Init date',
-      initialValue: DateFormat('dd/MM/yyyy')
-          .format(context.read<CreateTripCubit>().state.initDate),
-      iconData: Icons.calendar_today_rounded,
-      onPressed: () {
-        DatePicker.showDatePicker(
-          context,
-          onConfirm: (date) {
-            context.read<CreateTripCubit>().initDateChanged(date);
+    return BlocBuilder<CreateTripCubit, CreateTripState>(
+      buildWhen: (previous, current) => previous.initDate != current.initDate,
+      builder: (context, state) {
+        return DateTimeInput(
+          key: const Key('newTripForm_initDate_textField'),
+          label: 'Init date',
+          initialValue: DateFormat('dd/MM/yyyy').format(state.initDate),
+          iconData: Icons.calendar_today_rounded,
+          onPressed: () {
+            DatePicker.showDatePicker(
+              context,
+              onConfirm: (date) {
+                context.read<CreateTripCubit>().initDateChanged(date);
+              },
+              currentTime: state.initDate,
+            );
           },
-          currentTime: context.read<CreateTripCubit>().state.initDate,
+          onSubmitted: (date) => context
+              .read<CreateTripCubit>()
+              .initDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
+          keyboardType: TextInputType.datetime,
         );
       },
-      onSubmitted: (date) => context
-          .read<CreateTripCubit>()
-          .initDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
-      keyboardType: TextInputType.datetime,
     );
   }
 }
@@ -140,25 +144,29 @@ class _TripInitDatePicker extends StatelessWidget {
 class _TripEndDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return DateTimeInput(
-      key: const Key('newTripForm_endDate_textField'),
-      label: 'End date',
-      initialValue: DateFormat('dd/MM/yyyy')
-          .format(context.read<CreateTripCubit>().state.endDate),
-      iconData: Icons.calendar_today_rounded,
-      onPressed: () {
-        DatePicker.showDatePicker(
-          context,
-          onConfirm: (date) {
-            context.read<CreateTripCubit>().endDateChanged(date);
+    return BlocBuilder<CreateTripCubit, CreateTripState>(
+      buildWhen: (previous, current) => previous.endDate != current.endDate,
+      builder: (context, state) {
+        return DateTimeInput(
+          key: const Key('newTripForm_endDate_textField'),
+          label: 'End date',
+          initialValue: DateFormat('dd/MM/yyyy').format(state.endDate),
+          iconData: Icons.calendar_today_rounded,
+          onPressed: () {
+            DatePicker.showDatePicker(
+              context,
+              onConfirm: (date) {
+                context.read<CreateTripCubit>().endDateChanged(date);
+              },
+              currentTime: state.endDate,
+            );
           },
-          currentTime: context.read<CreateTripCubit>().state.endDate,
+          onSubmitted: (date) => context
+              .read<CreateTripCubit>()
+              .endDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
+          keyboardType: TextInputType.datetime,
         );
       },
-      onSubmitted: (date) => context
-          .read<CreateTripCubit>()
-          .endDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
-      keyboardType: TextInputType.datetime,
     );
   }
 }
