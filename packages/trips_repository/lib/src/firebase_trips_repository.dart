@@ -13,7 +13,27 @@ class FirebaseTripsRepository implements TripsRepository {
   @override
   Future<void> updateOrCreateTrip(Trip trip, String uid) {
     if (trip.uid.isNotEmpty) {
-      return collection.doc(trip.id).update(trip.toEntity().toDocument());
+      return collection.doc(trip.id).update(<String, dynamic>{
+        'name': trip.name,
+        'initDate': trip.initDate,
+        'endDate': trip.endDate,
+        'imageUrl': trip.imageUrl
+      });
+    } else {
+      return collection
+          .doc(trip.id)
+          .set((trip.copyWith(uid: uid).toEntity().toDocument()));
+    }
+  }
+
+  @override
+  Future<void> addEvents(Trip trip, String uid) {
+    if (trip.uid.isNotEmpty) {
+      return collection.doc(trip.id).update(<String, dynamic>{
+        'transportations': trip.transportations,
+        'accommodations': trip.accommodations,
+        'activities': trip.activities
+      });
     } else {
       return collection
           .doc(trip.id)
@@ -109,11 +129,10 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Future<void> deleteTrips(String uid) async {
-    return collection
-        .where('uid', isEqualTo: uid)
-        .get()
-        .then((value) {
+    return collection.where('uid', isEqualTo: uid).get().then((value) {
       for (var element in value.docs) {
+        // TODO(palomapiot): if the element is accommodation or transportation
+        // FirebaseStorage.instance.refFromURL(imageUrl).delete();
         collection.doc(element.id).delete();
       }
     });

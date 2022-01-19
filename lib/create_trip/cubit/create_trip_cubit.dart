@@ -10,10 +10,25 @@ part 'create_trip_state.dart';
 
 class CreateTripCubit extends Cubit<CreateTripState> {
   CreateTripCubit(this.tripsRepository, this.authRepository)
-      : super(const CreateTripState());
+      : super(
+          CreateTripState(initDate: DateTime.now(), endDate: DateTime.now()),
+        );
 
   final TripsRepository tripsRepository;
   final AuthRepository authRepository;
+
+  void loadTripToEdit(Trip trip) {
+    emit(
+      state.copyWith(
+        id: trip.id,
+        name: trip.name,
+        initDate: trip.initDate,
+        endDate: trip.endDate,
+        imageUrl: trip.imageUrl,
+        status: FormzStatus.valid,
+      ),
+    );
+  }
 
   void nameChanged(String value) {
     emit(
@@ -72,7 +87,8 @@ class CreateTripCubit extends Cubit<CreateTripState> {
       await client.search.photos(state.name).goAndGet().then((photo) async {
         final imageUrl = photo.results.first.urls.regular.toString();
         final trip = Trip(
-          uid: '',
+          uid: state.id != null ? authRepository.currentUser.id : '',
+          id: state.id,
           name: state.name,
           initDate: state.initDate,
           endDate: state.endDate,

@@ -47,6 +47,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> uploadFiles() async {
+    final existingFiles = state.profile.documents;
     final uploadedFiles = <String>[];
     if (state.pickedFiles.isNotEmpty) {
       for (final file in state.pickedFiles) {
@@ -56,7 +57,8 @@ class ProfileCubit extends Cubit<ProfileState> {
               .then((file) {
             if (file != null) {
               uploadedFiles.add(file);
-              final profile = state.profile.copyWith(documents: uploadedFiles);
+              final totalFiles = existingFiles! + uploadedFiles;
+              final profile = state.profile.copyWith(documents: totalFiles);
               emit(state.copyWith(profile: profile));
             } else {
               emit(state.copyWith(isLoading: false, error: true));
@@ -67,19 +69,20 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  void nameChanged(String value) {
+  Future<void> nameChanged(String value) async {
     final profile = state.profile.copyWith(name: value);
     emit(
       state.copyWith(profile: profile),
     );
   }
 
-  void filesChanged(FilePickerResult? result) {
+  Future<void> filesChanged(FilePickerResult? result) async {
     if (result != null) {
       final files = result.files.map<PlatformFile>((file) => file).toList();
+      final totalFiles = state.pickedFiles + files;
       emit(
         state.copyWith(
-          pickedFiles: files,
+          pickedFiles: totalFiles,
         ),
       );
     }

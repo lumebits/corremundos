@@ -14,6 +14,15 @@ class CreateEventCubit extends Cubit<CreateEventState> {
   final AuthRepository authRepository;
   final Trip trip;
 
+  void loadEventToEdit(TripEvent event, DateTime day) {
+    emit(
+      state.copyWith(
+        tripEvent: event,
+        day: day,
+      ),
+    );
+  }
+
   void locationChanged(String value) {
     final tripEvent = state.tripEvent.copyWith(location: value);
     emit(
@@ -25,8 +34,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     );
   }
 
-  void descriptionChanged(String value) {
-    final tripEvent = state.tripEvent.copyWith(description: value);
+  void nameChanged(String value) {
+    final tripEvent = state.tripEvent.copyWith(name: value);
     emit(
       state.copyWith(
         tripEvent: tripEvent,
@@ -93,33 +102,59 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     if (state.pickedFile != null) {
       await uploadFile().then((uploadedFileUrl) {
         if (uploadedFileUrl != null) {
-          if (eventType == EventType.transportation) {
+          if (eventType == EventType.transport) {
             final transportation = <String, dynamic>{
               'file': uploadedFileUrl,
-              'location': state.tripEvent.location,
-              'notes': state.tripEvent.description,
+              'location': state.tripEvent.name,
+              'notes': state.tripEvent.location,
               'departureTime': state.tripEvent.time,
               'arrivalTime': state.tripEvent.endTime,
             };
-            trip.transportations.add(transportation);
+            if (state.tripEvent.index != null) {
+              trip.transportations[state.tripEvent.index!] = transportation;
+            } else {
+              trip.transportations.add(transportation);
+            }
             final updatedTrip =
                 trip.copyWith(transportations: trip.transportations);
-            tripsRepository.updateOrCreateTrip(
+            tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
             );
           } else if (eventType == EventType.accommodation) {
             final accommodation = <String, dynamic>{
               'file': uploadedFileUrl,
+              'name': state.tripEvent.name,
               'location': state.tripEvent.location,
-              'notes': state.tripEvent.description,
               'checkin': state.tripEvent.time,
               'checkout': state.tripEvent.endTime,
             };
-            trip.accommodations.add(accommodation);
+            if (state.tripEvent.index != null) {
+              trip.accommodations[state.tripEvent.index!] = accommodation;
+            } else {
+              trip.accommodations.add(accommodation);
+            }
             final updatedTrip =
                 trip.copyWith(accommodations: trip.accommodations);
-            tripsRepository.updateOrCreateTrip(
+            tripsRepository.addEvents(
+              updatedTrip,
+              authRepository.currentUser.id,
+            );
+          } else if (eventType == EventType.activity) {
+            final activity = <String, dynamic>{
+              'file': uploadedFileUrl,
+              'name': state.tripEvent.name,
+              'location': state.tripEvent.location,
+              'checkin': state.tripEvent.time,
+              'checkout': state.tripEvent.endTime,
+            };
+            if (state.tripEvent.index != null) {
+              trip.activities[state.tripEvent.index!] = activity;
+            } else {
+              trip.activities.add(activity);
+            }
+            final updatedTrip = trip.copyWith(activities: trip.activities);
+            tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
             );
@@ -130,44 +165,57 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         }
       });
     } else {
-      if (eventType == EventType.transportation) {
+      if (eventType == EventType.transport) {
         final transportation = <String, dynamic>{
           'file': '',
-          'location': state.tripEvent.location,
-          'notes': state.tripEvent.description,
+          'location': state.tripEvent.name,
+          'notes': state.tripEvent.location,
           'departureTime': state.tripEvent.time,
           'arrivalTime': state.tripEvent.endTime,
         };
-        trip.transportations.add(transportation);
+        if (state.tripEvent.index != null) {
+          trip.transportations[state.tripEvent.index!] = transportation;
+        } else {
+          trip.transportations.add(transportation);
+        }
         final updatedTrip =
             trip.copyWith(transportations: trip.transportations);
-        await tripsRepository.updateOrCreateTrip(
+        await tripsRepository.addEvents(
           updatedTrip,
           authRepository.currentUser.id,
         );
       } else if (eventType == EventType.activity) {
         final activity = <String, dynamic>{
+          'file': '',
+          'name': state.tripEvent.name,
           'location': state.tripEvent.location,
-          'notes': state.tripEvent.description,
           'time': state.tripEvent.time,
         };
-        trip.activities.add(activity);
+        if (state.tripEvent.index != null) {
+          trip.activities[state.tripEvent.index!] = activity;
+        } else {
+          trip.activities.add(activity);
+        }
         final updatedTrip = trip.copyWith(activities: trip.activities);
-        await tripsRepository.updateOrCreateTrip(
+        await tripsRepository.addEvents(
           updatedTrip,
           authRepository.currentUser.id,
         );
       } else if (eventType == EventType.accommodation) {
         final accommodation = <String, dynamic>{
           'file': '',
+          'name': state.tripEvent.name,
           'location': state.tripEvent.location,
-          'notes': state.tripEvent.description,
           'checkin': state.tripEvent.time,
           'checkout': state.tripEvent.endTime,
         };
-        trip.accommodations.add(accommodation);
+        if (state.tripEvent.index != null) {
+          trip.accommodations[state.tripEvent.index!] = accommodation;
+        } else {
+          trip.accommodations.add(accommodation);
+        }
         final updatedTrip = trip.copyWith(accommodations: trip.accommodations);
-        await tripsRepository.updateOrCreateTrip(
+        await tripsRepository.addEvents(
           updatedTrip,
           authRepository.currentUser.id,
         );
