@@ -86,7 +86,7 @@ class TripCardWidget extends StatelessWidget {
                           text: trip.initDate.difference(now).inDays > 0
                               ? ' ${trip.initDate.difference(now).inDays} '
                                   'days until take-off!'
-                              : 'enjoy your trip!',
+                              : ' enjoy your trip!',
                         )
                       ],
                     ),

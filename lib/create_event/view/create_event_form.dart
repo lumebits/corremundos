@@ -299,7 +299,6 @@ class _TripEventEndTimePicker extends StatelessWidget {
   }
 }
 
-// TODO(palomapiot): edit files - adding a new one replaces the old one
 class _PickAndUploadFile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -349,6 +348,15 @@ class _PickAndUploadFile extends StatelessWidget {
             if (state.pickedFile != null) {
               return Text(
                 '\u{2611} ${state.pickedFile!.files.first.name}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey,
+                ),
+              );
+            } else if (state.tripEvent.isNotEmpty &&
+                state.tripEvent.fileUrl.isNotEmpty) {
+              return Text(
+                '\u{2611} ${state.tripEvent.fileUrl}',
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.grey,
