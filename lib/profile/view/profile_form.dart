@@ -153,7 +153,7 @@ class _SaveProfile extends StatelessWidget {
           return ElevatedButton(
             key: const Key('profileForm_save_button'),
             onPressed: () => !state.isLoading
-                ? context.read<ProfileCubit>().save().then((value) {
+                ? context.read<ProfileCubit>().save().then((value) async {
                     showTopSnackBar(
                       context,
                       const CustomSnackBar.success(
@@ -162,7 +162,7 @@ class _SaveProfile extends StatelessWidget {
                         backgroundColor: Color.fromRGBO(90, 23, 238, 1),
                       ),
                     );
-                    context.read<ProfileCubit>().loadProfile();
+                    await context.read<ProfileCubit>().loadProfile();
                     Navigator.of(context).pop(true);
                   })
                 : null,

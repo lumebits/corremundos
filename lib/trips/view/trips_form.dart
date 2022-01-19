@@ -47,46 +47,58 @@ class TripsForm extends BasePage {
           children: <Widget>[
             Expanded(
               child: BlocBuilder<TripsCubit, TripsState>(
+                buildWhen: (previous, current) =>
+                    previous.myTrips != current.myTrips,
                 builder: (context, state) {
-                  final trips = state.myTrips + state.sharedWithMeTrips;
-                  if (state.isLoading || trips.isNotEmpty) {
-                    return state.isLoading
-                        ? ListView.separated(
-                            itemCount: 3,
-                            itemBuilder: (context, index) =>
-                                const TripsCardSkeleton(),
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 16 / 2),
-                          )
-                        : ListView.separated(
-                            itemCount: trips.length,
-                            itemBuilder: (context, index) {
-                              return TripCardWidget(trips[index]);
-                            },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 16 / 2),
-                          );
-                  } else {
-                    return Center(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Image(
-                              image: AssetImage('assets/noevents.png'),
-                            ),
-                            SizedBox(height: 20),
-                            Text(
-                              'No future trips!',
-                              style: TextStyle(
-                                fontSize: 22,
-                                color: Color.fromRGBO(90, 23, 238, 1),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                  if (state.isLoading) {
+                    return ListView.separated(
+                      itemCount: 3,
+                      itemBuilder: (context, index) =>
+                          const TripsCardSkeleton(),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 16 / 2),
                     );
+                  } else {
+                    final trips = state.myTrips + state.sharedWithMeTrips;
+                    if (trips.isNotEmpty) {
+                      return state.isLoading
+                          ? ListView.separated(
+                              itemCount: 3,
+                              itemBuilder: (context, index) =>
+                                  const TripsCardSkeleton(),
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 16 / 2),
+                            )
+                          : ListView.separated(
+                              itemCount: trips.length,
+                              itemBuilder: (context, index) {
+                                return TripCardWidget(trips[index]);
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 16 / 2),
+                            );
+                    } else {
+                      return Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Image(
+                                image: AssetImage('assets/noevents.png'),
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                'No future trips!',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  color: Color.fromRGBO(90, 23, 238, 1),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
                   }
                 },
               ),
