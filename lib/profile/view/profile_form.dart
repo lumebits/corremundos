@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+final _formKey = GlobalKey<FormState>();
+
 class ProfileForm extends BasePage {
   const ProfileForm({Key? key}) : super(key);
 
@@ -18,31 +20,34 @@ class ProfileForm extends BasePage {
 
   @override
   Widget widget(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Text(
-                    'Your profile',
-                    style: TextStyle(fontSize: 24, color: Colors.black87),
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 12),
+                    child: Text(
+                      'Your profile',
+                      style: TextStyle(fontSize: 24, color: Colors.black87),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              _NameInput(),
-              const SizedBox(height: 8),
-              _PickAndUploadFile(),
-              const SizedBox(height: 24),
-              _SaveProfile(),
-            ],
+                const SizedBox(height: 12),
+                _NameInput(),
+                const SizedBox(height: 24),
+                _PickAndUploadFile(),
+                const SizedBox(height: 24),
+                _SaveProfile(),
+              ],
+            ),
           ),
         ),
       ),
@@ -152,20 +157,22 @@ class _SaveProfile extends StatelessWidget {
         builder: (context, state) {
           return ElevatedButton(
             key: const Key('profileForm_save_button'),
-            onPressed: () => !state.isLoading
-                ? context.read<ProfileCubit>().save().then((value) async {
-                    showTopSnackBar(
-                      context,
-                      const CustomSnackBar.success(
-                        message: 'Profile updated',
-                        icon: Icon(null),
-                        backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-                      ),
-                    );
-                    await context.read<ProfileCubit>().loadProfile();
-                    Navigator.of(context).pop(true);
-                  })
-                : null,
+            onPressed: () {
+              if (_formKey.currentState!.validate() && !state.isLoading) {
+                context.read<ProfileCubit>().save().then((value) async {
+                  showTopSnackBar(
+                    context,
+                    const CustomSnackBar.success(
+                      message: 'Profile updated',
+                      icon: Icon(null),
+                      backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                    ),
+                  );
+                  await context.read<ProfileCubit>().loadProfile();
+                  Navigator.of(context).pop(true);
+                });
+              }
+            },
             style: ElevatedButton.styleFrom(
               shape: const StadiumBorder(),
               primary: !state.isLoading

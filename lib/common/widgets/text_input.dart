@@ -18,7 +18,7 @@ class TextInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: TextEditingController(text: initialValue),
       onChanged: onChanged,
       style: const TextStyle(
@@ -38,7 +38,17 @@ class TextInput extends StatelessWidget {
           iconData,
           color: const Color.fromRGBO(90, 23, 238, 1),
         ),
+        errorStyle: const TextStyle(
+          color: Color.fromRGBO(90, 23, 238, 1),
+          height: 0.1,
+        ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '    Please enter some text';
+        }
+        return null;
+      },
     );
   }
 }
