@@ -165,6 +165,7 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
     } else {
       events[checkoutIndex] = [checkoutEvent];
     }
+    dbIndex++;
   });
 
   dbIndex = 0;
@@ -185,6 +186,7 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
     } else {
       events[index] = [event];
     }
+    dbIndex++;
   });
 
   dbIndex = 0;
@@ -203,6 +205,7 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
     } else {
       events[index] = [event];
     }
+    dbIndex++;
   });
   events.forEach((key, value) {
     events[key]!.sort((a,b) => a.time.compareTo(b.time));
