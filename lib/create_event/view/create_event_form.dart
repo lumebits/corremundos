@@ -12,6 +12,8 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:trips_repository/trips_repository.dart';
 
+final _formKey = GlobalKey<FormState>();
+
 class CreateEventForm extends BasePage {
   const CreateEventForm(this.trip, this.day, this.eventType, {Key? key})
       : super(key);
@@ -67,21 +69,24 @@ class CreateEventForm extends BasePage {
 
   @override
   Widget widget(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (eventType == EventType.transport)
-                _TransportationForm(trip, day)
-              else
-                eventType == EventType.accommodation
-                    ? _AccommodationForm(trip, day)
-                    : _ActivityForm(trip, day),
-            ],
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (eventType == EventType.transport)
+                  _TransportationForm(trip, day)
+                else
+                  eventType == EventType.accommodation
+                      ? _AccommodationForm(trip, day)
+                      : _ActivityForm(trip, day),
+              ],
+            ),
           ),
         ),
       ),
@@ -254,7 +259,6 @@ class _TripEventTimePicker extends StatelessWidget {
           onSubmitted: (date) => context
               .read<CreateEventCubit>()
               .timeChanged(DateFormat('dd/MM/yyyy').parse(date)),
-          keyboardType: TextInputType.datetime,
         );
       },
     );
@@ -292,7 +296,6 @@ class _TripEventEndTimePicker extends StatelessWidget {
           onSubmitted: (date) => context
               .read<CreateEventCubit>()
               .endTimeChanged(DateFormat('dd/MM/yyyy').parse(date)),
-          keyboardType: TextInputType.datetime,
         );
       },
     );
@@ -388,27 +391,29 @@ class _SaveTripEvent extends StatelessWidget {
         builder: (context, state) {
           return ElevatedButton(
             key: const Key('newEventForm_save_button'),
-            onPressed: () => !state.isLoading
-                ? context
+            onPressed: () {
+              if (_formKey.currentState!.validate() && !state.isLoading) {
+                context
                     .read<CreateEventCubit>()
                     .saveEvent(eventType)
                     .then((value) {
-                    showTopSnackBar(
-                      context,
-                      const CustomSnackBar.success(
-                        message: 'Event created',
-                        icon: Icon(null),
-                        backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-                      ),
-                    );
-                    context
-                        .read<TripsCubit>()
-                        .loadCurrentTrip(resetSelectedDay: false);
-                    context.read<TripsCubit>().loadMyTrips();
-                    // TODO(palomapiot): Reload selected trip with new event
-                    Navigator.of(context).pop(true);
-                  })
-                : null,
+                  showTopSnackBar(
+                    context,
+                    const CustomSnackBar.success(
+                      message: 'Event created',
+                      icon: Icon(null),
+                      backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                    ),
+                  );
+                  context
+                      .read<TripsCubit>()
+                      .loadCurrentTrip(resetSelectedDay: false);
+                  context.read<TripsCubit>().loadMyTrips();
+                  // TODO(palomapiot): Reload selected trip with new event
+                  Navigator.of(context).pop(true);
+                });
+              }
+            },
             style: ElevatedButton.styleFrom(
               shape: const StadiumBorder(),
               primary: !state.isLoading
