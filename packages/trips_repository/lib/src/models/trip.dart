@@ -138,12 +138,18 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
   var events = <int, List<TripEvent>>{};
   var dbIndex = 0;
   entity.accommodations!.forEach((dynamic a) {
-    var checkin = a['checkin'].toDate() as DateTime;
-    var checkout = a['checkout'].toDate() as DateTime;
+    var checkin = a['checkin'] is Timestamp
+        ? a['checkin'].toDate() as DateTime
+        : a['checkin'] as DateTime;
+    var checkout = a['checkout'] is Timestamp
+        ? a['checkout'].toDate() as DateTime
+        : a['checkout'] as DateTime;
 
     var checkinEvent = TripEvent(
         index: dbIndex,
-        time: checkin,
+        time: a['checkin'] is Timestamp
+            ? a['checkin'].toDate() as DateTime
+            : a['checkin'] as DateTime,
         isCheckIn: true,
         fileUrl: a['file'] as String,
         name: a['name'] as String,
@@ -151,7 +157,9 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
         type: EventType.accommodation);
     var checkoutEvent = TripEvent(
         index: dbIndex,
-        time: checkout,
+        time: a['checkout'] is Timestamp
+            ? a['checkout'].toDate() as DateTime
+            : a['checkout'] as DateTime,
         isCheckIn: false,
         fileUrl: a['file'] as String,
         name: a['name'] as String,
@@ -198,7 +206,9 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
 
   dbIndex = 0;
   entity.activities!.forEach((dynamic t) {
-    var time = t['time'].toDate() as DateTime;
+    var time = t['time'] is Timestamp
+        ? t['time'].toDate() as DateTime
+        : t['time'] as DateTime;
     var event = TripEvent(
         index: dbIndex,
         time: time,
