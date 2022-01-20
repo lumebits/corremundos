@@ -134,8 +134,6 @@ class _TransportationForm extends StatelessWidget {
   }
 }
 
-// TODO(palomapiot): edit accommodation -> one accommodation has 2 trip events
-// we need to load the checkout
 class _AccommodationForm extends StatelessWidget {
   const _AccommodationForm(this.trip, this.day);
 
