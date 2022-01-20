@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:trips_repository/src/entities/entities.dart';
@@ -76,6 +77,10 @@ class Trip extends Equatable {
         sharedWith,
         eventMap,
       ];
+
+  Trip refreshEventMap() {
+    return this.copyWith(eventMap: createEventMap(this.toEntity()));
+  }
 
   Trip copyWith(
       {String? uid,
@@ -170,17 +175,19 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
 
   dbIndex = 0;
   entity.transportations!.forEach((dynamic t) {
-    var time = t['departureTime'].toDate() as DateTime;
-    var arrivalTime = t['arrivalTime'].toDate() as DateTime;
     var event = TripEvent(
         index: dbIndex,
-        time: time,
-        endTime: arrivalTime,
+        time: t['departureTime'] is Timestamp
+            ? t['departureTime'].toDate() as DateTime
+            : t['departureTime'] as DateTime,
+        endTime: t['arrivalTime'] is Timestamp
+            ? t['arrivalTime'].toDate() as DateTime
+            : t['arrivalTime'] as DateTime,
         fileUrl: t['file'] as String,
         name: t['location'] as String,
         location: t['notes'] as String,
         type: EventType.transport);
-    var index = daysBetween(entity.initDate!, time);
+    var index = daysBetween(entity.initDate!, event.time);
     if (events.containsKey(index)) {
       events[index]!.add(event);
     } else {
@@ -208,15 +215,15 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
     dbIndex++;
   });
   events.forEach((key, value) {
-    events[key]!.sort((a,b) => a.time.compareTo(b.time));
+    events[key]!.sort((a, b) => a.time.compareTo(b.time));
   });
   return events;
 }
 
 int daysBetween(DateTime from, DateTime to) {
   return (DateTime(to.year, to.month, to.day)
-      .difference(DateTime(from.year, from.month, from.day))
-      .inHours /
-      24)
+              .difference(DateTime(from.year, from.month, from.day))
+              .inHours /
+          24)
       .round();
 }

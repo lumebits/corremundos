@@ -97,10 +97,10 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     }
   }
 
-  Future<void> saveEvent(EventType eventType) async {
+  Future<Trip?> saveEvent(EventType eventType) async {
     emit(state.copyWith(isLoading: true));
     if (state.pickedFile != null) {
-      await uploadFile().then((uploadedFileUrl) {
+      await uploadFile().then((uploadedFileUrl) async {
         if (uploadedFileUrl != null) {
           if (eventType == EventType.transport) {
             final transportation = <String, dynamic>{
@@ -117,10 +117,11 @@ class CreateEventCubit extends Cubit<CreateEventState> {
             }
             final updatedTrip =
                 trip.copyWith(transportations: trip.transportations);
-            tripsRepository.addEvents(
+            await tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
             );
+            return Future.value(updatedTrip.refreshEventMap());
           } else if (eventType == EventType.accommodation) {
             final accommodation = <String, dynamic>{
               'file': uploadedFileUrl,
@@ -136,10 +137,11 @@ class CreateEventCubit extends Cubit<CreateEventState> {
             }
             final updatedTrip =
                 trip.copyWith(accommodations: trip.accommodations);
-            tripsRepository.addEvents(
+            await tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
             );
+            return Future.value(updatedTrip.refreshEventMap());
           } else if (eventType == EventType.activity) {
             final activity = <String, dynamic>{
               'file': uploadedFileUrl,
@@ -154,10 +156,11 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               trip.activities.add(activity);
             }
             final updatedTrip = trip.copyWith(activities: trip.activities);
-            tripsRepository.addEvents(
+            await tripsRepository.addEvents(
               updatedTrip,
               authRepository.currentUser.id,
             );
+            return Future.value(updatedTrip.refreshEventMap());
           }
           emit(state.copyWith(isLoading: false));
         } else {
@@ -184,6 +187,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           updatedTrip,
           authRepository.currentUser.id,
         );
+        return Future.value(updatedTrip.refreshEventMap());
       } else if (eventType == EventType.activity) {
         final activity = <String, dynamic>{
           'file': '',
@@ -201,6 +205,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           updatedTrip,
           authRepository.currentUser.id,
         );
+        return Future.value(updatedTrip.refreshEventMap());
       } else if (eventType == EventType.accommodation) {
         final accommodation = <String, dynamic>{
           'file': '',
@@ -219,6 +224,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           updatedTrip,
           authRepository.currentUser.id,
         );
+        return Future.value(updatedTrip.refreshEventMap());
       }
       emit(state.copyWith(isLoading: false));
     }

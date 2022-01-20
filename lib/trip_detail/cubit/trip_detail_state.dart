@@ -7,10 +7,11 @@ class TripDetailState extends Equatable {
   final int dayIndex;
 
   TripDetailState copyWith({
+    Trip? trip,
     int? dayIndex,
   }) {
     return TripDetailState(
-      trip,
+      trip ?? this.trip,
       dayIndex ?? this.dayIndex,
     );
   }
