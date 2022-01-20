@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:trips_repository/trips_repository.dart';
 import 'package:unsplash_client/unsplash_client.dart';
+import 'package:uuid/uuid.dart';
 
 part 'create_trip_state.dart';
 
@@ -84,15 +85,32 @@ class CreateTripCubit extends Cubit<CreateTripState> {
         settings: ClientSettings(credentials: appCredentials),
       );
 
-      await client.search.photos(state.name).goAndGet().then((photo) async {
+      await client.search
+          .photos(state.name, orientation: PhotoOrientation.landscape)
+          .goAndGet()
+          .then((photo) async {
         final imageUrl = photo.results.first.urls.regular.toString();
         final trip = Trip(
-          uid: state.id != null ? authRepository.currentUser.id : '',
-          id: state.id,
+          uid: state.id != '' ? authRepository.currentUser.id : '',
+          id: state.id != '' ? state.id : const Uuid().v4(),
           name: state.name,
           initDate: state.initDate,
           endDate: state.endDate,
           imageUrl: imageUrl,
+        );
+        await tripsRepository.updateOrCreateTrip(
+          trip,
+          authRepository.currentUser.id,
+        );
+      }).onError((error, stackTrace) async {
+        final trip = Trip(
+          uid: state.id != '' ? authRepository.currentUser.id : '',
+          id: state.id != '' ? state.id : const Uuid().v4(),
+          name: state.name,
+          initDate: state.initDate,
+          endDate: state.endDate,
+          imageUrl:
+              'https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
         );
         await tripsRepository.updateOrCreateTrip(
           trip,

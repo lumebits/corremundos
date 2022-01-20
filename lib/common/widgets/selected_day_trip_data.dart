@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/create_event/create_event.dart';
+import 'package:corremundos/trip_detail/cubit/trip_detail_cubit.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -253,18 +254,24 @@ class SelectedDayTripData extends StatelessWidget {
                     color: const Color.fromRGBO(90, 23, 238, 1),
                     iconSize: 18,
                     onPressed: () {
-                      Navigator.of(context).push(
-                        // TODO(paloma): if the event is an accommodation,
-                        // we need to load the checkin and checkout times
-                        MaterialPageRoute<void>(
-                          builder: (context) => CreateEventPage(
-                            trip,
-                            day,
-                            eventType,
-                            tripEvent: event,
-                          ),
-                        ),
-                      );
+                      Navigator.of(context)
+                          .push(
+                            // TODO(paloma): if the event is an accommodation,
+                            // we need to load the checkin and checkout times
+                            MaterialPageRoute<Trip>(
+                              builder: (context) => CreateEventPage(
+                                trip,
+                                day,
+                                eventType,
+                                tripEvent: event,
+                              ),
+                            ),
+                          )
+                          .then(
+                            (value) => context
+                                .read<TripDetailCubit>()
+                                .refreshTrip(value),
+                          );
                     },
                   ),
                   if (location.isNotEmpty && eventType != EventType.transport)

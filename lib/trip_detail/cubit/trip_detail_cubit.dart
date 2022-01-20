@@ -10,4 +10,9 @@ class TripDetailCubit extends Cubit<TripDetailState> {
   Future<void> refreshSelectedDay(int index) async {
     emit(state.copyWith(dayIndex: index));
   }
+
+  Future<Trip?> refreshTrip(Trip? trip) async {
+    emit(state.copyWith(trip: trip));
+    return trip;
+  }
 }

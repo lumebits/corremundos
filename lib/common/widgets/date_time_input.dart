@@ -8,7 +8,6 @@ class DateTimeInput extends StatelessWidget {
     required this.iconData,
     this.onPressed,
     this.onSubmitted,
-    this.keyboardType = TextInputType.text,
   }) : super(key: key);
 
   final String label;
@@ -16,7 +15,6 @@ class DateTimeInput extends StatelessWidget {
   final IconData iconData;
   final Function()? onPressed;
   final Function(String)? onSubmitted;
-  final TextInputType keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +27,7 @@ class DateTimeInput extends StatelessWidget {
         fontSize: 20,
         color: Color.fromRGBO(90, 23, 238, 1),
       ),
-      keyboardType: keyboardType,
+      keyboardType: TextInputType.datetime,
       decoration: InputDecoration(
         labelStyle: const TextStyle(
           color: Colors.grey,

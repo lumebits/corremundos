@@ -11,6 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+final _formKey = GlobalKey<FormState>();
+
 class CreateTripForm extends BasePage {
   const CreateTripForm({Key? key}) : super(key);
 
@@ -48,23 +50,26 @@ class CreateTripForm extends BasePage {
 
   @override
   Widget widget(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const SizedBox(height: 24),
-              _TripNameInput(),
-              const SizedBox(height: 8),
-              _TripInitDatePicker(),
-              const SizedBox(height: 8),
-              _TripEndDatePicker(),
-              const SizedBox(height: 24),
-              _SaveTrip(),
-            ],
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const SizedBox(height: 24),
+                _TripNameInput(),
+                const SizedBox(height: 8),
+                _TripInitDatePicker(),
+                const SizedBox(height: 8),
+                _TripEndDatePicker(),
+                const SizedBox(height: 24),
+                _SaveTrip(),
+              ],
+            ),
           ),
         ),
       ),
@@ -134,7 +139,6 @@ class _TripInitDatePicker extends StatelessWidget {
           onSubmitted: (date) => context
               .read<CreateTripCubit>()
               .initDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
-          keyboardType: TextInputType.datetime,
         );
       },
     );
@@ -164,7 +168,6 @@ class _TripEndDatePicker extends StatelessWidget {
           onSubmitted: (date) => context
               .read<CreateTripCubit>()
               .endDateChanged(DateFormat('dd/MM/yyyy').parse(date)),
-          keyboardType: TextInputType.datetime,
         );
       },
     );
@@ -180,18 +183,20 @@ class _SaveTrip extends StatelessWidget {
       child: ElevatedButton(
         key: const Key('newTripForm_save_button'),
         onPressed: () {
-          context.read<CreateTripCubit>().saveTrip().then((value) {
-            showTopSnackBar(
-              context,
-              const CustomSnackBar.success(
-                message: 'Trip created',
-                icon: Icon(null),
-                backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-              ),
-            );
-            context.read<TripsCubit>().loadMyTrips();
-            Navigator.of(context).pop(true);
-          });
+          if (_formKey.currentState!.validate()) {
+            context.read<CreateTripCubit>().saveTrip().then((value) {
+              showTopSnackBar(
+                context,
+                const CustomSnackBar.success(
+                  message: 'Trip created',
+                  icon: Icon(null),
+                  backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                ),
+              );
+              context.read<TripsCubit>().loadMyTrips();
+              Navigator.of(context).pop(true);
+            });
+          }
         },
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),

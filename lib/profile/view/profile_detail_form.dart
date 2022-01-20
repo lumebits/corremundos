@@ -48,15 +48,18 @@ class ProfileDetailForm extends BasePage {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  state.profile.name != null && state.profile.name != ''
-                      ? 'Welcome, ${state.profile.name}!'
-                      : 'Welcome!',
-                  style: const TextStyle(fontSize: 24),
-                ),
-              ),
+              if (!state.isLoading)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    state.profile.name != null && state.profile.name != ''
+                        ? 'Welcome, ${state.profile.name}!'
+                        : 'Welcome!',
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                )
+              else
+                const Center(),
               _Documents()
             ],
           ),
@@ -73,7 +76,9 @@ class _Documents extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.profile.documents != current.profile.documents,
       builder: (context, state) {
-        if (state.profile.documents!.isEmpty) {
+        if (state.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state.profile.documents!.isEmpty) {
           return const SizedBox(
             height: 500,
             child: Center(
