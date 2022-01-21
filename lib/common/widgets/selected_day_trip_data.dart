@@ -398,11 +398,13 @@ Future<bool> showNewEventDialog(
         eventType = EventType.activity;
       }
       Navigator.of(context).push(
-        MaterialPageRoute<void>(
+        MaterialPageRoute<Trip>(
           builder: (context) {
             return CreateEventPage(trip, selectedTripDay, eventType);
           },
         ),
+      ).then(
+        (value) => context.read<TripDetailCubit>().refreshTrip(value),
       );
     }
     return true;

@@ -20,7 +20,38 @@ class CreateTripForm extends BasePage {
   Widget? floatingActionButton(BuildContext context) => null;
 
   @override
-  List<Widget>? actions(BuildContext context) => null;
+  List<Widget>? actions(BuildContext context) {
+    final tripId = context.read<CreateTripCubit>().state.id;
+    if (tripId != null && tripId != '') {
+      return [
+        IconButton(
+          key: const Key('delete_iconButton'),
+          icon: const Icon(
+            Icons.delete_rounded,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            context.read<CreateTripCubit>().deleteTrip(tripId).then((value) {
+              showTopSnackBar(
+                context,
+                const CustomSnackBar.success(
+                  message: 'Trip deleted',
+                  icon: Icon(null),
+                  backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                ),
+              );
+              context
+                  .read<TripsCubit>()
+                  .loadMyTrips()
+                  .then((value) => Navigator.of(context).pop());
+            });
+          },
+        )
+      ];
+    } else {
+      return null;
+    }
+  }
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {

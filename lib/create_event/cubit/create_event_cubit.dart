@@ -229,4 +229,14 @@ class CreateEventCubit extends Cubit<CreateEventState> {
       emit(state.copyWith(isLoading: false));
     }
   }
+
+  Future<Trip?> deleteTripEvent(String tripId) async {
+    await tripsRepository.deleteTripEvent(tripId, state.tripEvent);
+    final updatedTrip = trip.copyWith(
+      accommodations: trip.accommodations,
+      activities: trip.activities,
+      transportations: trip.transportations,
+    );
+    return Future.value(updatedTrip.refreshEventMap());
+  }
 }

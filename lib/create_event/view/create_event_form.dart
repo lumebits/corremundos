@@ -26,7 +26,47 @@ class CreateEventForm extends BasePage {
   Widget? floatingActionButton(BuildContext context) => null;
 
   @override
-  List<Widget>? actions(BuildContext context) => null;
+  List<Widget>? actions(BuildContext context) {
+    final tripEvent = context.read<CreateEventCubit>().state.tripEvent;
+    if (tripEvent.isNotEmpty) {
+      return [
+        IconButton(
+          key: const Key('delete_iconButton'),
+          icon: const Icon(
+            Icons.delete_rounded,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            context
+                .read<CreateEventCubit>()
+                .deleteTripEvent(trip.id)
+                .then((value) {
+              // TODO(palomapiot): load events after deleting
+              // delete accommodation doesnt work
+              //  because we need to load the end time too
+              showTopSnackBar(
+                context,
+                const CustomSnackBar.success(
+                  message: 'Event deleted',
+                  icon: Icon(null),
+                  backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                ),
+              );
+              context
+                  .read<TripsCubit>()
+                  .loadCurrentTrip(resetSelectedDay: false);
+              context
+                  .read<TripsCubit>()
+                  .loadMyTrips()
+                  .then((value2) => Navigator.of(context).pop(value));
+            });
+          },
+        )
+      ];
+    } else {
+      return null;
+    }
+  }
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
@@ -232,10 +272,17 @@ class _TripEventTimePicker extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.tripEvent.time != current.tripEvent.time,
       builder: (context, state) {
+        final initDate = DateTime(
+          day.year,
+          day.month,
+          day.day,
+          state.tripEvent.time.hour,
+          state.tripEvent.time.minute,
+        );
         return DateTimeInput(
           key: const Key('newTripEventForm_initDate_textField'),
           label: label,
-          initialValue: DateFormat('HH:mm').format(state.tripEvent.time),
+          initialValue: DateFormat('HH:mm').format(initDate),
           iconData: Icons.calendar_today_rounded,
           onPressed: () {
             DatePicker.showTimePicker(
@@ -406,8 +453,10 @@ class _SaveTripEvent extends StatelessWidget {
                   context
                       .read<TripsCubit>()
                       .loadCurrentTrip(resetSelectedDay: false);
-                  context.read<TripsCubit>().loadMyTrips();
-                  Navigator.of(context).pop(value);
+                  context
+                      .read<TripsCubit>()
+                      .loadMyTrips()
+                      .then((value2) => Navigator.of(context).pop(value));
                 });
               }
             },

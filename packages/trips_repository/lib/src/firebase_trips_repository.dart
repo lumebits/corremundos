@@ -137,6 +137,81 @@ class FirebaseTripsRepository implements TripsRepository {
       }
     });
   }
+
+  @override
+  Future<void> deleteTrip(String tripId) async {
+    return collection.where('id', isEqualTo: tripId).get().then((value) {
+      for (final element in value.docs) {
+        collection.doc(element.id).delete();
+      }
+    });
+  }
+
+  @override
+  Future<void> deleteTripEvent(String tripId, TripEvent tripEvent) async {
+    return collection.where('id', isEqualTo: tripId).get().then((value) {
+      for (final element in value.docs) {
+        final trip = collection.doc(element.id);
+        switch (tripEvent.type) {
+          case EventType.accommodation:
+            trip.update(<String, dynamic>{
+              'accommodations': FieldValue.arrayRemove(
+                  <dynamic>[tripEventToAccommodation(tripEvent)])
+            });
+            if (tripEvent.fileUrl.isNotEmpty)
+              FirebaseStorage.instance.refFromURL(tripEvent.fileUrl).delete();
+            break;
+          case EventType.activity:
+            trip.update(<String, dynamic>{
+              'activities': FieldValue.arrayRemove(
+                  <dynamic>[tripEventToActivity(tripEvent)])
+            });
+            if (tripEvent.fileUrl.isNotEmpty)
+              FirebaseStorage.instance.refFromURL(tripEvent.fileUrl).delete();
+            break;
+          case EventType.transport:
+            trip.update(<String, dynamic>{
+              'transportations': FieldValue.arrayRemove(
+                  <dynamic>[tripEventToTransportation(tripEvent)])
+            });
+            if (tripEvent.fileUrl.isNotEmpty)
+              FirebaseStorage.instance.refFromURL(tripEvent.fileUrl).delete();
+            break;
+          default:
+            throw Exception('unknown event type');
+        }
+      }
+    });
+  }
+}
+
+dynamic tripEventToAccommodation(TripEvent tripEvent) {
+  return {
+    'name': tripEvent.name,
+    'location': tripEvent.location,
+    'checkin': tripEvent.time,
+    'checkout': tripEvent.endTime,
+    'file': tripEvent.fileUrl,
+  };
+}
+
+dynamic tripEventToActivity(TripEvent tripEvent) {
+  return {
+    'name': tripEvent.name,
+    'location': tripEvent.location,
+    'time': tripEvent.time,
+    'file': tripEvent.fileUrl,
+  };
+}
+
+dynamic tripEventToTransportation(TripEvent tripEvent) {
+  return {
+    'notes': tripEvent.location,
+    'location': tripEvent.name,
+    'departureTime': tripEvent.time,
+    'arrivalTime': tripEvent.endTime,
+    'file': tripEvent.fileUrl,
+  };
 }
 
 const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';

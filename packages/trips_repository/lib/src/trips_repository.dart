@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:trips_repository/trips_repository.dart';
 
 abstract class TripsRepository {
-
   Future<void> updateOrCreateTrip(Trip trip, String uid);
 
   Future<void> addEvents(Trip trip, String uid);
@@ -20,4 +19,8 @@ abstract class TripsRepository {
   Future<String?> uploadFileToStorage(Uint8List uint8list, String name);
 
   Future<void> deleteTrips(String uid);
+
+  Future<void> deleteTrip(String tripId);
+
+  Future<void> deleteTripEvent(String tripId, TripEvent tripEvent);
 }
