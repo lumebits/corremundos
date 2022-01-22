@@ -232,6 +232,36 @@ class CreateEventCubit extends Cubit<CreateEventState> {
 
   Future<Trip?> deleteTripEvent(String tripId) async {
     await tripsRepository.deleteTripEvent(tripId, state.tripEvent);
+    if (state.tripEvent.type == EventType.accommodation) {
+      final accommodation = tripEventToAccommodation(state.tripEvent);
+      trip.accommodations.removeWhere(
+        (dynamic e) =>
+            (e as Map<String, dynamic>)['file'] == accommodation['file'] &&
+            e['name'] == accommodation['name'] &&
+            e['location'] == accommodation['location'] &&
+            e['checkin'] == accommodation['checkin'] &&
+            e['checkout'] == accommodation['checkout'],
+      );
+    } else if (state.tripEvent.type == EventType.activity) {
+      final activity = tripEventToActivity(state.tripEvent);
+      trip.activities.removeWhere(
+        (dynamic e) =>
+            (e as Map<String, dynamic>)['file'] == activity['file'] &&
+            e['name'] == activity['name'] &&
+            e['location'] == activity['location'] &&
+            e['time'] == activity['time'],
+      );
+    } else if (state.tripEvent.type == EventType.transport) {
+      final transport = tripEventToTransportation(state.tripEvent);
+      trip.transportations.removeWhere(
+        (dynamic e) =>
+            (e as Map<String, dynamic>)['file'] == transport['file'] &&
+            e['name'] == transport['name'] &&
+            e['location'] == transport['location'] &&
+            e['departureTime'] == transport['departureTime'] &&
+            e['arrivalTime'] == transport['arrivalTime'],
+      );
+    }
     final updatedTrip = trip.copyWith(
       accommodations: trip.accommodations,
       activities: trip.activities,
@@ -239,4 +269,33 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     );
     return Future.value(updatedTrip.refreshEventMap());
   }
+}
+
+Map<String, dynamic> tripEventToAccommodation(TripEvent tripEvent) {
+  return <String, dynamic>{
+    'name': tripEvent.name,
+    'location': tripEvent.location,
+    'checkin': tripEvent.time,
+    'checkout': tripEvent.endTime,
+    'file': tripEvent.fileUrl,
+  };
+}
+
+Map<String, dynamic> tripEventToActivity(TripEvent tripEvent) {
+  return <String, dynamic>{
+    'name': tripEvent.name,
+    'location': tripEvent.location,
+    'time': tripEvent.time,
+    'file': tripEvent.fileUrl,
+  };
+}
+
+Map<String, dynamic> tripEventToTransportation(TripEvent tripEvent) {
+  return <String, dynamic>{
+    'notes': tripEvent.location,
+    'location': tripEvent.name,
+    'departureTime': tripEvent.time,
+    'arrivalTime': tripEvent.endTime,
+    'file': tripEvent.fileUrl,
+  };
 }

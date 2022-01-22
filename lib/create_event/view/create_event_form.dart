@@ -37,13 +37,11 @@ class CreateEventForm extends BasePage {
             color: Colors.white,
           ),
           onPressed: () {
+            // TODO(paloma): show dialog before deleting
             context
                 .read<CreateEventCubit>()
                 .deleteTripEvent(trip.id)
                 .then((value) {
-              // TODO(palomapiot): load events after deleting
-              // delete accommodation doesnt work
-              //  because we need to load the end time too
               showTopSnackBar(
                 context,
                 const CustomSnackBar.success(
@@ -279,6 +277,7 @@ class _TripEventTimePicker extends StatelessWidget {
           state.tripEvent.time.hour,
           state.tripEvent.time.minute,
         );
+        context.read<CreateEventCubit>().timeChanged(initDate);
         return DateTimeInput(
           key: const Key('newTripEventForm_initDate_textField'),
           label: label,
@@ -298,7 +297,7 @@ class _TripEventTimePicker extends StatelessWidget {
                 );
                 context.read<CreateEventCubit>().timeChanged(eventDate);
               },
-              currentTime: state.tripEvent.time,
+              currentTime: initDate,
             );
           },
           onSubmitted: (date) => context
@@ -324,6 +323,7 @@ class _TripEventEndTimePicker extends StatelessWidget {
       builder: (context, state) {
         final endTime = state.tripEvent.endTime ??
             context.read<CreateEventCubit>().setEndTime(day);
+        context.read<CreateEventCubit>().endTimeChanged(endTime);
         return DateTimeInput(
           key: const Key('newTripEventForm_endDate_textField'),
           label: label,

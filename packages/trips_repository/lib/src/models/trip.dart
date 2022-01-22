@@ -147,9 +147,8 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
 
     var checkinEvent = TripEvent(
         index: dbIndex,
-        time: a['checkin'] is Timestamp
-            ? a['checkin'].toDate() as DateTime
-            : a['checkin'] as DateTime,
+        time: checkin,
+        endTime: checkout,
         isCheckIn: true,
         fileUrl: a['file'] as String,
         name: a['name'] as String,
@@ -157,9 +156,8 @@ Map<int, List<TripEvent>> createEventMap(TripEntity entity) {
         type: EventType.accommodation);
     var checkoutEvent = TripEvent(
         index: dbIndex,
-        time: a['checkout'] is Timestamp
-            ? a['checkout'].toDate() as DateTime
-            : a['checkout'] as DateTime,
+        time: checkout,
+        endTime: checkin,
         isCheckIn: false,
         fileUrl: a['file'] as String,
         name: a['name'] as String,

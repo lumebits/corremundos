@@ -131,7 +131,7 @@ class FirebaseTripsRepository implements TripsRepository {
   Future<void> deleteTrips(String uid) async {
     return collection.where('uid', isEqualTo: uid).get().then((value) {
       for (var element in value.docs) {
-        // TODO(palomapiot): if the element is accommodation or transportation
+        // TODO(palomapiot): delete files
         // FirebaseStorage.instance.refFromURL(imageUrl).delete();
         collection.doc(element.id).delete();
       }
