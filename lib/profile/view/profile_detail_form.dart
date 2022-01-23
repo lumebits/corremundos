@@ -42,6 +42,7 @@ class ProfileDetailForm extends BasePage {
   @override
   Widget widget(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(20),

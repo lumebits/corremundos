@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "748000694321-233tvk3d1viko11ev1e0vbfkgudcuvnf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lumebits.corremundos",
+            "certificate_hash": "1fd3c5e15d3ae0bd165475429d557c4c8b1027d7"
+          }
+        },
+        {
           "client_id": "748000694321-9kq3c8vo8ssfgt21lulp76f23a8iispb.apps.googleusercontent.com",
           "client_type": 3
         }

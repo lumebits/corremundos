@@ -407,12 +407,12 @@ packages:
     source: hosted
     version: "2.2.0"
   google_sign_in:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: google_sign_in
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.1"
+    version: "5.2.3"
   google_sign_in_platform_interface:
     dependency: transitive
     description:
