@@ -254,16 +254,21 @@ class SelectedDayTripData extends StatelessWidget {
                     color: const Color.fromRGBO(90, 23, 238, 1),
                     iconSize: 18,
                     onPressed: () {
+                      var tripEvent = event;
+                      if (event.isCheckIn != null && event.isCheckIn == false) {
+                        tripEvent = event.copyWith(
+                          time: event.endTime,
+                          endTime: event.time,
+                        );
+                      }
                       Navigator.of(context)
                           .push(
-                            // TODO(paloma): if the event is an accommodation,
-                            // we need to load the checkin and checkout times
                             MaterialPageRoute<Trip>(
                               builder: (context) => CreateEventPage(
                                 trip,
                                 day,
                                 eventType,
-                                tripEvent: event,
+                                tripEvent: tripEvent,
                               ),
                             ),
                           )
@@ -398,11 +403,13 @@ Future<bool> showNewEventDialog(
         eventType = EventType.activity;
       }
       Navigator.of(context).push(
-        MaterialPageRoute<void>(
+        MaterialPageRoute<Trip>(
           builder: (context) {
             return CreateEventPage(trip, selectedTripDay, eventType);
           },
         ),
+      ).then(
+        (value) => context.read<TripDetailCubit>().refreshTrip(value),
       );
     }
     return true;

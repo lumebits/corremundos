@@ -129,14 +129,102 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Future<void> deleteTrips(String uid) async {
-    return collection.where('uid', isEqualTo: uid).get().then((value) {
-      for (var element in value.docs) {
-        // TODO(palomapiot): if the element is accommodation or transportation
-        // FirebaseStorage.instance.refFromURL(imageUrl).delete();
+    getMyTrips(uid).forEach((elements) {
+      for (var trip in elements) {
+        deleteTrip(trip);
+      }
+    });
+  }
+
+  @override
+  Future<void> deleteTrip(Trip trip) async {
+    trip.transportations.forEach((dynamic element) {
+      final file = (element['file'] as String);
+      if (file.isNotEmpty)
+        FirebaseStorage.instance.refFromURL(file).delete();
+    });
+    trip.activities.forEach((dynamic element) {
+      final file = (element['file'] as String);
+      if (file.isNotEmpty)
+        FirebaseStorage.instance.refFromURL(file).delete();
+    });
+    trip.accommodations.forEach((dynamic element) {
+      final file = (element['file'] as String);
+      if (file.isNotEmpty)
+        FirebaseStorage.instance.refFromURL(file).delete();
+    });
+    return collection.where('id', isEqualTo: trip.id).get().then((value) {
+      for (final element in value.docs) {
         collection.doc(element.id).delete();
       }
     });
   }
+
+  @override
+  Future<void> deleteTripEvent(String tripId, TripEvent tripEvent) async {
+    return collection.where('id', isEqualTo: tripId).get().then((value) {
+      for (final element in value.docs) {
+        final trip = collection.doc(element.id);
+        switch (tripEvent.type) {
+          case EventType.accommodation:
+            trip.update(<String, dynamic>{
+              'accommodations': FieldValue.arrayRemove(
+                  <dynamic>[tripEventToAccommodation(tripEvent)])
+            });
+            if (tripEvent.fileUrl.isNotEmpty)
+              FirebaseStorage.instance.refFromURL(tripEvent.fileUrl).delete();
+            break;
+          case EventType.activity:
+            trip.update(<String, dynamic>{
+              'activities': FieldValue.arrayRemove(
+                  <dynamic>[tripEventToActivity(tripEvent)])
+            });
+            if (tripEvent.fileUrl.isNotEmpty)
+              FirebaseStorage.instance.refFromURL(tripEvent.fileUrl).delete();
+            break;
+          case EventType.transport:
+            trip.update(<String, dynamic>{
+              'transportations': FieldValue.arrayRemove(
+                  <dynamic>[tripEventToTransportation(tripEvent)])
+            });
+            if (tripEvent.fileUrl.isNotEmpty)
+              FirebaseStorage.instance.refFromURL(tripEvent.fileUrl).delete();
+            break;
+          default:
+            throw Exception('unknown event type');
+        }
+      }
+    });
+  }
+}
+
+dynamic tripEventToAccommodation(TripEvent tripEvent) {
+  return {
+    'name': tripEvent.name,
+    'location': tripEvent.location,
+    'checkin': tripEvent.time,
+    'checkout': tripEvent.endTime,
+    'file': tripEvent.fileUrl,
+  };
+}
+
+dynamic tripEventToActivity(TripEvent tripEvent) {
+  return {
+    'name': tripEvent.name,
+    'location': tripEvent.location,
+    'time': tripEvent.time,
+    'file': tripEvent.fileUrl,
+  };
+}
+
+dynamic tripEventToTransportation(TripEvent tripEvent) {
+  return {
+    'notes': tripEvent.location,
+    'location': tripEvent.name,
+    'departureTime': tripEvent.time,
+    'arrivalTime': tripEvent.endTime,
+    'file': tripEvent.fileUrl,
+  };
 }
 
 const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';

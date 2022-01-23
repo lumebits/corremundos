@@ -91,7 +91,9 @@ class TripDetailForm extends BasePage {
             Expanded(
               flex: 9,
               child: BlocBuilder<TripDetailCubit, TripDetailState>(
-                buildWhen: (previous, current) => previous.trip != current.trip,
+                buildWhen: (previous, current) =>
+                    previous.trip != current.trip ||
+                    previous.dayIndex != current.dayIndex,
                 builder: (context, state) {
                   return SelectedDayTripData(
                     trip: state.trip,

@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             Color.fromRGBO(90, 23, 238, 1), // purple
-            Color.fromRGBO(0, 177, 219, .8) // blue
+            Color.fromRGBO(90, 23, 238, 1) // blue
           ],
         ),
       ),

@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/date_time_input.dart';
+import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
@@ -14,10 +16,13 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 final _formKey = GlobalKey<FormState>();
 
 class CreateTripForm extends BasePage {
-  const CreateTripForm({Key? key}) : super(key);
+  const CreateTripForm({Key? key}) : super(key, appTab: AppTab.addTrip);
 
   @override
   Widget? floatingActionButton(BuildContext context) => null;
+
+  @override
+  Widget? bottomNavigationBar() => null;
 
   @override
   List<Widget>? actions(BuildContext context) => null;
@@ -46,6 +51,12 @@ class CreateTripForm extends BasePage {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
     );
+  }
+
+  @override
+  Future<bool> onWillPop(BuildContext context) {
+    context.read<AppBloc>().add(const NavigationRequested(AppTab.trips));
+    return Future.value(true);
   }
 
   @override

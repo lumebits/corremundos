@@ -26,7 +26,95 @@ class CreateEventForm extends BasePage {
   Widget? floatingActionButton(BuildContext context) => null;
 
   @override
-  List<Widget>? actions(BuildContext context) => null;
+  List<Widget>? actions(BuildContext context) {
+    final tripEvent = context.read<CreateEventCubit>().state.tripEvent;
+    if (tripEvent.isNotEmpty) {
+      return [
+        IconButton(
+          key: const Key('delete_iconButton'),
+          icon: const Icon(
+            Icons.delete_rounded,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showDialog<bool>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  title: const Text(
+                    'Do you want to delete this event?',
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: OutlinedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                            ),
+                            key: const Key('deleteEvent_discard_iconButton'),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                            ),
+                            key: const Key('deleteEvent_delete_iconButton'),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text('Delete'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ).then((value) {
+              if (value == true) {
+                context
+                    .read<CreateEventCubit>()
+                    .deleteTripEvent(trip.id)
+                    .then((value) {
+                  showTopSnackBar(
+                    context,
+                    const CustomSnackBar.success(
+                      message: 'Event deleted',
+                      icon: Icon(null),
+                      backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                    ),
+                  );
+                  context
+                      .read<TripsCubit>()
+                      .loadCurrentTrip(resetSelectedDay: false);
+                  context
+                      .read<TripsCubit>()
+                      .loadMyTrips()
+                      .then((value2) => Navigator.of(context).pop(value));
+                });
+              }
+              return true;
+            });
+          },
+        )
+      ];
+    } else {
+      return null;
+    }
+  }
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
@@ -232,10 +320,18 @@ class _TripEventTimePicker extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.tripEvent.time != current.tripEvent.time,
       builder: (context, state) {
+        final initDate = DateTime(
+          day.year,
+          day.month,
+          day.day,
+          state.tripEvent.time.hour,
+          state.tripEvent.time.minute,
+        );
+        context.read<CreateEventCubit>().timeChanged(initDate);
         return DateTimeInput(
           key: const Key('newTripEventForm_initDate_textField'),
           label: label,
-          initialValue: DateFormat('HH:mm').format(state.tripEvent.time),
+          initialValue: DateFormat('HH:mm').format(initDate),
           iconData: Icons.calendar_today_rounded,
           onPressed: () {
             DatePicker.showTimePicker(
@@ -251,7 +347,7 @@ class _TripEventTimePicker extends StatelessWidget {
                 );
                 context.read<CreateEventCubit>().timeChanged(eventDate);
               },
-              currentTime: state.tripEvent.time,
+              currentTime: initDate,
             );
           },
           onSubmitted: (date) => context
@@ -277,6 +373,7 @@ class _TripEventEndTimePicker extends StatelessWidget {
       builder: (context, state) {
         final endTime = state.tripEvent.endTime ??
             context.read<CreateEventCubit>().setEndTime(day);
+        context.read<CreateEventCubit>().endTimeChanged(endTime);
         return DateTimeInput(
           key: const Key('newTripEventForm_endDate_textField'),
           label: label,
@@ -406,8 +503,10 @@ class _SaveTripEvent extends StatelessWidget {
                   context
                       .read<TripsCubit>()
                       .loadCurrentTrip(resetSelectedDay: false);
-                  context.read<TripsCubit>().loadMyTrips();
-                  Navigator.of(context).pop(value);
+                  context
+                      .read<TripsCubit>()
+                      .loadMyTrips()
+                      .then((value2) => Navigator.of(context).pop(value));
                 });
               }
             },
