@@ -1,5 +1,5 @@
+import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
-import 'package:corremundos/create_trip/view/create_trip_page.dart';
 import 'package:corremundos/settings/view/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,11 +34,7 @@ abstract class BasePage extends StatelessWidget {
   Widget? floatingActionButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.of(context).push<Route>(
-          MaterialPageRoute(
-            builder: (context) => const CreateTripPage(),
-          ),
-        );
+        context.read<AppBloc>().add(const NavigationRequested(AppTab.addTrip));
       },
       elevation: 2,
       child: const Icon(Icons.add_rounded),

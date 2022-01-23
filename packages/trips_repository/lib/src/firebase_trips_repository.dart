@@ -129,18 +129,31 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Future<void> deleteTrips(String uid) async {
-    return collection.where('uid', isEqualTo: uid).get().then((value) {
-      for (var element in value.docs) {
-        // TODO(palomapiot): delete files
-        // FirebaseStorage.instance.refFromURL(imageUrl).delete();
-        collection.doc(element.id).delete();
+    getMyTrips(uid).forEach((elements) {
+      for (var trip in elements) {
+        deleteTrip(trip);
       }
     });
   }
 
   @override
-  Future<void> deleteTrip(String tripId) async {
-    return collection.where('id', isEqualTo: tripId).get().then((value) {
+  Future<void> deleteTrip(Trip trip) async {
+    trip.transportations.forEach((dynamic element) {
+      final file = (element['file'] as String);
+      if (file.isNotEmpty)
+        FirebaseStorage.instance.refFromURL(file).delete();
+    });
+    trip.activities.forEach((dynamic element) {
+      final file = (element['file'] as String);
+      if (file.isNotEmpty)
+        FirebaseStorage.instance.refFromURL(file).delete();
+    });
+    trip.accommodations.forEach((dynamic element) {
+      final file = (element['file'] as String);
+      if (file.isNotEmpty)
+        FirebaseStorage.instance.refFromURL(file).delete();
+    });
+    return collection.where('id', isEqualTo: trip.id).get().then((value) {
       for (final element in value.docs) {
         collection.doc(element.id).delete();
       }

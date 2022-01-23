@@ -2,8 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/create_trip/create_trip.dart';
 import 'package:corremundos/trip_detail/trip_detail.dart';
+import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:trips_repository/trips_repository.dart';
 
 const double cardBorderRadius = 25;
@@ -42,14 +46,7 @@ class TripCardWidget extends StatelessWidget {
                   ),
                 );
               },
-              onLongPress: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => CreateTripPage(trip: trip),
-                  ),
-                );
-              },
-              child: _cardText(trip),
+              child: _cardText(trip, context),
             ),
           ),
         ),
@@ -57,43 +54,79 @@ class TripCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _cardText(Trip trip) {
+  Widget _cardText(Trip trip, BuildContext context) {
     final now = DateTime.now();
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          Expanded(
-            child: Align(
-              alignment: FractionalOffset.topLeft,
-              child: Column(
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                      children: [
-                        const WidgetSpan(
-                          child: Icon(
-                            Icons.access_time_rounded,
+          Row(
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: FractionalOffset.topLeft,
+                  child: Column(
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          style: const TextStyle(
+                            fontSize: 12,
                             color: Colors.white,
-                            size: 14,
+                          ),
+                          children: [
+                            const WidgetSpan(
+                              child: Icon(
+                                Icons.access_time_rounded,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                            ),
+                            TextSpan(
+                              text: trip.initDate.difference(now).inDays > 0
+                                  ? ' ${trip.initDate.difference(now).inDays} '
+                                      'days until take-off!'
+                                  : ' enjoy your trip!',
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: FractionalOffset.topRight,
+                  child: Column(
+                    children: [
+                      PopupMenuButton<String>(
+                        key: const Key('trip_menu_popupMenu'),
+                        padding: EdgeInsets.zero,
+                        onSelected: (value) =>
+                            choiceAction(value, trip, context),
+                        itemBuilder: (BuildContext context) {
+                          return Constants.choices.map((String choice) {
+                            return PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice),
+                            );
+                          }).toList();
+                        },
+                        child: const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: Icon(
+                            Icons.more_vert_rounded,
+                            color: Colors.white,
+                            size: 22,
                           ),
                         ),
-                        TextSpan(
-                          text: trip.initDate.difference(now).inDays > 0
-                              ? ' ${trip.initDate.difference(now).inDays} '
-                                  'days until take-off!'
-                              : ' enjoy your trip!',
-                        )
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
           Expanded(
             child: Align(
@@ -165,5 +198,37 @@ class TripCardWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class Constants {
+  static const String edit = 'Edit';
+  static const String delete = 'Delete';
+
+  static const List<String> choices = <String>[
+    edit,
+    delete,
+  ];
+}
+
+void choiceAction(String choice, Trip trip, BuildContext context) {
+  if (choice == Constants.edit) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => CreateTripPage(trip: trip),
+      ),
+    );
+  } else if (choice == Constants.delete) {
+    context.read<TripsCubit>().deleteTrip(trip).then((value) {
+      showTopSnackBar(
+        context,
+        const CustomSnackBar.success(
+          message: 'Trip deleted',
+          icon: Icon(null),
+          backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+        ),
+      );
+      context.read<TripsCubit>().loadMyTrips();
+    });
   }
 }

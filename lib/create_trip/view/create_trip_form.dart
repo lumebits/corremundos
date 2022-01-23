@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/date_time_input.dart';
+import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
@@ -14,44 +16,10 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 final _formKey = GlobalKey<FormState>();
 
 class CreateTripForm extends BasePage {
-  const CreateTripForm({Key? key}) : super(key);
+  const CreateTripForm({Key? key}) : super(key, appTab: AppTab.addTrip);
 
   @override
-  Widget? floatingActionButton(BuildContext context) => null;
-
-  @override
-  List<Widget>? actions(BuildContext context) {
-    final tripId = context.read<CreateTripCubit>().state.id;
-    if (tripId != null && tripId != '') {
-      return [
-        IconButton(
-          key: const Key('delete_iconButton'),
-          icon: const Icon(
-            Icons.delete_rounded,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            context.read<CreateTripCubit>().deleteTrip(tripId).then((value) {
-              showTopSnackBar(
-                context,
-                const CustomSnackBar.success(
-                  message: 'Trip deleted',
-                  icon: Icon(null),
-                  backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-                ),
-              );
-              context
-                  .read<TripsCubit>()
-                  .loadMyTrips()
-                  .then((value) => Navigator.of(context).pop());
-            });
-          },
-        )
-      ];
-    } else {
-      return null;
-    }
-  }
+  bool avoidBottomInset() => false;
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
@@ -214,6 +182,7 @@ class _SaveTrip extends StatelessWidget {
       child: ElevatedButton(
         key: const Key('newTripForm_save_button'),
         onPressed: () {
+          // TODO(paloma): if edit -> request navigation with trip
           if (_formKey.currentState!.validate()) {
             context.read<CreateTripCubit>().saveTrip().then((value) {
               showTopSnackBar(
@@ -225,7 +194,9 @@ class _SaveTrip extends StatelessWidget {
                 ),
               );
               context.read<TripsCubit>().loadMyTrips();
-              Navigator.of(context).pop(true);
+              context
+                  .read<AppBloc>()
+                  .add(const NavigationRequested(AppTab.trips));
             });
           }
         },

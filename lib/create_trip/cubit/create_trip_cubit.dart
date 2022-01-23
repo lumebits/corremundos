@@ -120,8 +120,4 @@ class CreateTripCubit extends Cubit<CreateTripState> {
       client.close();
     });
   }
-
-  Future<void> deleteTrip(String tripId) async {
-    await tripsRepository.deleteTrip(tripId);
-  }
 }

@@ -450,6 +450,8 @@ class _SaveTripEvent extends StatelessWidget {
                       backgroundColor: Color.fromRGBO(90, 23, 238, 1),
                     ),
                   );
+                  // TODO(paloma): check if always the event is shown
+                  // after creation
                   context
                       .read<TripsCubit>()
                       .loadCurrentTrip(resetSelectedDay: false);

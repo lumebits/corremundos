@@ -82,6 +82,10 @@ class TripsCubit extends Cubit<TripsState> {
     await tripsRepository.deleteTrips(authRepository.currentUser.id);
   }
 
+  Future<void> deleteTrip(Trip trip) async {
+    await tripsRepository.deleteTrip(trip);
+  }
+
   int daysBetween(DateTime from, DateTime to) {
     return (DateTime(to.year, to.month, to.day)
                 .difference(DateTime(from.year, from.month, from.day))
