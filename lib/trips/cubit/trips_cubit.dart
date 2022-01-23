@@ -1,15 +1,18 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:profile_repository/profile_repository.dart';
 import 'package:trips_repository/trips_repository.dart';
 
 part 'trips_state.dart';
 
 class TripsCubit extends Cubit<TripsState> {
-  TripsCubit(this.tripsRepository, this.authRepository) : super(TripsState());
+  TripsCubit(this.tripsRepository, this.authRepository, this.profileRepository)
+      : super(TripsState());
 
   final TripsRepository tripsRepository;
   final AuthRepository authRepository;
+  final ProfileRepository profileRepository;
 
   Future<void> loadMyTrips() async {
     emit(state.copyWith(isLoading: true, isLoadingShared: true));
@@ -84,8 +87,24 @@ class TripsCubit extends Cubit<TripsState> {
 
   Future<void> deleteTrip(Trip trip) async {
     emit(state.copyWith(isLoading: true));
-    await tripsRepository.deleteTrip(trip).then((value) {
+    await tripsRepository
+        .deleteTrip(trip, authRepository.currentUser.id)
+        .then((value) {
       loadMyTrips();
+    });
+  }
+
+  Future<void> emailChanged(String value) async {
+    emit(state.copyWith(sharedWithEmail: value));
+  }
+
+  Future<void> shareTrip(String tripId, String email) async {
+    await profileRepository.getProfileByEmail(email).then((profile) {
+      if (profile.isNotEmpty) {
+        tripsRepository.shareTrip(tripId, profile.uid);
+      } else {
+        return throw Exception('Error sharing trip');
+      }
     });
   }
 

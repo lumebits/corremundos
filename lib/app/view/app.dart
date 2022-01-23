@@ -34,10 +34,13 @@ class App extends StatelessWidget {
             ),
           ),
           BlocProvider(
-            create: (_) =>
-                TripsCubit(FirebaseTripsRepository(), AuthRepository())
-                  ..loadCurrentTrip()
-                  ..loadMyTrips(),
+            create: (_) => TripsCubit(
+              FirebaseTripsRepository(),
+              AuthRepository(),
+              FirebaseProfileRepository(),
+            )
+              ..loadCurrentTrip()
+              ..loadMyTrips(),
           ),
           BlocProvider(
             create: (_) => LoadPdfCubit(),

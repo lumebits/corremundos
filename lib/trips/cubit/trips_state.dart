@@ -8,6 +8,7 @@ class TripsState extends Equatable {
     int? currentDayIndex,
     int? tripDays,
     Map<int, List<TripEvent>>? events,
+    String? sharedWithEmail,
     bool? isLoading,
     bool? isLoadingShared,
     bool? isLoadingCurrent,
@@ -19,6 +20,7 @@ class TripsState extends Equatable {
         tripDays = tripDays ?? 0,
         events = events ?? {},
         isLoading = isLoading ?? true,
+        sharedWithEmail = sharedWithEmail ?? '',
         isLoadingShared = isLoadingShared ?? true,
         isLoadingCurrent = isLoadingCurrent ?? true,
         error = error ?? false;
@@ -30,6 +32,7 @@ class TripsState extends Equatable {
   final int tripDays;
   final Map<int, List<TripEvent>> events;
   final bool isLoading;
+  final String? sharedWithEmail;
   final bool isLoadingShared;
   final bool isLoadingCurrent;
   final bool error;
@@ -41,6 +44,7 @@ class TripsState extends Equatable {
     int? currentDayIndex,
     int? tripDays,
     Map<int, List<TripEvent>>? events,
+    String? sharedWithEmail,
     bool? isLoading,
     bool? isLoadingShared,
     bool? isLoadingCurrent,
@@ -53,6 +57,7 @@ class TripsState extends Equatable {
       currentDayIndex: currentDayIndex ?? this.currentDayIndex,
       tripDays: tripDays ?? this.tripDays,
       events: events ?? this.events,
+      sharedWithEmail: sharedWithEmail ?? this.sharedWithEmail,
       isLoading: isLoading ?? this.isLoading,
       isLoadingShared: isLoadingShared ?? this.isLoadingShared,
       isLoadingCurrent: isLoadingCurrent ?? this.isLoadingCurrent,
@@ -61,13 +66,14 @@ class TripsState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         myTrips,
         sharedWithMeTrips,
         currentTrip,
         currentDayIndex,
         tripDays,
         events,
+        sharedWithEmail,
         isLoading,
         isLoadingShared,
         isLoadingCurrent,
@@ -78,7 +84,8 @@ class TripsState extends Equatable {
   String toString() => 'TripsState { myTrips: ${myTrips.length}, '
       'sharedWithMeTrips: ${sharedWithMeTrips.length}, '
       'currentTrip: $currentTrip, currentDayIndex: $currentDayIndex, '
-      'tripDays: $tripDays, events: ${events.length}, isLoading: $isLoading, '
+      'tripDays: $tripDays, events: ${events.length}, '
+      'sharedWithEmail: $sharedWithEmail, isLoading: $isLoading, '
       'isLoadingShared: $isLoadingShared, isLoadingCurrent: $isLoadingCurrent, '
       'error: $error }';
 }

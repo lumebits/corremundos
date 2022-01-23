@@ -20,7 +20,9 @@ abstract class TripsRepository {
 
   Future<void> deleteTrips(String uid);
 
-  Future<void> deleteTrip(Trip trip);
+  Future<void> deleteTrip(Trip trip, String uid);
+
+  Future<void> shareTrip(String tripId, String uid);
 
   Future<void> deleteTripEvent(String tripId, TripEvent tripEvent);
 }
