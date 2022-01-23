@@ -83,7 +83,10 @@ class TripsCubit extends Cubit<TripsState> {
   }
 
   Future<void> deleteTrip(Trip trip) async {
-    await tripsRepository.deleteTrip(trip);
+    emit(state.copyWith(isLoading: true));
+    await tripsRepository.deleteTrip(trip).then((value) {
+      loadMyTrips();
+    });
   }
 
   int daysBetween(DateTime from, DateTime to) {

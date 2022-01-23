@@ -274,7 +274,6 @@ void choiceAction(String choice, Trip trip, BuildContext context) {
               backgroundColor: Color.fromRGBO(90, 23, 238, 1),
             ),
           );
-          context.read<TripsCubit>().loadMyTrips();
         });
       }
       return true;
