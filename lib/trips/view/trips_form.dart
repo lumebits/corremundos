@@ -48,9 +48,10 @@ class TripsForm extends BasePage {
             Expanded(
               child: BlocBuilder<TripsCubit, TripsState>(
                 buildWhen: (previous, current) =>
-                    previous.myTrips != current.myTrips,
+                    previous.isLoading != current.isLoading ||
+                    previous.isLoadingShared != current.isLoadingShared,
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state.isLoading || state.isLoadingShared) {
                     return ListView.separated(
                       itemCount: 3,
                       itemBuilder: (context, index) =>
@@ -61,7 +62,7 @@ class TripsForm extends BasePage {
                   } else {
                     final trips = state.myTrips + state.sharedWithMeTrips;
                     if (trips.isNotEmpty) {
-                      return state.isLoading
+                      return state.isLoading || state.isLoadingShared
                           ? ListView.separated(
                               itemCount: 3,
                               itemBuilder: (context, index) =>

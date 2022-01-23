@@ -119,7 +119,8 @@ class CurrentTripForm extends BasePage {
               flex: 9,
               child: BlocBuilder<TripsCubit, TripsState>(
                 buildWhen: (previous, current) =>
-                    previous.currentTrip != current.currentTrip,
+                    previous.currentTrip != current.currentTrip ||
+                    previous.currentDayIndex != current.currentDayIndex,
                 builder: (context, state) {
                   if (state.currentTrip.isNotEmpty) {
                     return SelectedDayTripData(

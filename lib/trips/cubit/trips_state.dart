@@ -9,6 +9,8 @@ class TripsState extends Equatable {
     int? tripDays,
     Map<int, List<TripEvent>>? events,
     bool? isLoading,
+    bool? isLoadingShared,
+    bool? isLoadingCurrent,
     bool? error,
   })  : myTrips = myTrips ?? List.empty(),
         sharedWithMeTrips = sharedWithMeTrips ?? List.empty(),
@@ -17,6 +19,8 @@ class TripsState extends Equatable {
         tripDays = tripDays ?? 0,
         events = events ?? {},
         isLoading = isLoading ?? true,
+        isLoadingShared = isLoadingShared ?? true,
+        isLoadingCurrent = isLoadingCurrent ?? true,
         error = error ?? false;
 
   final List<Trip> myTrips;
@@ -26,6 +30,8 @@ class TripsState extends Equatable {
   final int tripDays;
   final Map<int, List<TripEvent>> events;
   final bool isLoading;
+  final bool isLoadingShared;
+  final bool isLoadingCurrent;
   final bool error;
 
   TripsState copyWith({
@@ -36,6 +42,8 @@ class TripsState extends Equatable {
     int? tripDays,
     Map<int, List<TripEvent>>? events,
     bool? isLoading,
+    bool? isLoadingShared,
+    bool? isLoadingCurrent,
     bool? error,
   }) {
     return TripsState(
@@ -46,6 +54,8 @@ class TripsState extends Equatable {
       tripDays: tripDays ?? this.tripDays,
       events: events ?? this.events,
       isLoading: isLoading ?? this.isLoading,
+      isLoadingShared: isLoadingShared ?? this.isLoadingShared,
+      isLoadingCurrent: isLoadingCurrent ?? this.isLoadingCurrent,
       error: error ?? this.error,
     );
   }
@@ -59,6 +69,8 @@ class TripsState extends Equatable {
         tripDays,
         events,
         isLoading,
+        isLoadingShared,
+        isLoadingCurrent,
         error
       ];
 
@@ -67,5 +79,6 @@ class TripsState extends Equatable {
       'sharedWithMeTrips: ${sharedWithMeTrips.length}, '
       'currentTrip: $currentTrip, currentDayIndex: $currentDayIndex, '
       'tripDays: $tripDays, events: ${events.length}, isLoading: $isLoading, '
+      'isLoadingShared: $isLoadingShared, isLoadingCurrent: $isLoadingCurrent, '
       'error: $error }';
 }

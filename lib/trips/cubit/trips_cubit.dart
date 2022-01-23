@@ -12,7 +12,7 @@ class TripsCubit extends Cubit<TripsState> {
   final AuthRepository authRepository;
 
   Future<void> loadMyTrips() async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, isLoadingShared: true));
     await tripsRepository
         .getSharedWithMeTrips(authRepository.currentUser.id)
         .first
@@ -21,11 +21,11 @@ class TripsCubit extends Cubit<TripsState> {
       emit(
         state.copyWith(
           sharedWithMeTrips: sharedWithMeTrips,
-          isLoading: false,
+          isLoadingShared: false,
         ),
       );
     }).catchError((dynamic error) {
-      emit(state.copyWith(error: true, isLoading: false));
+      emit(state.copyWith(error: true, isLoadingShared: false));
     });
 
     await tripsRepository
@@ -45,7 +45,7 @@ class TripsCubit extends Cubit<TripsState> {
   }
 
   Future<void> loadCurrentTrip({bool resetSelectedDay = true}) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoadingCurrent: true));
     await tripsRepository
         .getCurrentTrip(authRepository.currentUser.id)
         .then((currentTrip) {
@@ -62,11 +62,11 @@ class TripsCubit extends Cubit<TripsState> {
               resetSelectedDay ? selectedDay : state.currentDayIndex,
           tripDays: tripDays,
           events: currentTrip.eventMap,
-          isLoading: false,
+          isLoadingCurrent: false,
         ),
       );
     }).catchError((dynamic error) {
-      emit(state.copyWith(error: true, isLoading: false));
+      emit(state.copyWith(error: true, isLoadingCurrent: false));
     });
   }
 

@@ -32,6 +32,7 @@ dependencies:
     path: packages/form_inputs
   formz: ^0.4.0
   google_fonts: ^2.2.0
+  google_sign_in: ^5.2.3
   intl: ^0.17.0
   pdf_render: ^1.0.18
   profile_repository:
