@@ -61,6 +61,8 @@ class TripsForm extends BasePage {
                     );
                   } else {
                     final trips = state.myTrips + state.sharedWithMeTrips;
+                    trips.sort((b1, b2) => b1.initDate.compareTo(b2.initDate));
+
                     if (trips.isNotEmpty) {
                       return state.isLoading || state.isLoadingShared
                           ? ListView.separated(

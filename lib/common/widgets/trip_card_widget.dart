@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/create_trip/create_trip.dart';
 import 'package:corremundos/trip_detail/trip_detail.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
@@ -13,6 +14,8 @@ import 'package:trips_repository/trips_repository.dart';
 const double cardBorderRadius = 25;
 const double margin = 15;
 const double marginInternal = 10;
+
+final _formKey = GlobalKey<FormState>();
 
 class TripCardWidget extends StatelessWidget {
   const TripCardWidget(this.trip, {Key? key}) : super(key: key);
@@ -204,10 +207,12 @@ class TripCardWidget extends StatelessWidget {
 class Constants {
   static const String edit = 'Edit';
   static const String delete = 'Delete';
+  static const String share = 'Share';
 
   static const List<String> choices = <String>[
     edit,
     delete,
+    share,
   ];
 }
 
@@ -275,6 +280,83 @@ void choiceAction(String choice, Trip trip, BuildContext context) {
             ),
           );
         });
+      }
+      return true;
+    });
+  } else if (choice == Constants.share) {
+    showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          title: const Text(
+            'Share trip',
+            textAlign: TextAlign.center,
+          ),
+          content: Form(
+            key: _formKey,
+            child: TextInput(
+              label: 'Email',
+              initialValue: '',
+              iconData: Icons.email,
+              onChanged: (email) =>
+                  context.read<TripsCubit>().emailChanged(email),
+              keyboardType: TextInputType.emailAddress,
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                    key: const Key('shareTrip_button'),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Navigator.of(context).pop(true);
+                      }
+                    },
+                    child: const Text('Share'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      if (value == true) {
+        if (_formKey.currentState!.validate()) {
+          context
+              .read<TripsCubit>()
+              .shareTrip(
+                trip.id,
+                context.read<TripsCubit>().state.sharedWithEmail!,
+              )
+              .then(
+                (value) => showTopSnackBar(
+                  context,
+                  const CustomSnackBar.success(
+                    message: 'Successfully shared',
+                    icon: Icon(null),
+                    backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                  ),
+                ),
+              )
+              .onError(
+                (error, stackTrace) => showTopSnackBar(
+                  context,
+                  const CustomSnackBar.error(
+                    message: 'Error sharing trip',
+                    icon: Icon(null),
+                    backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                  ),
+                ),
+              );
+        }
       }
       return true;
     });

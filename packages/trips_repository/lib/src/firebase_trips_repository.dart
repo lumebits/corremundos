@@ -131,32 +131,43 @@ class FirebaseTripsRepository implements TripsRepository {
   Future<void> deleteTrips(String uid) async {
     getMyTrips(uid).forEach((elements) {
       for (var trip in elements) {
-        deleteTrip(trip);
+        deleteTrip(trip, uid);
       }
     });
   }
 
   @override
-  Future<void> deleteTrip(Trip trip) async {
-    trip.transportations.forEach((dynamic element) {
-      final file = (element['file'] as String);
-      if (file.isNotEmpty)
-        FirebaseStorage.instance.refFromURL(file).delete();
-    });
-    trip.activities.forEach((dynamic element) {
-      final file = (element['file'] as String);
-      if (file.isNotEmpty)
-        FirebaseStorage.instance.refFromURL(file).delete();
-    });
-    trip.accommodations.forEach((dynamic element) {
-      final file = (element['file'] as String);
-      if (file.isNotEmpty)
-        FirebaseStorage.instance.refFromURL(file).delete();
-    });
-    return collection.where('id', isEqualTo: trip.id).get().then((value) {
-      for (final element in value.docs) {
-        collection.doc(element.id).delete();
-      }
+  Future<void> deleteTrip(Trip trip, String uid) async {
+    if (trip.uid == uid) {
+      trip.transportations.forEach((dynamic element) {
+        final file = (element['file'] as String);
+        if (file.isNotEmpty) FirebaseStorage.instance.refFromURL(file).delete();
+      });
+      trip.activities.forEach((dynamic element) {
+        final file = (element['file'] as String);
+        if (file.isNotEmpty) FirebaseStorage.instance.refFromURL(file).delete();
+      });
+      trip.accommodations.forEach((dynamic element) {
+        final file = (element['file'] as String);
+        if (file.isNotEmpty) FirebaseStorage.instance.refFromURL(file).delete();
+      });
+      return collection.where('id', isEqualTo: trip.id).get().then((value) {
+        for (final element in value.docs) {
+          collection.doc(element.id).delete();
+        }
+      });
+    } else {
+      return collection.doc(trip.id).update(<String, dynamic>{
+        'sharedWith': FieldValue.arrayRemove(<dynamic>[uid]),
+      });
+    }
+  }
+
+  @override
+  Future<void> shareTrip(String tripId, String uid) async {
+    final sharedWith = [uid];
+    return collection.doc(tripId).update(<String, dynamic>{
+      'sharedWith': FieldValue.arrayUnion(sharedWith),
     });
   }
 

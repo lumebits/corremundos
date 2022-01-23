@@ -4,21 +4,25 @@ import 'package:meta/meta.dart';
 
 @immutable
 class ProfileEntity extends Equatable {
-  const ProfileEntity(
-      {required this.id,
-        required this.uid,
-        this.name,
-        this.documents,});
+  const ProfileEntity({
+    required this.id,
+    required this.uid,
+    this.name,
+    this.email,
+    this.documents,
+  });
 
   ProfileEntity.fromJson(Map<String, Object> json)
       : id = json['id']! as String,
         uid = json['uid']! as String,
         name = json['name']! as String,
+        email = json['email']! as String,
         documents = json['documents'] as List<dynamic>?;
 
   final String id;
   final String uid;
   final String? name;
+  final String? email;
   final List<dynamic>? documents;
 
   Map<String, Object?> toJson() {
@@ -26,22 +30,25 @@ class ProfileEntity extends Equatable {
       'id': id,
       'uid': uid,
       'name': name,
+      'email': email,
       'documents': documents,
     };
   }
 
   @override
   List<Object?> get props => [
-    id,
-    uid,
-    name,
-    documents,
-  ];
+        id,
+        uid,
+        name,
+        email,
+        documents,
+      ];
 
   @override
   String toString() {
     return 'ProfileEntity '
-        '{ uid: $uid, id: $id, name: $name, documents: $documents }';
+        '{ uid: $uid, id: $id, name: $name, email: $email, '
+        'documents: $documents }';
   }
 
   static ProfileEntity fromSnapshot(DocumentSnapshot snap) {
@@ -51,6 +58,7 @@ class ProfileEntity extends Equatable {
       id: snap.id,
       uid: data['uid'] as String,
       name: data['name'] as String,
+      email: data['email'] as String,
       documents: data['documents'] as List<dynamic>,
     );
   }
