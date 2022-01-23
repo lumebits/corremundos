@@ -219,16 +219,65 @@ void choiceAction(String choice, Trip trip, BuildContext context) {
       ),
     );
   } else if (choice == Constants.delete) {
-    context.read<TripsCubit>().deleteTrip(trip).then((value) {
-      showTopSnackBar(
-        context,
-        const CustomSnackBar.success(
-          message: 'Trip deleted',
-          icon: Icon(null),
-          backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-        ),
-      );
-      context.read<TripsCubit>().loadMyTrips();
+    showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          title: const Text(
+            'Do you want to delete this trip?',
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: OutlinedButton(
+                    style:
+                        ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                    key: const Key('deleteTrip_discard_iconButton'),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                    key: const Key('deleteTrip_delete_iconButton'),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const Text('Delete'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    ).then((value) {
+      if (value == true) {
+        context.read<TripsCubit>().deleteTrip(trip).then((value) {
+          showTopSnackBar(
+            context,
+            const CustomSnackBar.success(
+              message: 'Trip deleted',
+              icon: Icon(null),
+              backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+            ),
+          );
+          context.read<TripsCubit>().loadMyTrips();
+        });
+      }
+      return true;
     });
   }
 }

@@ -21,16 +21,6 @@ class AppUserChanged extends AppEvent {
   List<Object> get props => [user];
 }
 
-class DeepLinkChanged extends AppEvent {
-  @visibleForTesting
-  const DeepLinkChanged(this.link);
-
-  final String? link;
-
-  @override
-  List<Object?> get props => [link];
-}
-
 class NavigationRequested extends AppEvent {
   const NavigationRequested(this.appTab);
 

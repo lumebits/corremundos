@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -34,16 +35,20 @@ class LoginForm extends StatelessWidget {
               child: Align(
                 alignment: FractionalOffset.center,
                 child: Column(
-                  children: const [
-                    SizedBox(height: 24),
+                  children: [
+                    const SizedBox(height: 24),
                     Text(
                       'Corremundos',
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 40,
                         color: Colors.white,
+                        fontFamily: GoogleFonts.sedgwickAve().fontFamily,
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const Image(
+                      image: AssetImage('assets/corremundos_logo.png'),
+                      height: 150,
+                    ),
                   ],
                 ),
               ),

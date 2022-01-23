@@ -19,7 +19,13 @@ class CreateTripForm extends BasePage {
   const CreateTripForm({Key? key}) : super(key, appTab: AppTab.addTrip);
 
   @override
-  bool avoidBottomInset() => false;
+  Widget? floatingActionButton(BuildContext context) => null;
+
+  @override
+  Widget? bottomNavigationBar() => null;
+
+  @override
+  List<Widget>? actions(BuildContext context) => null;
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
@@ -45,6 +51,12 @@ class CreateTripForm extends BasePage {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
     );
+  }
+
+  @override
+  Future<bool> onWillPop(BuildContext context) {
+    context.read<AppBloc>().add(const NavigationRequested(AppTab.trips));
+    return Future.value(true);
   }
 
   @override
@@ -182,7 +194,6 @@ class _SaveTrip extends StatelessWidget {
       child: ElevatedButton(
         key: const Key('newTripForm_save_button'),
         onPressed: () {
-          // TODO(paloma): if edit -> request navigation with trip
           if (_formKey.currentState!.validate()) {
             context.read<CreateTripCubit>().saveTrip().then((value) {
               showTopSnackBar(
@@ -194,9 +205,7 @@ class _SaveTrip extends StatelessWidget {
                 ),
               );
               context.read<TripsCubit>().loadMyTrips();
-              context
-                  .read<AppBloc>()
-                  .add(const NavigationRequested(AppTab.trips));
+              Navigator.of(context).pop(true);
             });
           }
         },

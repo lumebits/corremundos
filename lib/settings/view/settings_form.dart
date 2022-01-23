@@ -84,6 +84,7 @@ Future<bool> _deleteAllDataConfirmation(BuildContext context) {
         ),
         title: const Text(
           'Do you want to delete your account and lose your trips and data?',
+          textAlign: TextAlign.center,
         ),
         actions: <Widget>[
           Row(

@@ -37,26 +37,76 @@ class CreateEventForm extends BasePage {
             color: Colors.white,
           ),
           onPressed: () {
-            // TODO(paloma): show dialog before deleting
-            context
-                .read<CreateEventCubit>()
-                .deleteTripEvent(trip.id)
-                .then((value) {
-              showTopSnackBar(
-                context,
-                const CustomSnackBar.success(
-                  message: 'Event deleted',
-                  icon: Icon(null),
-                  backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-                ),
-              );
-              context
-                  .read<TripsCubit>()
-                  .loadCurrentTrip(resetSelectedDay: false);
-              context
-                  .read<TripsCubit>()
-                  .loadMyTrips()
-                  .then((value2) => Navigator.of(context).pop(value));
+            showDialog<bool>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  title: const Text(
+                    'Do you want to delete this event?',
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: OutlinedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                            ),
+                            key: const Key('deleteEvent_discard_iconButton'),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                            ),
+                            key: const Key('deleteEvent_delete_iconButton'),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: const Text('Delete'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ).then((value) {
+              if (value == true) {
+                context
+                    .read<CreateEventCubit>()
+                    .deleteTripEvent(trip.id)
+                    .then((value) {
+                  showTopSnackBar(
+                    context,
+                    const CustomSnackBar.success(
+                      message: 'Event deleted',
+                      icon: Icon(null),
+                      backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                    ),
+                  );
+                  context
+                      .read<TripsCubit>()
+                      .loadCurrentTrip(resetSelectedDay: false);
+                  context
+                      .read<TripsCubit>()
+                      .loadMyTrips()
+                      .then((value2) => Navigator.of(context).pop(value));
+                });
+              }
+              return true;
             });
           },
         )
@@ -450,8 +500,6 @@ class _SaveTripEvent extends StatelessWidget {
                       backgroundColor: Color.fromRGBO(90, 23, 238, 1),
                     ),
                   );
-                  // TODO(paloma): check if always the event is shown
-                  // after creation
                   context
                       .read<TripsCubit>()
                       .loadCurrentTrip(resetSelectedDay: false);
