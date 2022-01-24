@@ -47,6 +47,16 @@ class SettingsForm extends BasePage {
                 color: Colors.grey,
               ),
               ListTile(
+                title: const Text('Subscribe'),
+                leading: const Icon(Icons.payment_rounded),
+                onTap: () {
+                  // TODO subscribe
+                },
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              ListTile(
                 title: const Text('Delete account'),
                 leading: const Icon(Icons.warning_rounded),
                 onTap: () => _deleteAllDataConfirmation(context),
