@@ -82,6 +82,11 @@ class TripsCubit extends Cubit<TripsState> {
       'Are you ready for your trip tomorrow?',
       0,
     );
+    await NotificationsHelper.setNotification(
+      state.currentTrip.initDate,
+      'Enjoy your trip!',
+      0,
+    );
   }
 
   Future<void> changeSelectedTrip(Trip trip) async {
