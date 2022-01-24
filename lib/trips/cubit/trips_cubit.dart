@@ -1,5 +1,6 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:corremundos/notification/notification_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:profile_repository/profile_repository.dart';
 import 'package:trips_repository/trips_repository.dart';
@@ -71,6 +72,16 @@ class TripsCubit extends Cubit<TripsState> {
     }).catchError((dynamic error) {
       emit(state.copyWith(error: true, isLoadingCurrent: false));
     });
+    await NotificationsHelper.setNotification(
+      state.currentTrip.initDate.subtract(const Duration(days: 7)),
+      'Your next trip is in 7 days!',
+      0,
+    );
+    await NotificationsHelper.setNotification(
+      state.currentTrip.initDate.subtract(const Duration(days: 1)),
+      'Are you ready for your trip tomorrow?',
+      0,
+    );
   }
 
   Future<void> changeSelectedTrip(Trip trip) async {
