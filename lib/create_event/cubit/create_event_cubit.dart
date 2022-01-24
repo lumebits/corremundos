@@ -90,7 +90,11 @@ class CreateEventCubit extends Cubit<CreateEventState> {
       final fileBytes = state.pickedFile!.files.first.bytes;
       final fileName = state.pickedFile!.files.first.name;
       if (fileBytes != null) {
-        return tripsRepository.uploadFileToStorage(fileBytes, fileName);
+        return tripsRepository.uploadFileToStorage(
+          fileBytes,
+          fileName,
+          authRepository.currentUser.id,
+        );
       } else {
         return null;
       }
@@ -147,8 +151,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               'file': uploadedFileUrl,
               'name': state.tripEvent.name,
               'location': state.tripEvent.location,
-              'checkin': state.tripEvent.time,
-              'checkout': state.tripEvent.endTime,
+              'time': state.tripEvent.time,
             };
             if (state.tripEvent.index != null) {
               trip.activities[state.tripEvent.index!] = activity;

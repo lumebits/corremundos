@@ -53,7 +53,11 @@ class ProfileCubit extends Cubit<ProfileState> {
       for (final file in state.pickedFiles) {
         if (file.bytes != null) {
           await profileRepository
-              .uploadFileToStorage(file.bytes!, file.name)
+              .uploadFileToStorage(
+            file.bytes!,
+            file.name,
+            authRepository.currentUser.id,
+          )
               .then((file) {
             if (file != null) {
               uploadedFiles.add(file);
