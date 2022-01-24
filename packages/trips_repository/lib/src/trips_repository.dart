@@ -16,7 +16,7 @@ abstract class TripsRepository {
 
   Stream<List<Trip>> getSharedWithMeTrips(String uid);
 
-  Future<String?> uploadFileToStorage(Uint8List uint8list, String name);
+  Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid);
 
   Future<void> deleteTrips(String uid);
 

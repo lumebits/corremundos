@@ -11,7 +11,7 @@ abstract class ProfileRepository {
 
   Future<void> updateOrCreateProfile(Profile profile, String uid);
 
-  Future<String?> uploadFileToStorage(Uint8List uint8list, String name);
+  Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid);
 
   Future<void> deleteProfile(String uid);
 

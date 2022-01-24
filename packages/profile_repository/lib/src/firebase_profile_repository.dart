@@ -60,10 +60,10 @@ class FirebaseProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<String?> uploadFileToStorage(Uint8List uint8list, String name) {
+  Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid) {
     String fileName = getRandomString(15) + name;
     Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('/$fileName');
+        FirebaseStorage.instance.ref().child('/$uid').child(fileName);
 
     return firebaseStorageRef
         .putData(uint8list)
