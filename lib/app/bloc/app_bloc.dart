@@ -76,7 +76,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   AppState _mapPurchaseToState(PurchaseChanged event, AppState state) {
-    // TODO: Pending = pending, error = error, purchased o restored --> primero verificar y luego otorgar
+    // TODO: Pending = pending, error = error, purchased o restored
+    //  --> primero verificar y luego otorgar
     // pendingCompletePurchase --> InAppPurchase.instance.completePurchase(purchaseDetails)
     return state.copyWith(purchaseStatus: event.purchaseStatus);
   }
