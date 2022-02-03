@@ -12,8 +12,9 @@ part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  AppBloc({required AuthRepository authRepository, })
-      : _authRepository = authRepository,
+  AppBloc({
+    required AuthRepository authRepository,
+  })  : _authRepository = authRepository,
         super(
           authRepository.currentUser.isNotEmpty
               ? AppState.authenticated(authRepository.currentUser)
@@ -35,6 +36,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     ) as StreamSubscription<List<PurchaseDetails>>;
 
+    InAppPurchase.instance.restorePurchases();
+
     on<AppUserChanged>(
       (event, emit) => emit(_mapUserChangedToState(event, state)),
     );
@@ -48,7 +51,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       (event, emit) => unawaited(_authRepository.deleteUser()),
     );
     on<PurchaseChanged>(
-        (event, emit) => emit(_mapPurchaseToState(event, state)),
+      (event, emit) => emit(_mapPurchaseToState(event, state)),
     );
   }
 
@@ -60,10 +63,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   void _onPurchaseChanged(List<PurchaseDetails> purchaseDetailsList) {
     for (final purchaseDetails in purchaseDetailsList) {
+      if (purchaseDetails.status == PurchaseStatus.restored) {
+        // TODO(paloma): validar
+        InAppPurchase.instance.completePurchase(purchaseDetails);
+      }
       add(PurchaseChanged(purchaseDetails.status));
     }
   }
-
 
   AppState _mapUserChangedToState(AppUserChanged event, AppState state) {
     return event.user.isNotEmpty
@@ -76,9 +82,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   AppState _mapPurchaseToState(PurchaseChanged event, AppState state) {
-    // TODO: Pending = pending, error = error, purchased o restored
+    // TODO(paloma): Pending = pending, error = error, purchased o restored
     //  --> primero verificar y luego otorgar
-    // pendingCompletePurchase --> InAppPurchase.instance.completePurchase(purchaseDetails)
+    // pendingCompletePurchase -->
+    // InAppPurchase.instance.completePurchase(purchaseDetails)
     return state.copyWith(purchaseStatus: event.purchaseStatus);
   }
 

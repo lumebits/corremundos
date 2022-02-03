@@ -13,6 +13,8 @@ abstract class ProfileRepository {
 
   Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid);
 
+  Future<void> deleteFile(String uid, String fileName);
+
   Future<void> deleteProfile(String uid);
 
 }

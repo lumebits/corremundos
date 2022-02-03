@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -114,17 +113,21 @@ class FirebaseTripsRepository implements TripsRepository {
   }
 
   @override
-  Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid) async {
-    String fileName = getRandomString(15) + name;
+  Future<String?> uploadFileToStorage(
+      Uint8List uint8list, String name, String uid) async {
     Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('/$uid').child(fileName);
+        FirebaseStorage.instance.ref().child('/$uid').child(name);
 
     return firebaseStorageRef
         .putData(uint8list)
         .then((taskSnapshot) => taskSnapshot.ref.getDownloadURL().then((value) {
               print("Done: $value");
               return value;
-            }));
+            }))
+        .onError((error, stackTrace) {
+      print(error);
+      return '';
+    });
   }
 
   @override
@@ -239,9 +242,3 @@ dynamic tripEventToTransportation(TripEvent tripEvent) {
     'file': tripEvent.fileUrl,
   };
 }
-
-const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-Random _rnd = Random();
-
-String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

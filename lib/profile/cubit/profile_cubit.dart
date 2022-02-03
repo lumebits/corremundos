@@ -63,7 +63,7 @@ class ProfileCubit extends Cubit<ProfileState> {
               uploadedFiles.add(file);
               final totalFiles = existingFiles! + uploadedFiles;
               final profile = state.profile.copyWith(documents: totalFiles);
-              emit(state.copyWith(profile: profile));
+              emit(state.copyWith(profile: profile, pickedFiles: []));
             } else {
               emit(state.copyWith(isLoading: false, error: true));
             }
@@ -90,6 +90,10 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
     }
+  }
+
+  Future<void> deleteFile(String fileName) async {
+    await profileRepository.deleteFile(authRepository.currentUser.id, fileName);
   }
 
   Future<void> deleteProfile() async {

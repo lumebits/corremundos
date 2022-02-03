@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/date_time_input.dart';
 import 'package:corremundos/common/widgets/text_input.dart';
@@ -418,7 +419,12 @@ class _PickAndUploadFile extends StatelessWidget {
                 allowedExtensions: ['jpg', 'pdf', 'png', 'jpeg'],
                 withData: true,
               );
-              context.read<CreateEventCubit>().fileChanged(result);
+              if (result != null &&
+                  result.files.where((file) => file.size > 512000).isEmpty) {
+                context.read<CreateEventCubit>().fileChanged(result);
+              } else {
+                // TODO(paloma): max size exceed, tell the user and dont upload
+              }
             },
             style: ElevatedButton.styleFrom(
               primary: const Color.fromRGBO(242, 238, 255, 1),
@@ -444,19 +450,24 @@ class _PickAndUploadFile extends StatelessWidget {
         BlocBuilder<CreateEventCubit, CreateEventState>(
           builder: (context, state) {
             if (state.pickedFile != null) {
-              return Text(
-                '\u{2611} ${state.pickedFile!.files.first.name}',
+              return AutoSizeText(
+                state.pickedFile!.files.first.name,
+                maxLines: 1,
+                minFontSize: 8,
                 style: const TextStyle(
-                  fontSize: 18,
                   color: Colors.grey,
                 ),
               );
             } else if (state.tripEvent.isNotEmpty &&
                 state.tripEvent.fileUrl.isNotEmpty) {
-              return Text(
-                '\u{2611} ${state.tripEvent.fileUrl}',
+              var fileName = state.tripEvent.fileUrl;
+              fileName = fileName.substring(0, fileName.indexOf('?alt'));
+              fileName = fileName.split('%2F')[1];
+              return AutoSizeText(
+                fileName,
+                maxLines: 1,
+                minFontSize: 8,
                 style: const TextStyle(
-                  fontSize: 18,
                   color: Colors.grey,
                 ),
               );
