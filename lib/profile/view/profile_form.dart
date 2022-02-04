@@ -5,6 +5,7 @@ import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -305,47 +306,59 @@ class _PickAndUploadFile extends StatelessWidget {
 class _SaveProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 210,
-      height: 50,
-      child: BlocBuilder<ProfileCubit, ProfileState>(
-        buildWhen: (previous, current) =>
-            previous.isLoading != current.isLoading,
-        builder: (context, state) {
-          return ElevatedButton(
-            key: const Key('profileForm_save_button'),
-            onPressed: () {
-              if (_formKey.currentState!.validate() && !state.isLoading) {
-                context.read<ProfileCubit>().save().then((value) async {
-                  showTopSnackBar(
-                    context,
-                    const CustomSnackBar.success(
-                      message: 'Profile updated',
-                      icon: Icon(null),
-                      backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-                    ),
-                  );
-                  await context.read<ProfileCubit>().loadProfile();
-                  Navigator.of(context).pop(true);
-                });
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              primary: !state.isLoading
-                  ? const Color.fromRGBO(90, 23, 238, 1)
-                  : Colors.grey,
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const SizedBox(
+            height: 20,
+            width: 100,
+            child: LoadingIndicator(
+              indicatorType: Indicator.ballPulse,
+              colors: [Color.fromRGBO(90, 23, 238, 1)],
+              backgroundColor: Colors.white10,
+              pathBackgroundColor: Colors.black,
             ),
-            child: const Text(
-              'Save',
-              style: TextStyle(
-                fontSize: 17,
-                color: Colors.white,
+          );
+        } else {
+          return SizedBox(
+            width: 210,
+            height: 50,
+            child: ElevatedButton(
+              key: const Key('profileForm_save_button'),
+              onPressed: () {
+                if (_formKey.currentState!.validate() && !state.isLoading) {
+                  context.read<ProfileCubit>().save().then((value) async {
+                    showTopSnackBar(
+                      context,
+                      const CustomSnackBar.success(
+                        message: 'Profile updated',
+                        icon: Icon(null),
+                        backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                      ),
+                    );
+                    await context.read<ProfileCubit>().loadProfile();
+                    Navigator.of(context).pop(true);
+                  });
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                primary: !state.isLoading
+                    ? const Color.fromRGBO(90, 23, 238, 1)
+                    : Colors.grey,
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Colors.white,
+                ),
               ),
             ),
           );
-        },
-      ),
+        }
+      },
     );
   }
 }

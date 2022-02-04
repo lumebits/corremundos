@@ -7,18 +7,21 @@ class CreateTripState extends Equatable {
     required this.initDate,
     required this.endDate,
     this.imageUrl = '',
+    bool? isLoading,
     this.status = FormzStatus.pure,
-  });
+  }) : isLoading = isLoading ?? false;
 
   final String? id;
   final String name;
   final DateTime initDate;
   final DateTime endDate;
   final String imageUrl;
+  final bool isLoading;
   final FormzStatus status;
 
   @override
-  List<Object?> get props => [id, name, initDate, endDate, imageUrl, status];
+  List<Object?> get props =>
+      [id, name, initDate, endDate, imageUrl, isLoading, status];
 
   CreateTripState copyWith({
     String? id,
@@ -26,6 +29,7 @@ class CreateTripState extends Equatable {
     DateTime? initDate,
     DateTime? endDate,
     String? imageUrl,
+    bool? isLoading,
     FormzStatus? status,
   }) {
     return CreateTripState(
@@ -34,6 +38,7 @@ class CreateTripState extends Equatable {
       initDate: initDate ?? this.initDate,
       endDate: endDate ?? this.endDate,
       imageUrl: imageUrl ?? this.imageUrl,
+      isLoading: isLoading ?? this.isLoading,
       status: status ?? this.status,
     );
   }

@@ -125,7 +125,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               updatedTrip,
               authRepository.currentUser.id,
             );
-            return Future.value(updatedTrip.refreshEventMap());
+            return Future.value(updatedTrip.refreshEventMap())
+                .then((value) => emit(state.copyWith(isLoading: false)));
           } else if (eventType == EventType.accommodation) {
             final accommodation = <String, dynamic>{
               'file': uploadedFileUrl,
@@ -145,7 +146,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               updatedTrip,
               authRepository.currentUser.id,
             );
-            return Future.value(updatedTrip.refreshEventMap());
+            return Future.value(updatedTrip.refreshEventMap())
+                .then((value) => emit(state.copyWith(isLoading: false)));
           } else if (eventType == EventType.activity) {
             final activity = <String, dynamic>{
               'file': uploadedFileUrl,
@@ -163,9 +165,9 @@ class CreateEventCubit extends Cubit<CreateEventState> {
               updatedTrip,
               authRepository.currentUser.id,
             );
-            return Future.value(updatedTrip.refreshEventMap());
+            return Future.value(updatedTrip.refreshEventMap())
+                .then((value) => emit(state.copyWith(isLoading: false)));
           }
-          emit(state.copyWith(isLoading: false));
         } else {
           emit(state.copyWith(isLoading: false, error: true));
         }
@@ -190,6 +192,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           updatedTrip,
           authRepository.currentUser.id,
         );
+        emit(state.copyWith(isLoading: false));
         return Future.value(updatedTrip.refreshEventMap());
       } else if (eventType == EventType.activity) {
         final activity = <String, dynamic>{
@@ -208,6 +211,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           updatedTrip,
           authRepository.currentUser.id,
         );
+        emit(state.copyWith(isLoading: false));
         return Future.value(updatedTrip.refreshEventMap());
       } else if (eventType == EventType.accommodation) {
         final accommodation = <String, dynamic>{
@@ -227,9 +231,9 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           updatedTrip,
           authRepository.currentUser.id,
         );
+        emit(state.copyWith(isLoading: false));
         return Future.value(updatedTrip.refreshEventMap());
       }
-      emit(state.copyWith(isLoading: false));
     }
   }
 

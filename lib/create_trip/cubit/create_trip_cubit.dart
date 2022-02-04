@@ -80,6 +80,7 @@ class CreateTripCubit extends Cubit<CreateTripState> {
   }
 
   Future<void> saveTrip() async {
+    emit(state.copyWith(isLoading: true));
     await loadAppCredentialsFromFile().then((appCredentials) async {
       final client = UnsplashClient(
         settings: ClientSettings(credentials: appCredentials),
@@ -102,6 +103,7 @@ class CreateTripCubit extends Cubit<CreateTripState> {
           trip,
           authRepository.currentUser.id,
         );
+        emit(state.copyWith(isLoading: false));
       }).onError((error, stackTrace) async {
         final trip = Trip(
           uid: state.id != '' ? authRepository.currentUser.id : '',
@@ -116,6 +118,7 @@ class CreateTripCubit extends Cubit<CreateTripState> {
           trip,
           authRepository.currentUser.id,
         );
+        emit(state.copyWith(isLoading: false));
       });
       client.close();
     });

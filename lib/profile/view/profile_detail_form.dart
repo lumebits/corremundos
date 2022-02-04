@@ -81,12 +81,11 @@ class _Documents extends StatelessWidget {
         if (state.isLoading) {
           return const Center(
             child: SizedBox(
-              width: 150,
-              height: 150,
+              height: 20,
+              width: 100,
               child: LoadingIndicator(
-                indicatorType: Indicator.ballRotate,
+                indicatorType: Indicator.ballPulse,
                 colors: [Color.fromRGBO(90, 23, 238, 1)],
-                strokeWidth: 2,
                 backgroundColor: Colors.white10,
                 pathBackgroundColor: Colors.black,
               ),
@@ -147,12 +146,11 @@ class OtherDocuments extends StatelessWidget {
               ),
               child: const Center(
                 child: SizedBox(
-                  height: 150,
-                  width: 150,
+                  height: 20,
+                  width: 100,
                   child: LoadingIndicator(
-                    indicatorType: Indicator.ballRotate,
+                    indicatorType: Indicator.ballPulse,
                     colors: [Color.fromRGBO(90, 23, 238, 1)],
-                    strokeWidth: 2,
                     backgroundColor: Colors.white10,
                     pathBackgroundColor: Colors.black,
                   ),
