@@ -11,11 +11,12 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Future<void> updateOrCreateTrip(Trip trip, String uid) {
+    var endTime = new DateTime(trip.endDate.year, trip.endDate.month, trip.endDate.day, 23, 59, 59);
     if (trip.uid.isNotEmpty) {
       return collection.doc(trip.id).update(<String, dynamic>{
         'name': trip.name,
         'initDate': trip.initDate,
-        'endDate': trip.endDate,
+        'endDate': endTime,
         'imageUrl': trip.imageUrl
       });
     } else {
