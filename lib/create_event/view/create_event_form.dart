@@ -424,7 +424,14 @@ class _PickAndUploadFile extends StatelessWidget {
                   result.files.where((file) => file.size > 512000).isEmpty) {
                 context.read<CreateEventCubit>().fileChanged(result);
               } else {
-                // TODO(paloma): max size exceed, tell the user and dont upload
+                return showTopSnackBar(
+                  context,
+                  const CustomSnackBar.error(
+                    message: 'File size exceeded',
+                    icon: Icon(null),
+                    backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                  ),
+                );
               }
             },
             style: ElevatedButton.styleFrom(

@@ -241,7 +241,6 @@ class _PickAndUploadFile extends StatelessWidget {
                   result.files.where((file) => file.size > 512000).isEmpty) {
                 await context.read<ProfileCubit>().filesChanged(result);
               } else {
-                // TODO(paloma): max size exceed, tell the user and dont upload
                 return showTopSnackBar(
                   context,
                   const CustomSnackBar.error(
