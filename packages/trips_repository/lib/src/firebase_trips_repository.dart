@@ -99,6 +99,21 @@ class FirebaseTripsRepository implements TripsRepository {
   }
 
   @override
+  Stream<List<Trip>> getPastTrips(String uid) {
+    return collection
+        .where('uid', isEqualTo: uid)
+        .where('endDate', isLessThanOrEqualTo: DateTime.now())
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map(
+            (doc) => Trip.fromEntity(TripEntity.fromSnapshot(doc)),
+      )
+          .toList();
+    });
+  }
+
+  @override
   Stream<List<Trip>> getSharedWithMeTrips(String uid) {
     return collection
         .where('sharedWith', arrayContains: uid)
@@ -109,6 +124,21 @@ class FirebaseTripsRepository implements TripsRepository {
           .map(
             (doc) => Trip.fromEntity(TripEntity.fromSnapshot(doc)),
           )
+          .toList();
+    });
+  }
+
+  @override
+  Stream<List<Trip>> getSharedWithMePastTrips(String uid) {
+    return collection
+        .where('sharedWith', arrayContains: uid)
+        .where('endDate', isLessThanOrEqualTo: DateTime.now())
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map(
+            (doc) => Trip.fromEntity(TripEntity.fromSnapshot(doc)),
+      )
           .toList();
     });
   }

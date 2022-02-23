@@ -1,5 +1,6 @@
 import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
+import 'package:corremundos/past_trips/view/past_trips_page.dart';
 import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:corremundos/profile/view/profile_page.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
@@ -47,7 +48,21 @@ class SettingsForm extends BasePage {
               const Divider(
                 color: Colors.grey,
               ),
-              BlocBuilder<AppBloc, AppState>(
+              ListTile(
+                title: const Text('Past Trips'),
+                leading: const Icon(Icons.travel_explore_rounded),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const PastTripsPage(),
+                    ),
+                  );
+                },
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              /*BlocBuilder<AppBloc, AppState>(
                 builder: (context, state) {
                   return ListTile(
                     title: state.purchaseStatus == PurchaseStatus.purchased
@@ -68,7 +83,7 @@ class SettingsForm extends BasePage {
               ),
               const Divider(
                 color: Colors.grey,
-              ),
+              ),*/
               ListTile(
                 title: Text(
                   'Delete account',

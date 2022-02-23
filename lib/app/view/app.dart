@@ -3,6 +3,7 @@ import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/app/routes/routes.dart';
 import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/l10n/l10n.dart';
+import 'package:corremundos/past_trips/cubit/past_trips_cubit.dart';
 import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:corremundos/theme.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
@@ -41,6 +42,13 @@ class App extends StatelessWidget {
             )
               ..loadCurrentTrip()
               ..loadMyTrips(),
+          ),
+          BlocProvider(
+            create: (_) => PastTripsCubit(
+              FirebaseTripsRepository(),
+              AuthRepository(),
+              FirebaseProfileRepository(),
+            )..loadPastTrips(),
           ),
           BlocProvider(
             create: (_) => LoadPdfCubit(),

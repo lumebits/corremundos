@@ -5,6 +5,7 @@ import 'package:corremundos/common/widgets/date_time_input.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
+import 'package:corremundos/past_trips/cubit/past_trips_cubit.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,7 +80,8 @@ class CreateTripForm extends BasePage {
                 const SizedBox(height: 8),
                 _TripEndDatePicker(),
                 const SizedBox(height: 24),
-                if (context.read<TripsCubit>().state.myTrips.isEmpty)
+                if (context.read<TripsCubit>().state.myTrips.isEmpty &&
+                    context.read<PastTripsCubit>().state.pastTrips.isEmpty)
                   _SaveTrip()
                 else
                   _NoMoreTrips()
@@ -266,24 +268,42 @@ class _NoMoreTrips extends StatelessWidget {
             ),
           );
         } else {
-          return SizedBox(
-            width: 210,
-            height: 50,
-            child: ElevatedButton(
-              key: const Key('newTripForm_noMoreTrips_button'),
-              onPressed: null,
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-              ),
-              child: const Text(
-                'You are only allowed to have one trip',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.white,
+          return Column(
+            children: [
+              SizedBox(
+                width: 210,
+                height: 50,
+                child: ElevatedButton(
+                  key: const Key('newTripForm_noMoreTrips_button'),
+                  onPressed: null,
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                  ),
+                  child: const Text(
+                    'You are only allowed to have one trip',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                child: Text(
+                  "If you don't have a future trip, go to Settings "
+                  'and delete your past trip in order to add a new one.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ],
           );
         }
       },

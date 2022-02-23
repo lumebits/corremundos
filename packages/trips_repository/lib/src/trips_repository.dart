@@ -14,7 +14,11 @@ abstract class TripsRepository {
 
   Stream<List<Trip>> getMyTrips(String uid);
 
+  Stream<List<Trip>> getPastTrips(String uid);
+
   Stream<List<Trip>> getSharedWithMeTrips(String uid);
+
+  Stream<List<Trip>> getSharedWithMePastTrips(String uid);
 
   Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid);
 
