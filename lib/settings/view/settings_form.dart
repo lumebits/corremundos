@@ -1,10 +1,12 @@
 import 'package:corremundos/app/bloc/app_bloc.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
+import 'package:corremundos/past_trips/view/past_trips_page.dart';
 import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:corremundos/profile/view/profile_page.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -47,8 +49,47 @@ class SettingsForm extends BasePage {
                 color: Colors.grey,
               ),
               ListTile(
-                title: const Text('Delete account'),
-                leading: const Icon(Icons.warning_rounded),
+                title: const Text('Past Trips'),
+                leading: const Icon(Icons.travel_explore_rounded),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const PastTripsPage(),
+                    ),
+                  );
+                },
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              /*BlocBuilder<AppBloc, AppState>(
+                builder: (context, state) {
+                  return ListTile(
+                    title: state.purchaseStatus == PurchaseStatus.purchased
+                        ? const Text(
+                            'Subscribed',
+                            style: TextStyle(color: Colors.green),
+                          )
+                        : const Text('Subscribe'),
+                    leading: state.purchaseStatus == PurchaseStatus.purchased
+                        ? const Icon(Icons.check_rounded, color: Colors.green)
+                        : const Icon(Icons.payment_rounded),
+                    onTap: () async =>
+                        state.purchaseStatus == PurchaseStatus.purchased
+                            ? null
+                            : await buy(context),
+                  );
+                },
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),*/
+              ListTile(
+                title: Text(
+                  'Delete account',
+                  style: TextStyle(color: Colors.red[800]),
+                ),
+                leading: Icon(Icons.warning_rounded, color: Colors.red[800]),
                 onTap: () => _deleteAllDataConfirmation(context),
               ),
               const Divider(
@@ -71,6 +112,37 @@ class SettingsForm extends BasePage {
         ],
       ),
     );
+  }
+
+  Future<void> buy(BuildContext context) async {
+    final available = await InAppPurchase.instance.isAvailable();
+    if (!available) {
+      showTopSnackBar(
+        context,
+        const CustomSnackBar.error(
+          message: 'Google Play Store unavailable',
+        ),
+      );
+    } else {
+      const _kIds = <String>{'android.test.purchased'};
+      // TODO(paloma): corremundos_premium_yearly
+      final response = await InAppPurchase.instance.queryProductDetails(_kIds);
+      if (response.notFoundIDs.isNotEmpty) {
+        showTopSnackBar(
+          context,
+          const CustomSnackBar.error(
+            message: 'No products found',
+          ),
+        );
+      } else {
+        final productDetails = response.productDetails.first;
+        final purchaseParam = PurchaseParam(
+          productDetails: productDetails,
+        );
+        await InAppPurchase.instance
+            .buyNonConsumable(purchaseParam: purchaseParam);
+      }
+    }
   }
 }
 

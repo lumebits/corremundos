@@ -5,11 +5,14 @@ import 'package:corremundos/common/widgets/date_time_input.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
+import 'package:corremundos/past_trips/cubit/past_trips_cubit.dart';
+import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -78,7 +81,19 @@ class CreateTripForm extends BasePage {
                 const SizedBox(height: 8),
                 _TripEndDatePicker(),
                 const SizedBox(height: 24),
-                _SaveTrip(),
+                if (context.read<TripsCubit>().state.myTrips.isEmpty &&
+                        context
+                            .read<PastTripsCubit>()
+                            .state
+                            .pastTrips
+                            .isEmpty ||
+                    context.read<ProfileCubit>().state.profile.id ==
+                        '1ffb7652-f894-424f-92c6-e0a8744d4582' ||
+                    context.read<ProfileCubit>().state.profile.id ==
+                        'e7d73b2e-d75d-4d1f-a0d5-a6ff22e35bbc')
+                  _SaveTrip()
+                else
+                  _NoMoreTrips()
               ],
             ),
           ),
@@ -188,39 +203,119 @@ class _TripEndDatePicker extends StatelessWidget {
 class _SaveTrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 210,
-      height: 50,
-      child: ElevatedButton(
-        key: const Key('newTripForm_save_button'),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            context.read<CreateTripCubit>().saveTrip().then((value) {
-              showTopSnackBar(
-                context,
-                const CustomSnackBar.success(
-                  message: 'Trip created',
-                  icon: Icon(null),
-                  backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+    return BlocBuilder<CreateTripCubit, CreateTripState>(
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const SizedBox(
+            height: 20,
+            width: 100,
+            child: LoadingIndicator(
+              indicatorType: Indicator.ballPulse,
+              colors: [Color.fromRGBO(90, 23, 238, 1)],
+              backgroundColor: Colors.white10,
+              pathBackgroundColor: Colors.black,
+            ),
+          );
+        } else {
+          return SizedBox(
+            width: 210,
+            height: 50,
+            child: ElevatedButton(
+              key: const Key('newTripForm_save_button'),
+              onPressed: () {
+                if (context.read<TripsCubit>().state.myTrips.isEmpty &&
+                    _formKey.currentState!.validate()) {
+                  context.read<CreateTripCubit>().saveTrip().then((value) {
+                    showTopSnackBar(
+                      context,
+                      const CustomSnackBar.success(
+                        message: 'Trip created',
+                        icon: Icon(null),
+                        backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                      ),
+                    );
+                    context.read<TripsCubit>().loadMyTrips();
+                    Navigator.of(context).pop(true);
+                  });
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                primary: const Color.fromRGBO(90, 23, 238, 1),
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Colors.white,
                 ),
-              );
-              context.read<TripsCubit>().loadMyTrips();
-              Navigator.of(context).pop(true);
-            });
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-          primary: const Color.fromRGBO(90, 23, 238, 1),
-        ),
-        child: const Text(
-          'Save',
-          style: TextStyle(
-            fontSize: 17,
-            color: Colors.white,
-          ),
-        ),
-      ),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _NoMoreTrips extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateTripCubit, CreateTripState>(
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const SizedBox(
+            height: 20,
+            width: 100,
+            child: LoadingIndicator(
+              indicatorType: Indicator.ballPulse,
+              colors: [Color.fromRGBO(90, 23, 238, 1)],
+              backgroundColor: Colors.white10,
+              pathBackgroundColor: Colors.black,
+            ),
+          );
+        } else {
+          return Column(
+            children: [
+              SizedBox(
+                width: 210,
+                height: 50,
+                child: ElevatedButton(
+                  key: const Key('newTripForm_noMoreTrips_button'),
+                  onPressed: null,
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                  ),
+                  child: const Text(
+                    'You are only allowed to have one trip',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                child: Text(
+                  "If you don't have a future trip, go to Settings "
+                  'and delete your past trip in order to add a new one.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 }

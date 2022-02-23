@@ -1,6 +1,6 @@
 name: corremundos
 description: Corremundos - Trip planner
-version: 1.0.0+1
+version: 1.0.1+2
 publish_to: none
 
 environment:
@@ -34,8 +34,10 @@ dependencies:
   formz: ^0.4.0
   google_fonts: ^2.2.0
   google_sign_in: ^5.2.3
+  in_app_purchase: ^2.0.1
   intl: ^0.17.0
-  pdf_render: ^1.0.18
+  loading_indicator: ^3.0.2
+  pdf_render: ^1.0.23
   profile_repository:
     path: packages/profile_repository
   timeline_tile: ^2.0.0

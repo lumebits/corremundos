@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -60,10 +59,10 @@ class FirebaseProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid) {
-    String fileName = getRandomString(15) + name;
+  Future<String?> uploadFileToStorage(
+      Uint8List uint8list, String name, String uid) {
     Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('/$uid').child(fileName);
+        FirebaseStorage.instance.ref().child('/$uid').child(name);
 
     return firebaseStorageRef
         .putData(uint8list)
@@ -74,7 +73,21 @@ class FirebaseProfileRepository implements ProfileRepository {
   }
 
   @override
+  Future<void> deleteFile(String uid, String fileName) async {
+    collection.where('uid', isEqualTo: uid).get().then((value) {
+      for (final element in value.docs) {
+        final profile = collection.doc(element.id);
+        profile.update(<String, dynamic>{
+          'documents': FieldValue.arrayRemove(<dynamic>[fileName])
+        });
+        FirebaseStorage.instance.refFromURL(fileName).delete();
+      }
+    });
+  }
+
+  @override
   Future<void> deleteProfile(String uid) async {
+    // TODO: delete profile files from storage
     return collection.where('uid', isEqualTo: uid).get().then((value) {
       for (var element in value.docs) {
         collection.doc(element.id).delete();
@@ -82,9 +95,3 @@ class FirebaseProfileRepository implements ProfileRepository {
     });
   }
 }
-
-const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-Random _rnd = Random();
-
-String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

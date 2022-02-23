@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/date_time_input.dart';
 import 'package:corremundos/common/widgets/text_input.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:trips_repository/trips_repository.dart';
@@ -418,7 +420,19 @@ class _PickAndUploadFile extends StatelessWidget {
                 allowedExtensions: ['jpg', 'pdf', 'png', 'jpeg'],
                 withData: true,
               );
-              context.read<CreateEventCubit>().fileChanged(result);
+              if (result != null &&
+                  result.files.where((file) => file.size > 512000).isEmpty) {
+                context.read<CreateEventCubit>().fileChanged(result);
+              } else {
+                return showTopSnackBar(
+                  context,
+                  const CustomSnackBar.error(
+                    message: 'File size exceeded',
+                    icon: Icon(null),
+                    backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                  ),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               primary: const Color.fromRGBO(242, 238, 255, 1),
@@ -444,19 +458,24 @@ class _PickAndUploadFile extends StatelessWidget {
         BlocBuilder<CreateEventCubit, CreateEventState>(
           builder: (context, state) {
             if (state.pickedFile != null) {
-              return Text(
-                '\u{2611} ${state.pickedFile!.files.first.name}',
+              return AutoSizeText(
+                state.pickedFile!.files.first.name,
+                maxLines: 1,
+                minFontSize: 8,
                 style: const TextStyle(
-                  fontSize: 18,
                   color: Colors.grey,
                 ),
               );
             } else if (state.tripEvent.isNotEmpty &&
                 state.tripEvent.fileUrl.isNotEmpty) {
-              return Text(
-                '\u{2611} ${state.tripEvent.fileUrl}',
+              var fileName = state.tripEvent.fileUrl;
+              fileName = fileName.substring(0, fileName.indexOf('?alt'));
+              fileName = fileName.split('%2F')[1];
+              return AutoSizeText(
+                fileName,
+                maxLines: 1,
+                minFontSize: 8,
                 style: const TextStyle(
-                  fontSize: 18,
                   color: Colors.grey,
                 ),
               );
@@ -477,55 +496,67 @@ class _SaveTripEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 210,
-      height: 50,
-      child: BlocBuilder<CreateEventCubit, CreateEventState>(
-        buildWhen: (previous, current) =>
-            previous.isLoading != current.isLoading,
-        builder: (context, state) {
-          return ElevatedButton(
-            key: const Key('newEventForm_save_button'),
-            onPressed: () {
-              if (_formKey.currentState!.validate() && !state.isLoading) {
-                context
-                    .read<CreateEventCubit>()
-                    .saveEvent(eventType)
-                    .then((value) {
-                  showTopSnackBar(
-                    context,
-                    const CustomSnackBar.success(
-                      message: 'Event created',
-                      icon: Icon(null),
-                      backgroundColor: Color.fromRGBO(90, 23, 238, 1),
-                    ),
-                  );
-                  context
-                      .read<TripsCubit>()
-                      .loadCurrentTrip(resetSelectedDay: false);
-                  context
-                      .read<TripsCubit>()
-                      .loadMyTrips()
-                      .then((value2) => Navigator.of(context).pop(value));
-                });
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              primary: !state.isLoading
-                  ? const Color.fromRGBO(90, 23, 238, 1)
-                  : Colors.grey,
+    return BlocBuilder<CreateEventCubit, CreateEventState>(
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const SizedBox(
+            height: 20,
+            width: 100,
+            child: LoadingIndicator(
+              indicatorType: Indicator.ballPulse,
+              colors: [Color.fromRGBO(90, 23, 238, 1)],
+              backgroundColor: Colors.white10,
+              pathBackgroundColor: Colors.black,
             ),
-            child: const Text(
-              'Save',
-              style: TextStyle(
-                fontSize: 17,
-                color: Colors.white,
+          );
+        } else {
+          return SizedBox(
+            width: 210,
+            height: 50,
+            child: ElevatedButton(
+              key: const Key('newEventForm_save_button'),
+              onPressed: () {
+                if (_formKey.currentState!.validate() && !state.isLoading) {
+                  context
+                      .read<CreateEventCubit>()
+                      .saveEvent(eventType)
+                      .then((value) {
+                    context
+                        .read<TripsCubit>()
+                        .loadCurrentTrip(resetSelectedDay: false);
+                    context
+                        .read<TripsCubit>()
+                        .loadMyTrips()
+                        .then((value2) => Navigator.of(context).pop(value));
+                    showTopSnackBar(
+                      context,
+                      const CustomSnackBar.success(
+                        message: 'Event created',
+                        icon: Icon(null),
+                        backgroundColor: Color.fromRGBO(90, 23, 238, 1),
+                      ),
+                    );
+                  });
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                primary: !state.isLoading
+                    ? const Color.fromRGBO(90, 23, 238, 1)
+                    : Colors.grey,
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Colors.white,
+                ),
               ),
             ),
           );
-        },
-      ),
+        }
+      },
     );
   }
 }

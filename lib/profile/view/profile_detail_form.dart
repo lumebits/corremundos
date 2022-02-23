@@ -5,6 +5,7 @@ import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -78,7 +79,18 @@ class _Documents extends StatelessWidget {
           previous.profile.documents != current.profile.documents,
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SizedBox(
+              height: 20,
+              width: 100,
+              child: LoadingIndicator(
+                indicatorType: Indicator.ballPulse,
+                colors: [Color.fromRGBO(90, 23, 238, 1)],
+                backgroundColor: Colors.white10,
+                pathBackgroundColor: Colors.black,
+              ),
+            ),
+          );
         } else if (state.profile.documents!.isEmpty) {
           return const SizedBox(
             height: 500,
@@ -132,7 +144,18 @@ class OtherDocuments extends StatelessWidget {
               constraints: const BoxConstraints(
                 maxHeight: 100,
               ),
-              child: const Center(child: CircularProgressIndicator()),
+              child: const Center(
+                child: SizedBox(
+                  height: 20,
+                  width: 100,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.ballPulse,
+                    colors: [Color.fromRGBO(90, 23, 238, 1)],
+                    backgroundColor: Colors.white10,
+                    pathBackgroundColor: Colors.black,
+                  ),
+                ),
+              ),
             );
           } else if (state.error) {
             return const Center(

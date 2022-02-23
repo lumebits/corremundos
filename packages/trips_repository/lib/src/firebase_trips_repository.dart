@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,17 +11,18 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Future<void> updateOrCreateTrip(Trip trip, String uid) {
+    var endTime = new DateTime(trip.endDate.year, trip.endDate.month, trip.endDate.day, 23, 59, 59, 0, 0);
     if (trip.uid.isNotEmpty) {
       return collection.doc(trip.id).update(<String, dynamic>{
         'name': trip.name,
         'initDate': trip.initDate,
-        'endDate': trip.endDate,
+        'endDate': endTime,
         'imageUrl': trip.imageUrl
       });
     } else {
       return collection
           .doc(trip.id)
-          .set((trip.copyWith(uid: uid).toEntity().toDocument()));
+          .set((trip.copyWith(uid: uid, endDate: endTime).toEntity().toDocument()));
     }
   }
 
@@ -99,6 +99,21 @@ class FirebaseTripsRepository implements TripsRepository {
   }
 
   @override
+  Stream<List<Trip>> getPastTrips(String uid) {
+    return collection
+        .where('uid', isEqualTo: uid)
+        .where('endDate', isLessThanOrEqualTo: DateTime.now())
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map(
+            (doc) => Trip.fromEntity(TripEntity.fromSnapshot(doc)),
+      )
+          .toList();
+    });
+  }
+
+  @override
   Stream<List<Trip>> getSharedWithMeTrips(String uid) {
     return collection
         .where('sharedWith', arrayContains: uid)
@@ -114,17 +129,36 @@ class FirebaseTripsRepository implements TripsRepository {
   }
 
   @override
-  Future<String?> uploadFileToStorage(Uint8List uint8list, String name, String uid) async {
-    String fileName = getRandomString(15) + name;
+  Stream<List<Trip>> getSharedWithMePastTrips(String uid) {
+    return collection
+        .where('sharedWith', arrayContains: uid)
+        .where('endDate', isLessThanOrEqualTo: DateTime.now())
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map(
+            (doc) => Trip.fromEntity(TripEntity.fromSnapshot(doc)),
+      )
+          .toList();
+    });
+  }
+
+  @override
+  Future<String?> uploadFileToStorage(
+      Uint8List uint8list, String name, String uid) async {
     Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('/$uid').child(fileName);
+        FirebaseStorage.instance.ref().child('/$uid').child(name);
 
     return firebaseStorageRef
         .putData(uint8list)
         .then((taskSnapshot) => taskSnapshot.ref.getDownloadURL().then((value) {
               print("Done: $value");
               return value;
-            }));
+            }))
+        .onError((error, stackTrace) {
+      print(error);
+      return '';
+    });
   }
 
   @override
@@ -239,9 +273,3 @@ dynamic tripEventToTransportation(TripEvent tripEvent) {
     'file': tripEvent.fileUrl,
   };
 }
-
-const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-Random _rnd = Random();
-
-String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
