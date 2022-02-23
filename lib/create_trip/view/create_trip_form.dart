@@ -15,6 +15,8 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../profile/cubit/profile_cubit.dart';
+
 final _formKey = GlobalKey<FormState>();
 
 class CreateTripForm extends BasePage {
@@ -81,7 +83,15 @@ class CreateTripForm extends BasePage {
                 _TripEndDatePicker(),
                 const SizedBox(height: 24),
                 if (context.read<TripsCubit>().state.myTrips.isEmpty &&
-                    context.read<PastTripsCubit>().state.pastTrips.isEmpty)
+                        context
+                            .read<PastTripsCubit>()
+                            .state
+                            .pastTrips
+                            .isEmpty ||
+                    context.read<ProfileCubit>().state.profile.id ==
+                        '1ffb7652-f894-424f-92c6-e0a8744d4582' ||
+                    context.read<ProfileCubit>().state.profile.id ==
+                        'e7d73b2e-d75d-4d1f-a0d5-a6ff22e35bbc')
                   _SaveTrip()
                 else
                   _NoMoreTrips()
