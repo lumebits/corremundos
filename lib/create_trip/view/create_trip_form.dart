@@ -6,6 +6,7 @@ import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/common/widgets/text_input.dart';
 import 'package:corremundos/create_trip/cubit/create_trip_cubit.dart';
 import 'package:corremundos/past_trips/cubit/past_trips_cubit.dart';
+import 'package:corremundos/profile/cubit/profile_cubit.dart';
 import 'package:corremundos/trips/cubit/trips_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,8 +15,6 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
-import '../../profile/cubit/profile_cubit.dart';
 
 final _formKey = GlobalKey<FormState>();
 
