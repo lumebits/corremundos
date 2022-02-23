@@ -59,6 +59,7 @@ class TripCardWidget extends StatelessWidget {
 
   Widget _cardText(Trip trip, BuildContext context) {
     final now = DateTime.now();
+    final daysDiff = trip.initDate.difference(now).inDays;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -85,10 +86,12 @@ class TripCardWidget extends StatelessWidget {
                               ),
                             ),
                             TextSpan(
-                              text: trip.initDate.difference(now).inDays > 0
-                                  ? ' ${trip.initDate.difference(now).inDays} '
-                                      'days until take-off!'
-                                  : ' enjoy your trip!',
+                              text: daysDiff > 0
+                                  ? ' ${daysDiff + 1}'
+                                      ' days until take-off!'
+                                  : daysDiff == 0
+                                      ? ' 1 day until take-off!'
+                                      : ' enjoy your trip!',
                             )
                           ],
                         ),

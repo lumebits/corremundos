@@ -37,7 +37,7 @@ dependencies:
   in_app_purchase: ^2.0.1
   intl: ^0.17.0
   loading_indicator: ^3.0.2
-  pdf_render: ^1.0.18
+  pdf_render: ^1.0.23
   profile_repository:
     path: packages/profile_repository
   timeline_tile: ^2.0.0

@@ -98,6 +98,8 @@ class CreateEventCubit extends Cubit<CreateEventState> {
       } else {
         return null;
       }
+    } else {
+      return null;
     }
   }
 
@@ -235,6 +237,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         return Future.value(updatedTrip.refreshEventMap());
       }
     }
+    return null;
   }
 
   Future<Trip?> deleteTripEvent(String tripId) async {

@@ -11,7 +11,7 @@ class FirebaseTripsRepository implements TripsRepository {
 
   @override
   Future<void> updateOrCreateTrip(Trip trip, String uid) {
-    var endTime = new DateTime(trip.endDate.year, trip.endDate.month, trip.endDate.day, 23, 59, 59);
+    var endTime = new DateTime(trip.endDate.year, trip.endDate.month, trip.endDate.day, 23, 59, 59, 0, 0);
     if (trip.uid.isNotEmpty) {
       return collection.doc(trip.id).update(<String, dynamic>{
         'name': trip.name,
@@ -22,7 +22,7 @@ class FirebaseTripsRepository implements TripsRepository {
     } else {
       return collection
           .doc(trip.id)
-          .set((trip.copyWith(uid: uid).toEntity().toDocument()));
+          .set((trip.copyWith(uid: uid, endDate: endTime).toEntity().toDocument()));
     }
   }
 

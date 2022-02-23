@@ -79,7 +79,10 @@ class CreateTripForm extends BasePage {
                 const SizedBox(height: 8),
                 _TripEndDatePicker(),
                 const SizedBox(height: 24),
-                _SaveTrip(),
+                if (context.read<TripsCubit>().state.myTrips.isEmpty)
+                  _SaveTrip()
+                else
+                  _NoMoreTrips()
               ],
             ),
           ),
@@ -210,7 +213,8 @@ class _SaveTrip extends StatelessWidget {
             child: ElevatedButton(
               key: const Key('newTripForm_save_button'),
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (context.read<TripsCubit>().state.myTrips.isEmpty &&
+                    _formKey.currentState!.validate()) {
                   context.read<CreateTripCubit>().saveTrip().then((value) {
                     showTopSnackBar(
                       context,
@@ -231,6 +235,49 @@ class _SaveTrip extends StatelessWidget {
               ),
               child: const Text(
                 'Save',
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _NoMoreTrips extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateTripCubit, CreateTripState>(
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const SizedBox(
+            height: 20,
+            width: 100,
+            child: LoadingIndicator(
+              indicatorType: Indicator.ballPulse,
+              colors: [Color.fromRGBO(90, 23, 238, 1)],
+              backgroundColor: Colors.white10,
+              pathBackgroundColor: Colors.black,
+            ),
+          );
+        } else {
+          return SizedBox(
+            width: 210,
+            height: 50,
+            child: ElevatedButton(
+              key: const Key('newTripForm_noMoreTrips_button'),
+              onPressed: null,
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+              ),
+              child: const Text(
+                'You are only allowed to have one trip',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 17,
                   color: Colors.white,
