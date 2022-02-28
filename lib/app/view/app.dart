@@ -37,7 +37,7 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (_) => TripsCubit(
               FirebaseTripsRepository(),
-              AuthRepository(),
+              _authRepository,
               FirebaseProfileRepository(),
             )
               ..loadCurrentTrip()
@@ -46,13 +46,13 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (_) => PastTripsCubit(
               FirebaseTripsRepository(),
-              AuthRepository(),
+              _authRepository,
               FirebaseProfileRepository(),
             )..loadPastTrips(),
           ),
           BlocProvider(
             create: (_) =>
-                ProfileCubit(FirebaseProfileRepository(), AuthRepository())
+                ProfileCubit(FirebaseProfileRepository(), _authRepository)
                   ..loadProfile(),
           ),
           BlocProvider(
@@ -76,6 +76,7 @@ class AppView extends StatelessWidget {
         if (state.status == AppStatus.authenticated) {
           context.read<TripsCubit>().loadCurrentTrip();
           context.read<TripsCubit>().loadMyTrips();
+          context.read<ProfileCubit>().loadProfile();
         }
       },
       child: MaterialApp(
