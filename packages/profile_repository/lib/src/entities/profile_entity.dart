@@ -68,6 +68,7 @@ class ProfileEntity extends Equatable {
       'id': id,
       'uid': uid,
       'name': name,
+      'email': email,
       'documents': documents,
     };
   }

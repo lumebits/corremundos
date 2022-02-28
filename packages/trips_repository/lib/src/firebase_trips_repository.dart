@@ -173,7 +173,6 @@ class FirebaseTripsRepository implements TripsRepository {
   @override
   Future<void> deleteTrip(Trip trip, String uid) async {
     if (trip.uid == uid) {
-      // TODO: delete file inside uid folder
       trip.transportations.forEach((dynamic element) {
         final file = (element['file'] as String);
         if (file.isNotEmpty) FirebaseStorage.instance.refFromURL(file).delete();
@@ -209,7 +208,6 @@ class FirebaseTripsRepository implements TripsRepository {
   @override
   Future<void> deleteTripEvent(String tripId, TripEvent tripEvent) async {
     return collection.where('id', isEqualTo: tripId).get().then((value) {
-      // TODO: delete file inside uid folder
       for (final element in value.docs) {
         final trip = collection.doc(element.id);
         switch (tripEvent.type) {

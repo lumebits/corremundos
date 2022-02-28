@@ -60,7 +60,7 @@ class FirebaseProfileRepository implements ProfileRepository {
 
   @override
   Future<String?> uploadFileToStorage(
-      Uint8List uint8list, String name, String uid) {
+      Uint8List uint8list, String name, String uid) async {
     Reference firebaseStorageRef =
         FirebaseStorage.instance.ref().child('/$uid').child(name);
 
@@ -69,7 +69,11 @@ class FirebaseProfileRepository implements ProfileRepository {
         .then((taskSnapshot) => taskSnapshot.ref.getDownloadURL().then((value) {
               print("Done: $value");
               return value;
-            }));
+            }))
+        .onError((error, stackTrace) {
+      print(error);
+      return '';
+    });
   }
 
   @override
@@ -87,10 +91,18 @@ class FirebaseProfileRepository implements ProfileRepository {
 
   @override
   Future<void> deleteProfile(String uid) async {
-    // TODO: delete profile files from storage
+    _deleteAllFiles(uid);
     return collection.where('uid', isEqualTo: uid).get().then((value) {
       for (var element in value.docs) {
         collection.doc(element.id).delete();
+      }
+    });
+  }
+
+  Future<void> _deleteAllFiles(String uid) async {
+    FirebaseStorage.instance.ref().child('/$uid').listAll().then((files) {
+      for (final f in files.items) {
+        f.delete();
       }
     });
   }

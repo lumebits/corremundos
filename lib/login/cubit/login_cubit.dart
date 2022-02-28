@@ -58,6 +58,7 @@ class LoginCubit extends Cubit<LoginState> {
             final profile = Profile(
               uid: uid,
               name: '',
+              email: _authRepository.currentUser.email,
               documents: const <String>[],
             );
             profileRepository.updateOrCreateProfile(
@@ -86,6 +87,7 @@ class LoginCubit extends Cubit<LoginState> {
         final profile = Profile(
           uid: _authRepository.currentUser.id,
           name: '',
+          email: _authRepository.currentUser.email,
           documents: const <String>[],
         );
         profileRepository.updateOrCreateProfile(
