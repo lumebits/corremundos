@@ -72,21 +72,23 @@ class TripsCubit extends Cubit<TripsState> {
     }).catchError((dynamic error) {
       emit(state.copyWith(error: true, isLoadingCurrent: false));
     });
-    await NotificationsHelper.setNotification(
-      state.currentTrip.initDate.subtract(const Duration(days: 7)),
-      'Your next trip is in 7 days!',
-      0,
-    );
-    await NotificationsHelper.setNotification(
-      state.currentTrip.initDate.subtract(const Duration(days: 1)),
-      'Are you ready for your trip tomorrow?',
-      0,
-    );
-    await NotificationsHelper.setNotification(
-      state.currentTrip.initDate,
-      'Enjoy your trip!',
-      0,
-    );
+    if (state.currentTrip.isNotEmpty) {
+      await NotificationsHelper.setNotification(
+        state.currentTrip.initDate.subtract(const Duration(days: 7)),
+        'Your next trip is in 7 days!',
+        0,
+      );
+      await NotificationsHelper.setNotification(
+        state.currentTrip.initDate.subtract(const Duration(days: 1)),
+        'Are you ready for your trip tomorrow?',
+        0,
+      );
+      await NotificationsHelper.setNotification(
+        state.currentTrip.initDate,
+        'Enjoy your trip!',
+        0,
+      );
+    }
   }
 
   Future<void> changeSelectedTrip(Trip trip) async {

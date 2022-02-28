@@ -51,12 +51,12 @@ class App extends StatelessWidget {
             )..loadPastTrips(),
           ),
           BlocProvider(
-            create: (_) => LoadPdfCubit(),
-          ),
-          BlocProvider(
             create: (_) =>
                 ProfileCubit(FirebaseProfileRepository(), AuthRepository())
                   ..loadProfile(),
+          ),
+          BlocProvider(
+            create: (_) => LoadPdfCubit(),
           ),
         ],
         child: const AppView(),

@@ -58,7 +58,7 @@ class Profile extends Equatable {
   @override
   String toString() {
     return 'Profile '
-        '{ uid: $uid, id: $id, name: $name, '
+        '{ uid: $uid, id: $id, name: $name, email: $email, '
         'documents: $documents}';
   }
 
@@ -67,6 +67,7 @@ class Profile extends Equatable {
       id: id,
       uid: uid,
       name: name,
+      email: email,
       documents: documents,
     );
   }
