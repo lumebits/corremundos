@@ -3,6 +3,7 @@ import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
 import 'package:corremundos/common/widgets/base_page.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/profile/cubit/profile_cubit.dart';
+import 'package:corremundos/profile/view/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -76,31 +77,62 @@ class _Documents extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       buildWhen: (previous, current) =>
-          previous.profile.documents != current.profile.documents,
+          previous.profile.documents != current.profile.documents ||
+          previous.isLoading != current.isLoading,
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(
-            child: SizedBox(
-              height: 20,
-              width: 100,
-              child: LoadingIndicator(
-                indicatorType: Indicator.ballPulse,
-                colors: [Color.fromRGBO(90, 23, 238, 1)],
-                backgroundColor: Colors.white10,
-                pathBackgroundColor: Colors.black,
+          return const SizedBox(
+            height: 500,
+            child: Center(
+              child: SizedBox(
+                height: 20,
+                width: 100,
+                child: LoadingIndicator(
+                  indicatorType: Indicator.ballPulse,
+                  colors: [Color.fromRGBO(90, 23, 238, 1)],
+                  backgroundColor: Colors.white10,
+                  pathBackgroundColor: Colors.black,
+                ),
               ),
             ),
           );
         } else if (state.profile.documents!.isEmpty) {
-          return const SizedBox(
+          return SizedBox(
             height: 500,
             child: Center(
-              child: Text(
-                'Press the settings icon to attach your travel documents!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Color.fromRGBO(90, 23, 238, 1),
+              child: SizedBox(
+                width: 280,
+                height: 70,
+                child: ElevatedButton.icon(
+                  key: const Key('updateProfile_button'),
+                  icon: const Icon(
+                    Icons.person_rounded,
+                    color: Color.fromRGBO(90, 23, 238, 1),
+                    size: 22,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => const ProfilePage(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color.fromRGBO(242, 238, 255, 1),
+                    shadowColor: Colors.white10,
+                    elevation: 1,
+                    side: const BorderSide(
+                      width: 0.8,
+                      color: Color.fromRGBO(225, 220, 251, 1),
+                    ),
+                  ),
+                  label: const Text(
+                    'Update profile',
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Color.fromRGBO(90, 23, 238, 1),
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -60,7 +60,7 @@ class FirebaseProfileRepository implements ProfileRepository {
 
   @override
   Future<String?> uploadFileToStorage(
-      Uint8List uint8list, String name, String uid) {
+      Uint8List uint8list, String name, String uid) async {
     Reference firebaseStorageRef =
         FirebaseStorage.instance.ref().child('/$uid').child(name);
 
@@ -69,7 +69,11 @@ class FirebaseProfileRepository implements ProfileRepository {
         .then((taskSnapshot) => taskSnapshot.ref.getDownloadURL().then((value) {
               print("Done: $value");
               return value;
-            }));
+            }))
+        .onError((error, stackTrace) {
+      print(error);
+      return '';
+    });
   }
 
   @override
