@@ -10,6 +10,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:profile_repository/profile_repository.dart';
+import 'package:trips_repository/trips_repository.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -23,6 +25,8 @@ Future<void> main() async {
   );
 
   final authRepository = AuthRepository();
+  final firebaseProfileRepository = FirebaseProfileRepository();
+  final firebaseTripsRepository = FirebaseTripsRepository();
   await authRepository.user.first;
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
@@ -35,5 +39,11 @@ Future<void> main() async {
 
   await NotificationsHelper.init();
 
-  await bootstrap(() => App(authRepository: authRepository));
+  await bootstrap(
+    () => App(
+      authRepository: authRepository,
+      firebaseProfileRepository: firebaseProfileRepository,
+      firebaseTripsRepository: firebaseTripsRepository,
+    ),
+  );
 }

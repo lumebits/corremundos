@@ -1,3 +1,4 @@
+import 'package:corremundos/common/constants.dart';
 import 'package:flutter/material.dart';
 
 class DateTimeInput extends StatelessWidget {
@@ -23,22 +24,17 @@ class DateTimeInput extends StatelessWidget {
       readOnly: true,
       onTap: onPressed,
       onSubmitted: onSubmitted,
-      style: const TextStyle(
-        fontSize: 20,
-        color: Color.fromRGBO(90, 23, 238, 1),
-      ),
+      style: Constants.textFieldStyle,
       keyboardType: TextInputType.datetime,
       decoration: InputDecoration(
-        labelStyle: const TextStyle(
-          color: Colors.grey,
-        ),
+        labelStyle: Constants.textFieldLabelStyle,
         labelText: label,
         prefix: const Padding(
           padding: EdgeInsets.only(top: 2.5, right: 2.5),
         ),
         prefixIcon: IconButton(
           icon: Icon(iconData),
-          color: const Color.fromRGBO(90, 23, 238, 1),
+          color: Constants.corremundosColor,
           onPressed: onPressed,
         ),
         hintText: 'dd/MM/yyyy',

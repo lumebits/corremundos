@@ -8,6 +8,8 @@ import 'package:corremundos/bootstrap.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:profile_repository/profile_repository.dart';
+import 'package:trips_repository/trips_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +19,8 @@ Future<void> main() async {
   );
 
   final authRepository = AuthRepository();
+  final firebaseProfileRepository = FirebaseProfileRepository();
+  final firebaseTripsRepository = FirebaseTripsRepository();
   await authRepository.user.first;
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
@@ -27,5 +31,11 @@ Future<void> main() async {
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   );
 
-  await bootstrap(() => App(authRepository: authRepository));
+  await bootstrap(
+    () => App(
+      authRepository: authRepository,
+      firebaseProfileRepository: firebaseProfileRepository,
+      firebaseTripsRepository: firebaseTripsRepository,
+    ),
+  );
 }
