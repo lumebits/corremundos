@@ -18,10 +18,16 @@ class App extends StatelessWidget {
   const App({
     Key? key,
     required AuthRepository authRepository,
+    required FirebaseProfileRepository firebaseProfileRepository,
+    required FirebaseTripsRepository firebaseTripsRepository,
   })  : _authRepository = authRepository,
+        _firebaseProfileRepository = firebaseProfileRepository,
+        _firebaseTripsRepository = firebaseTripsRepository,
         super(key: key);
 
   final AuthRepository _authRepository;
+  final FirebaseProfileRepository _firebaseProfileRepository;
+  final FirebaseTripsRepository _firebaseTripsRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +42,23 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (_) => TripsCubit(
-              FirebaseTripsRepository(),
+              _firebaseTripsRepository,
               _authRepository,
-              FirebaseProfileRepository(),
+              _firebaseProfileRepository,
             )
               ..loadCurrentTrip()
               ..loadMyTrips(),
           ),
-          BlocProvider(
+          BlocProvider( // TODO(paloma): call only when accessing the screen ?
             create: (_) => PastTripsCubit(
-              FirebaseTripsRepository(),
+              _firebaseTripsRepository,
               _authRepository,
-              FirebaseProfileRepository(),
+              _firebaseProfileRepository,
             )..loadPastTrips(),
           ),
           BlocProvider(
             create: (_) =>
-                ProfileCubit(FirebaseProfileRepository(), _authRepository)
+                ProfileCubit(_firebaseProfileRepository, _authRepository)
                   ..loadProfile(),
           ),
           BlocProvider(
