@@ -18,6 +18,15 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 final _formKey = GlobalKey<FormState>();
 
+bool canSaveNewTrip(BuildContext context) {
+  return (context.read<TripsCubit>().state.myTrips.isEmpty &&
+          context.read<PastTripsCubit>().state.pastTrips.isEmpty) ||
+      context.read<ProfileCubit>().state.profile.id ==
+          '1ffb7652-f894-424f-92c6-e0a8744d4582' ||
+      context.read<ProfileCubit>().state.profile.id ==
+          '088d5f74-0db7-4fc6-a0a9-dbc4169d7aa9';
+}
+
 class CreateTripForm extends BasePage {
   const CreateTripForm({Key? key}) : super(key, appTab: AppTab.addTrip);
 
@@ -81,19 +90,7 @@ class CreateTripForm extends BasePage {
                 const SizedBox(height: 8),
                 _TripEndDatePicker(),
                 const SizedBox(height: 24),
-                if (context.read<TripsCubit>().state.myTrips.isEmpty &&
-                        context
-                            .read<PastTripsCubit>()
-                            .state
-                            .pastTrips
-                            .isEmpty ||
-                    context.read<ProfileCubit>().state.profile.id ==
-                        '1ffb7652-f894-424f-92c6-e0a8744d4582' ||
-                    context.read<ProfileCubit>().state.profile.id ==
-                        'e7d73b2e-d75d-4d1f-a0d5-a6ff22e35bbc')
-                  _SaveTrip()
-                else
-                  _NoMoreTrips()
+                if (canSaveNewTrip(context)) _SaveTrip() else _NoMoreTrips()
               ],
             ),
           ),
@@ -224,7 +221,7 @@ class _SaveTrip extends StatelessWidget {
             child: ElevatedButton(
               key: const Key('newTripForm_save_button'),
               onPressed: () {
-                if (context.read<TripsCubit>().state.myTrips.isEmpty &&
+                if (canSaveNewTrip(context) &&
                     _formKey.currentState!.validate()) {
                   context.read<CreateTripCubit>().saveTrip().then((value) {
                     showTopSnackBar(
