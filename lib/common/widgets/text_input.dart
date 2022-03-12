@@ -1,3 +1,4 @@
+import 'package:corremundos/common/constants.dart';
 import 'package:flutter/material.dart';
 
 class TextInput extends StatelessWidget {
@@ -22,7 +23,7 @@ class TextInput extends StatelessWidget {
       controller: TextEditingController(text: initialValue),
       onChanged: onChanged,
       style: const TextStyle(
-        fontSize: 20,
+        fontSize: Constants.textFieldFontSize,
         color: Color.fromRGBO(90, 23, 238, 1),
       ),
       keyboardType: keyboardType,
@@ -36,10 +37,10 @@ class TextInput extends StatelessWidget {
         ),
         prefixIcon: Icon(
           iconData,
-          color: const Color.fromRGBO(90, 23, 238, 1),
+          color: Constants.corremundosColor,
         ),
         errorStyle: const TextStyle(
-          color: Color.fromRGBO(90, 23, 238, 1),
+          color: Constants.corremundosColor,
           height: 0.1,
         ),
       ),

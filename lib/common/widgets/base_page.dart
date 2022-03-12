@@ -1,4 +1,5 @@
 import 'package:corremundos/app/bloc/app_bloc.dart';
+import 'package:corremundos/common/constants.dart';
 import 'package:corremundos/common/widgets/navigation.dart';
 import 'package:corremundos/settings/view/settings_page.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ abstract class BasePage extends StatelessWidget {
         key: const Key('settings_iconButton'),
         icon: const Icon(
           Icons.settings_rounded,
-          color: Colors.grey,
+          color: Constants.actionsIconColor,
         ),
         onPressed: () => Navigator.of(context).push<void>(
           MaterialPageRoute(

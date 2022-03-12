@@ -49,7 +49,8 @@ class App extends StatelessWidget {
               ..loadCurrentTrip()
               ..loadMyTrips(),
           ),
-          BlocProvider( // TODO(paloma): call only when accessing the screen ?
+          BlocProvider(
+            // TODO(paloma): call only when accessing the screen ?
             create: (_) => PastTripsCubit(
               _firebaseTripsRepository,
               _authRepository,

@@ -1,15 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:corremundos/common/blocs/load_pdf/load_pdf_cubit.dart';
+import 'package:corremundos/common/common_functions.dart';
+import 'package:corremundos/common/constants.dart';
 import 'package:corremundos/create_event/create_event.dart';
 import 'package:corremundos/trip_detail/cubit/trip_detail_cubit.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:trips_repository/trips_repository.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SelectedDayTripData extends StatelessWidget {
   const SelectedDayTripData({
@@ -23,27 +23,20 @@ class SelectedDayTripData extends StatelessWidget {
   final int index;
   final DateTime initTripDay;
 
-  Future<void> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final events =
         trip.eventMap.containsKey(index) ? trip.eventMap[index] : <dynamic>[];
     final selectedDayDate = initTripDay.add(Duration(days: index));
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.only(top: Constants.regularPadding),
       child: events!.isNotEmpty
           ? ListView.separated(
               itemCount: events.length + 1,
               itemBuilder: (context, i) {
                 return buildEvent(events, i, context, selectedDayDate);
               },
-              separatorBuilder: (context, index) =>
-                  const SizedBox(height: 16 / 2),
+              separatorBuilder: (context, index) => const SizedBox(height: 8),
             )
           : Center(
               child: SingleChildScrollView(
@@ -61,7 +54,7 @@ class SelectedDayTripData extends StatelessWidget {
                         key: const Key('addNewEvent_button'),
                         icon: const Icon(
                           Icons.add_rounded,
-                          color: Color.fromRGBO(90, 23, 238, 1),
+                          color: Constants.corremundosColor,
                           size: 22,
                         ),
                         onPressed: () =>
@@ -79,7 +72,7 @@ class SelectedDayTripData extends StatelessWidget {
                           'Add new event',
                           style: TextStyle(
                             fontSize: 17,
-                            color: Color.fromRGBO(90, 23, 238, 1),
+                            color: Constants.corremundosColor,
                           ),
                         ),
                       ),
@@ -100,31 +93,14 @@ class SelectedDayTripData extends StatelessWidget {
     if (i < events.length) {
       final event = events[i] as TripEvent;
       final eventType = event.type;
-      final icon = eventType == EventType.transport
-          ? Icons.airplanemode_active_rounded
-          : eventType == EventType.accommodation
-              ? Icons.hotel_rounded
-              : Icons.local_activity_rounded;
+      final icon = iconByEventType(eventType);
       return _buildTimelineTile(
         context: context,
         indicator: _IconIndicator(
           iconData: icon,
-          size: 20,
+          size: Constants.eventTimelineIconSize,
         ),
-        time: eventType == EventType.transport
-            ? '${formatHour(event.time)} - '
-                '${formatHour(event.endTime!)}'
-            : eventType == EventType.accommodation
-                ? event.isCheckIn!
-                    ? 'check-in ${formatHour(event.time)}'
-                    : 'check-out ${formatHour(event.time)}'
-                : DateFormat('dd LLL HH:mm')
-                    .format(event.time.add(Duration(days: index))),
-        name: event.name,
-        location: event.location,
-        eventType: event.type,
-        day: event.time,
-        file: event.fileUrl,
+        time: buildEventTimelineTimeText(eventType, event, index),
         event: event,
       );
     } else {
@@ -135,17 +111,10 @@ class SelectedDayTripData extends StatelessWidget {
     }
   }
 
-  String formatHour(DateTime time) =>
-      DateFormat('HH:mm').format(time.add(Duration(days: index)));
-
   TimelineTile _buildTimelineTile({
     required BuildContext context,
     required _IconIndicator indicator,
     required String time,
-    required String name,
-    required String location,
-    required EventType eventType,
-    required DateTime day,
     required TripEvent event,
     String file = '',
     bool isLast = false,
@@ -154,7 +123,7 @@ class SelectedDayTripData extends StatelessWidget {
       alignment: TimelineAlign.manual,
       lineXY: 0.3,
       beforeLineStyle: LineStyle(
-        color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7),
+        color: Constants.corremundosColor.withOpacity(0.7),
       ),
       indicatorStyle: IndicatorStyle(
         indicatorXY: 0.3,
@@ -171,7 +140,7 @@ class SelectedDayTripData extends StatelessWidget {
             time,
             style: const TextStyle(
               fontSize: 12,
-              color: Color.fromRGBO(90, 23, 238, 1),
+              color: Constants.corremundosColor,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -183,10 +152,10 @@ class SelectedDayTripData extends StatelessWidget {
         child: Card(
           shadowColor: Colors.black54,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(Constants.cardBorderRadius),
           ),
           clipBehavior: Clip.antiAlias,
-          elevation: 9,
+          elevation: Constants.cardElevation,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -209,10 +178,10 @@ class SelectedDayTripData extends StatelessWidget {
                             Expanded(
                               flex: 9,
                               child: Text(
-                                name,
+                                event.name,
                                 style: TextStyle(
                                   fontSize: 17,
-                                  color: const Color.fromRGBO(90, 23, 238, 1)
+                                  color: Constants.corremundosColor
                                       .withOpacity(0.8),
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -225,7 +194,7 @@ class SelectedDayTripData extends StatelessWidget {
                               const Expanded(
                                 child: Icon(
                                   Icons.attach_file_rounded,
-                                  color: Color.fromRGBO(90, 23, 238, 1),
+                                  color: Constants.corremundosColor,
                                   size: 18,
                                 ),
                               ),
@@ -233,11 +202,10 @@ class SelectedDayTripData extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          location,
+                          event.location,
                           style: TextStyle(
                             fontSize: 12,
-                            color: const Color.fromRGBO(90, 23, 238, 1)
-                                .withOpacity(0.6),
+                            color: Constants.corremundosColor.withOpacity(0.6),
                             fontWeight: FontWeight.normal,
                           ),
                         ),
@@ -251,7 +219,7 @@ class SelectedDayTripData extends StatelessWidget {
                 children: <Widget>[
                   IconButton(
                     icon: const Icon(Icons.edit_rounded),
-                    color: const Color.fromRGBO(90, 23, 238, 1),
+                    color: Constants.corremundosColor,
                     iconSize: 18,
                     onPressed: () {
                       var tripEvent = event;
@@ -266,8 +234,8 @@ class SelectedDayTripData extends StatelessWidget {
                             MaterialPageRoute<Trip>(
                               builder: (context) => CreateEventPage(
                                 trip,
-                                day,
-                                eventType,
+                                event.time,
+                                event.type,
                                 tripEvent: tripEvent,
                               ),
                             ),
@@ -279,15 +247,16 @@ class SelectedDayTripData extends StatelessWidget {
                           );
                     },
                   ),
-                  if (location.isNotEmpty && eventType != EventType.transport)
+                  if (event.location.isNotEmpty &&
+                      event.type != EventType.transport)
                     IconButton(
                       icon: const Icon(Icons.pin_drop_rounded),
-                      color: const Color.fromRGBO(90, 23, 238, 1),
+                      color: Constants.corremundosColor,
                       iconSize: 18,
                       onPressed: () {
-                        _launchURL(
+                        launchURL(
                           'https://www.google.com/maps/search/?api=1&query='
-                          '${Uri.encodeFull(location)}',
+                          '${Uri.encodeFull(event.location)}',
                         );
                       },
                     )
@@ -311,7 +280,7 @@ class SelectedDayTripData extends StatelessWidget {
       alignment: TimelineAlign.manual,
       lineXY: 0.3,
       beforeLineStyle: LineStyle(
-        color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7),
+        color: Constants.corremundosColor.withOpacity(0.7),
       ),
       indicatorStyle: const IndicatorStyle(
         indicatorXY: 0.3,
@@ -371,8 +340,7 @@ class NewEventWidget extends StatelessWidget {
                     'Add new event',
                     style: TextStyle(
                       fontSize: 18,
-                      color:
-                          const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.6),
+                      color: Constants.corremundosColor.withOpacity(0.6),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -428,7 +396,7 @@ AlertDialog addNewEventDialog(BuildContext context) {
         'Select event type',
         style: TextStyle(
           fontSize: 22,
-          color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.8),
+          color: Constants.corremundosColor.withOpacity(0.8),
         ),
       ),
     ),
@@ -443,12 +411,12 @@ AlertDialog addNewEventDialog(BuildContext context) {
                 style: TextStyle(
                   fontSize: 18,
                   color: selectedType == index
-                      ? const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.8)
+                      ? Constants.corremundosColor.withOpacity(0.8)
                       : Colors.grey,
                 ),
               ),
               value: index,
-              activeColor: const Color.fromRGBO(90, 23, 238, 1),
+              activeColor: Constants.corremundosColor,
               groupValue: selectedType,
               onChanged: (value) {
                 setState(() {
@@ -498,7 +466,7 @@ class _IconIndicator extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: const Color.fromRGBO(90, 23, 238, 1).withOpacity(0.7),
+            color: Constants.corremundosColor.withOpacity(0.7),
           ),
         ),
         Positioned.fill(
@@ -548,7 +516,7 @@ class AttachedFileDialog extends StatelessWidget {
             } else {
               return ConstrainedBox(
                 constraints: const BoxConstraints(
-                  maxHeight: 440,
+                  maxHeight: Constants.attachedFileMaxHeight,
                 ),
                 child: PdfViewer.openFile(
                   state.path,
@@ -567,7 +535,7 @@ class AttachedFileDialog extends StatelessWidget {
           panEnabled: false,
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              maxHeight: 440,
+              maxHeight: Constants.attachedFileMaxHeight,
             ),
             child: Container(
               decoration: BoxDecoration(
